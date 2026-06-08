@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
 export interface RequestOptions {
   headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -28,6 +28,7 @@ export class CommonService {
     const url = this.resolveUrl(endpoint);
     const httpOptions = this.prepareOptions(options, 'GET');
     return this.http.get<T>(url, httpOptions as { observe: 'body'; responseType: 'json' }).pipe(
+      tap((response) => this.saveTokenIfPresent(response)),
       catchError((error) => this.handleError(error))
     );
   }
@@ -40,6 +41,7 @@ export class CommonService {
     const sanitizedBody = options.skipSanitization ? body : this.sanitize(body);
     const httpOptions = this.prepareOptions(options, 'POST');
     return this.http.post<T>(url, sanitizedBody, httpOptions as { observe: 'body'; responseType: 'json' }).pipe(
+      tap((response) => this.saveTokenIfPresent(response)),
       catchError((error) => this.handleError(error))
     );
   }
@@ -52,6 +54,7 @@ export class CommonService {
     const sanitizedBody = options.skipSanitization ? body : this.sanitize(body);
     const httpOptions = this.prepareOptions(options, 'PUT');
     return this.http.put<T>(url, sanitizedBody, httpOptions as { observe: 'body'; responseType: 'json' }).pipe(
+      tap((response) => this.saveTokenIfPresent(response)),
       catchError((error) => this.handleError(error))
     );
   }
@@ -64,6 +67,7 @@ export class CommonService {
     const sanitizedBody = options.skipSanitization ? body : this.sanitize(body);
     const httpOptions = this.prepareOptions(options, 'PATCH');
     return this.http.patch<T>(url, sanitizedBody, httpOptions as { observe: 'body'; responseType: 'json' }).pipe(
+      tap((response) => this.saveTokenIfPresent(response)),
       catchError((error) => this.handleError(error))
     );
   }
@@ -75,6 +79,7 @@ export class CommonService {
     const url = this.resolveUrl(endpoint);
     const httpOptions = this.prepareOptions(options, 'DELETE');
     return this.http.delete<T>(url, httpOptions as { observe: 'body'; responseType: 'json' }).pipe(
+      tap((response) => this.saveTokenIfPresent(response)),
       catchError((error) => this.handleError(error))
     );
   }
@@ -171,6 +176,19 @@ export class CommonService {
   }
 
   /**
+   * Automatically saves the authentication token if returned in a response.
+   */
+  private saveTokenIfPresent(response: any): void {
+    if (response && response.token && typeof response.token === 'string') {
+      try {
+        localStorage.setItem('token', response.token);
+      } catch (e) {
+        // Fallback for SSR/non-browser contexts
+      }
+    }
+  }
+
+  /**
    * Sanitizes objects recursively to strip XSS vectors and clean inputs.
    */
   private sanitize(data: any): any {
@@ -236,17 +254,22 @@ export class CommonService {
       // The backend returned an unsuccessful response code.
       console.error(`Backend returned code ${error.status}, body was:`, error.error);
 
-      // Map common status codes to generic, safe messages
-      if (error.status === 400) {
-        userMessage = 'Invalid request. Please check your inputs and try again.';
-      } else if (error.status === 401) {
-        userMessage = 'Unauthorized. Please login again.';
-      } else if (error.status === 403) {
-        userMessage = 'Access denied. You do not have permission to access this resource.';
-      } else if (error.status === 404) {
-        userMessage = 'Requested resource not found.';
-      } else if (error.status >= 500) {
-        userMessage = 'A server error occurred. Our engineering team has been notified.';
+      // Extract specific message from backend if available
+      if (error.error && typeof error.error.message === 'string') {
+        userMessage = error.error.message;
+      } else {
+        // Map common status codes to generic, safe fallback messages
+        if (error.status === 400) {
+          userMessage = 'Invalid request. Please check your inputs and try again.';
+        } else if (error.status === 401) {
+          userMessage = 'Unauthorized. Please login again.';
+        } else if (error.status === 403) {
+          userMessage = 'Access denied. You do not have permission to access this resource.';
+        } else if (error.status === 404) {
+          userMessage = 'Requested resource not found.';
+        } else if (error.status >= 500) {
+          userMessage = 'A server error occurred. Our engineering team has been notified.';
+        }
       }
     }
 

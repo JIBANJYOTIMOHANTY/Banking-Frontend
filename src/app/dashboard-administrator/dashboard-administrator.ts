@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './dashboard-administrator.css',
 })
 export class DashboardAdministrator {
-
+  sidebarOpen = true;
 }
