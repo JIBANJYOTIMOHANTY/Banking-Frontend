@@ -1,223 +1,324 @@
 <div class="flex h-screen bg-slate-50/50 overflow-hidden font-sans">
 
-  <!-- Sidebar Component -->
-  <app-sidebar [isOpen]="sidebarOpen" (close)="sidebarOpen = false"></app-sidebar>
+        <!-- Sidebar Component -->
+        <app-sidebar [isOpen]="sidebarOpen" (close)="sidebarOpen = false"></app-sidebar>
 
-  <!-- Mobile Overlay Backdrop -->
-  @if (sidebarOpen) {
-  <div
-    (click)="sidebarOpen = false"
-    class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm lg:hidden z-40 transition-opacity duration-300"
-  ></div>
-  }
-
-  <!-- Main Viewport Context -->
-  <div class="flex-1 flex flex-col h-full overflow-hidden">
-
-    <!-- Header Component -->
-    <app-header (toggleSidebar)="sidebarOpen = !sidebarOpen"></app-header>
-
-    <!-- Scrollable Main Content -->
-    <main class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 flex flex-col justify-between">
-      <div class="space-y-8">
-        <!-- Dashboard Greeting Section -->
-        <div class="p-6 md:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-900 text-white shadow-xl relative overflow-hidden">
-          <div class="absolute right-0 bottom-0 top-0 opacity-10 pointer-events-none hidden md:block">
-            <span class="material-icons text-[240px] translate-y-10 translate-x-12">account_balance</span>
-          </div>
-          <div class="max-w-xl space-y-2 relative z-10">
-            <span class="bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase border border-indigo-400/20">
-              System Overview
-            </span>
-            <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Welcome back, Sarah Jenkins!</h2>
-            <p class="text-slate-300 text-sm font-medium">
-              The banking system is active and running optimally. You have <span class="text-indigo-300 font-bold underline">34 new activation requests</span> waiting for your approval.
-            </p>
-          </div>
+        <!-- Mobile Overlay Backdrop -->
+        @if (sidebarOpen) {
+        <div (click)="sidebarOpen = false"
+                class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm lg:hidden z-40 transition-opacity duration-300">
         </div>
+        }
 
-        <!-- Metrics Stats Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          <!-- Stat 1 -->
-          <div class="bg-white rounded-2xl border border-slate-100 p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow duration-200 group">
-            <div class="space-y-1">
-              <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Customers</p>
-              <h3 class="text-2xl font-extrabold text-slate-800 tracking-tight">12,548</h3>
-              <span class="text-emerald-600 text-[10px] font-bold bg-emerald-50 px-2 py-0.5 rounded-md flex items-center gap-0.5 w-fit">
-                <span class="material-icons text-[10px]">trending_up</span> +3.2%
-              </span>
-            </div>
-            <div class="bg-indigo-50 p-4 rounded-xl text-indigo-600 transition-colors duration-200 group-hover:bg-indigo-600 group-hover:text-white">
-              <span class="material-icons text-2xl flex items-center justify-center">people</span>
-            </div>
-          </div>
+        <!-- Main Viewport Context -->
+        <div class="flex-1 flex flex-col h-full overflow-hidden">
 
-          <!-- Stat 2 -->
-          <div class="bg-white rounded-2xl border border-slate-100 p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow duration-200 group">
-            <div class="space-y-1">
-              <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Accounts Open</p>
-              <h3 class="text-2xl font-extrabold text-slate-800 tracking-tight">18,920</h3>
-              <span class="text-emerald-600 text-[10px] font-bold bg-emerald-50 px-2 py-0.5 rounded-md flex items-center gap-0.5 w-fit">
-                <span class="material-icons text-[10px]">trending_up</span> +5.8%
-              </span>
-            </div>
-            <div class="bg-emerald-50 p-4 rounded-xl text-emerald-600 transition-colors duration-200 group-hover:bg-emerald-600 group-hover:text-white">
-              <span class="material-icons text-2xl flex items-center justify-center">account_balance_wallet</span>
-            </div>
-          </div>
+                <!-- Header Component -->
+                <app-header (toggleSidebar)="sidebarOpen = !sidebarOpen"></app-header>
 
-          <!-- Stat 3 -->
-          <div class="bg-white rounded-2xl border border-slate-100 p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow duration-200 group">
-            <div class="space-y-1">
-              <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Deposits</p>
-              <h3 class="text-2xl font-extrabold text-slate-800 tracking-tight">₹52.4 Cr</h3>
-              <span class="text-emerald-600 text-[10px] font-bold bg-emerald-50 px-2 py-0.5 rounded-md flex items-center gap-0.5 w-fit">
-                <span class="material-icons text-[10px]">trending_up</span> +12.4%
-              </span>
-            </div>
-            <div class="bg-violet-50 p-4 rounded-xl text-violet-600 transition-colors duration-200 group-hover:bg-violet-600 group-hover:text-white">
-              <span class="material-icons text-2xl flex items-center justify-center">monetization_on</span>
-            </div>
-          </div>
+                <!-- Scrollable Main Content -->
+                <main class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 flex flex-col justify-between">
+                        <div class="space-y-8">
+                                <!-- Dashboard Greeting Section -->
+                                <div
+                                        class="p-6 md:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-900 text-white shadow-xl relative overflow-hidden">
+                                        <div
+                                                class="absolute right-0 bottom-0 top-0 opacity-10 pointer-events-none hidden md:block">
+                                                <span
+                                                        class="material-icons text-[240px] translate-y-10 translate-x-12">account_balance</span>
+                                        </div>
+                                        <div class="max-w-xl space-y-2 relative z-10">
+                                                <span
+                                                        class="bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase border border-indigo-400/20">
+                                                        System Overview
+                                                </span>
+                                                <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Welcome
+                                                        back, Sarah Jenkins!</h2>
+                                                <p class="text-slate-300 text-sm font-medium">
+                                                        The banking system is active and running optimally. You have
+                                                        <span class="text-indigo-300 font-bold underline">34 new
+                                                                activation requests</span> waiting for your approval.
+                                                </p>
+                                        </div>
+                                </div>
 
-          <!-- Stat 4 -->
-          <div class="bg-white rounded-2xl border border-slate-100 p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow duration-200 group">
-            <div class="space-y-1">
-              <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Activation Requests</p>
-              <h3 class="text-2xl font-extrabold text-slate-800 tracking-tight">34</h3>
-              <span class="text-rose-600 text-[10px] font-bold bg-rose-50 px-2 py-0.5 rounded-md flex items-center gap-0.5 w-fit">
-                <span class="material-icons text-[10px]">priority_high</span> High Priority
-              </span>
-            </div>
-            <div class="bg-rose-50 p-4 rounded-xl text-rose-600 transition-colors duration-200 group-hover:bg-rose-600 group-hover:text-white">
-              <span class="material-icons text-2xl flex items-center justify-center">pending_actions</span>
-            </div>
-          </div>
+                                <!-- Metrics Stats Grid -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+                                        <!-- Stat 1 -->
+                                        <div
+                                                class="bg-white rounded-2xl border border-slate-100 p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow duration-200 group">
+                                                <div class="space-y-1">
+                                                        <p
+                                                                class="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                                                Total Customers</p>
+                                                        <h3
+                                                                class="text-2xl font-extrabold text-slate-800 tracking-tight">
+                                                                12,548</h3>
+                                                        <span
+                                                                class="text-emerald-600 text-[10px] font-bold bg-emerald-50 px-2 py-0.5 rounded-md flex items-center gap-0.5 w-fit">
+                                                                <span
+                                                                        class="material-icons text-[10px]">trending_up</span>
+                                                                +3.2%
+                                                        </span>
+                                                </div>
+                                                <div
+                                                        class="bg-indigo-50 p-4 rounded-xl text-indigo-600 transition-colors duration-200 group-hover:bg-indigo-600 group-hover:text-white">
+                                                        <span
+                                                                class="material-icons text-2xl flex items-center justify-center">people</span>
+                                                </div>
+                                        </div>
+
+                                        <!-- Stat 2 -->
+                                        <div
+                                                class="bg-white rounded-2xl border border-slate-100 p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow duration-200 group">
+                                                <div class="space-y-1">
+                                                        <p
+                                                                class="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                                                Accounts Open</p>
+                                                        <h3
+                                                                class="text-2xl font-extrabold text-slate-800 tracking-tight">
+                                                                18,920</h3>
+                                                        <span
+                                                                class="text-emerald-600 text-[10px] font-bold bg-emerald-50 px-2 py-0.5 rounded-md flex items-center gap-0.5 w-fit">
+                                                                <span
+                                                                        class="material-icons text-[10px]">trending_up</span>
+                                                                +5.8%
+                                                        </span>
+                                                </div>
+                                                <div
+                                                        class="bg-emerald-50 p-4 rounded-xl text-emerald-600 transition-colors duration-200 group-hover:bg-emerald-600 group-hover:text-white">
+                                                        <span
+                                                                class="material-icons text-2xl flex items-center justify-center">account_balance_wallet</span>
+                                                </div>
+                                        </div>
+
+                                        <!-- Stat 3 -->
+                                        <div
+                                                class="bg-white rounded-2xl border border-slate-100 p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow duration-200 group">
+                                                <div class="space-y-1">
+                                                        <p
+                                                                class="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                                                Total Deposits</p>
+                                                        <h3
+                                                                class="text-2xl font-extrabold text-slate-800 tracking-tight">
+                                                                ₹52.4 Cr</h3>
+                                                        <span
+                                                                class="text-emerald-600 text-[10px] font-bold bg-emerald-50 px-2 py-0.5 rounded-md flex items-center gap-0.5 w-fit">
+                                                                <span
+                                                                        class="material-icons text-[10px]">trending_up</span>
+                                                                +12.4%
+                                                        </span>
+                                                </div>
+                                                <div
+                                                        class="bg-violet-50 p-4 rounded-xl text-violet-600 transition-colors duration-200 group-hover:bg-violet-600 group-hover:text-white">
+                                                        <span
+                                                                class="material-icons text-2xl flex items-center justify-center">monetization_on</span>
+                                                </div>
+                                        </div>
+
+                                        <!-- Stat 4 -->
+                                        <div
+                                                class="bg-white rounded-2xl border border-slate-100 p-5 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow duration-200 group">
+                                                <div class="space-y-1">
+                                                        <p
+                                                                class="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                                                Activation Requests</p>
+                                                        <h3
+                                                                class="text-2xl font-extrabold text-slate-800 tracking-tight">
+                                                                34</h3>
+                                                        <span
+                                                                class="text-rose-600 text-[10px] font-bold bg-rose-50 px-2 py-0.5 rounded-md flex items-center gap-0.5 w-fit">
+                                                                <span
+                                                                        class="material-icons text-[10px]">priority_high</span>
+                                                                High Priority
+                                                        </span>
+                                                </div>
+                                                <div
+                                                        class="bg-rose-50 p-4 rounded-xl text-rose-600 transition-colors duration-200 group-hover:bg-rose-600 group-hover:text-white">
+                                                        <span
+                                                                class="material-icons text-2xl flex items-center justify-center">pending_actions</span>
+                                                </div>
+                                        </div>
+                                </div>
+
+                                <!-- Data Grid: Transactions & Pending Requests -->
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                        <!-- Recent Transactions (Col-span 2) -->
+                                        <div
+                                                class="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden lg:col-span-2 flex flex-col justify-between">
+                                                <div>
+                                                        <div
+                                                                class="p-6 border-b border-slate-100 flex items-center justify-between">
+                                                                <h3
+                                                                        class="text-base font-extrabold text-slate-800 tracking-tight">
+                                                                        Recent System Transactions</h3>
+                                                                <button
+                                                                        class="text-xs text-indigo-600 hover:text-indigo-700 font-bold hover:underline cursor-pointer">View
+                                                                        All</button>
+                                                        </div>
+                                                        <div class="overflow-x-auto">
+                                                                <table class="w-full min-w-[500px]">
+                                                                        <thead>
+                                                                                <tr
+                                                                                        class="bg-slate-50/50 border-b border-slate-100 text-left text-xs font-bold uppercase tracking-wider text-slate-400">
+                                                                                        <th class="p-4 pl-6">Transaction
+                                                                                                ID</th>
+                                                                                        <th class="p-4">Customer</th>
+                                                                                        <th class="p-4">Amount</th>
+                                                                                        <th class="p-4">Type</th>
+                                                                                        <th class="p-4 pr-6">Status</th>
+                                                                                </tr>
+                                                                        </thead>
+                                                                        <tbody
+                                                                                class="divide-y divide-slate-100 text-sm text-slate-700">
+                                                                                <tr
+                                                                                        class="hover:bg-slate-50/30 transition-colors">
+                                                                                        <td
+                                                                                                class="p-4 pl-6 font-bold text-slate-900">
+                                                                                                TXN1001</td>
+                                                                                        <td class="p-4">Rahul Sharma
+                                                                                        </td>
+                                                                                        <td
+                                                                                                class="p-4 font-bold text-slate-950">
+                                                                                                ₹25,000</td>
+                                                                                        <td class="p-4">Deposit</td>
+                                                                                        <td class="p-4 pr-6">
+                                                                                                <span
+                                                                                                        class="bg-emerald-50 text-emerald-700 font-bold text-xs px-2.5 py-1 rounded-full border border-emerald-100">
+                                                                                                        Success
+                                                                                                </span>
+                                                                                        </td>
+                                                                                </tr>
+                                                                                <tr
+                                                                                        class="hover:bg-slate-50/30 transition-colors">
+                                                                                        <td
+                                                                                                class="p-4 pl-6 font-bold text-slate-900">
+                                                                                                TXN1002</td>
+                                                                                        <td class="p-4">Priya Das</td>
+                                                                                        <td
+                                                                                                class="p-4 font-bold text-slate-950">
+                                                                                                ₹15,500</td>
+                                                                                        <td class="p-4">Withdrawal</td>
+                                                                                        <td class="p-4 pr-6">
+                                                                                                <span
+                                                                                                        class="bg-amber-50 text-amber-700 font-bold text-xs px-2.5 py-1 rounded-full border border-amber-100">
+                                                                                                        Pending
+                                                                                                </span>
+                                                                                        </td>
+                                                                                </tr>
+                                                                                <tr
+                                                                                        class="hover:bg-slate-50/30 transition-colors">
+                                                                                        <td
+                                                                                                class="p-4 pl-6 font-bold text-slate-900">
+                                                                                                TXN1003</td>
+                                                                                        <td class="p-4">Amit Kumar</td>
+                                                                                        <td
+                                                                                                class="p-4 font-bold text-slate-950">
+                                                                                                ₹40,000</td>
+                                                                                        <td class="p-4">Transfer</td>
+                                                                                        <td class="p-4 pr-6">
+                                                                                                <span
+                                                                                                        class="bg-emerald-50 text-emerald-700 font-bold text-xs px-2.5 py-1 rounded-full border border-emerald-100">
+                                                                                                        Success
+                                                                                                </span>
+                                                                                        </td>
+                                                                                </tr>
+                                                                        </tbody>
+                                                                </table>
+                                                        </div>
+                                                </div>
+                                        </div>
+
+                                        <!-- Pending Requests Panel (Col-span 1) -->
+                                        <div
+                                                class="bg-white border border-slate-100 rounded-2xl shadow-sm p-6 flex flex-col justify-between">
+                                                <div class="space-y-4">
+                                                        <div
+                                                                class="flex items-center justify-between pb-3 border-b border-slate-100">
+                                                                <h3
+                                                                        class="text-base font-extrabold text-slate-800 tracking-tight">
+                                                                        Pending Activations</h3>
+                                                                <span
+                                                                        class="bg-indigo-50 text-indigo-700 text-[10px] font-extrabold px-2 py-0.5 rounded-full">3
+                                                                        New</span>
+                                                        </div>
+
+                                                        <!-- Activation item list -->
+                                                        <div class="space-y-4">
+                                                                <div
+                                                                        class="flex items-center justify-between gap-3 p-3 rounded-xl border border-slate-100 hover:border-slate-200 transition-colors">
+                                                                        <div class="flex items-center gap-3">
+                                                                                <div
+                                                                                        class="w-9 h-9 rounded-lg bg-indigo-500/10 flex items-center justify-center font-bold text-indigo-700 text-sm">
+                                                                                        JD
+                                                                                </div>
+                                                                                <div>
+                                                                                        <p
+                                                                                                class="text-xs font-bold text-slate-800">
+                                                                                                John Doe</p>
+                                                                                        <p
+                                                                                                class="text-[10px] text-slate-400">
+                                                                                                Savings Account</p>
+                                                                                </div>
+                                                                        </div>
+                                                                        <div class="flex gap-1.5">
+                                                                                <button class="p-1 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-600 cursor-pointer"
+                                                                                        title="Approve">
+                                                                                        <span
+                                                                                                class="material-icons text-base flex items-center justify-center">check</span>
+                                                                                </button>
+                                                                                <button class="p-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 cursor-pointer"
+                                                                                        title="Reject">
+                                                                                        <span
+                                                                                                class="material-icons text-base flex items-center justify-center">close</span>
+                                                                                </button>
+                                                                        </div>
+                                                                </div>
+
+                                                                <div
+                                                                        class="flex items-center justify-between gap-3 p-3 rounded-xl border border-slate-100 hover:border-slate-200 transition-colors">
+                                                                        <div class="flex items-center gap-3">
+                                                                                <div
+                                                                                        class="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center font-bold text-emerald-700 text-sm">
+                                                                                        AS
+                                                                                </div>
+                                                                                <div>
+                                                                                        <p
+                                                                                                class="text-xs font-bold text-slate-800">
+                                                                                                Alice Smith</p>
+                                                                                        <p
+                                                                                                class="text-[10px] text-slate-400">
+                                                                                                Business Account</p>
+                                                                                </div>
+                                                                        </div>
+                                                                        <div class="flex gap-1.5">
+                                                                                <button class="p-1 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-600 cursor-pointer"
+                                                                                        title="Approve">
+                                                                                        <span
+                                                                                                class="material-icons text-base flex items-center justify-center">check</span>
+                                                                                </button>
+                                                                                <button class="p-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 cursor-pointer"
+                                                                                        title="Reject">
+                                                                                        <span
+                                                                                                class="material-icons text-base flex items-center justify-center">close</span>
+                                                                                </button>
+                                                                        </div>
+                                                                </div>
+                                                        </div>
+                                                </div>
+
+                                                <button
+                                                        class="w-full mt-4 text-center text-xs text-indigo-600 hover:text-indigo-700 font-extrabold py-2 bg-indigo-50/50 hover:bg-indigo-50 border border-indigo-100/50 rounded-xl transition-all cursor-pointer">
+                                                        Manage All Activations
+                                                </button>
+                                        </div>
+                                </div>
+                        </div>
+
+                        <!-- Footer Component -->
+                        <app-footer class="mt-8"></app-footer>
+                </main>
+
         </div>
-
-        <!-- Data Grid: Transactions & Pending Requests -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <!-- Recent Transactions (Col-span 2) -->
-          <div class="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden lg:col-span-2 flex flex-col justify-between">
-            <div>
-              <div class="p-6 border-b border-slate-100 flex items-center justify-between">
-                <h3 class="text-base font-extrabold text-slate-800 tracking-tight">Recent System Transactions</h3>
-                <button class="text-xs text-indigo-600 hover:text-indigo-700 font-bold hover:underline cursor-pointer">View All</button>
-              </div>
-              <div class="overflow-x-auto">
-                <table class="w-full min-w-[500px]">
-                  <thead>
-                    <tr class="bg-slate-50/50 border-b border-slate-100 text-left text-xs font-bold uppercase tracking-wider text-slate-400">
-                      <th class="p-4 pl-6">Transaction ID</th>
-                      <th class="p-4">Customer</th>
-                      <th class="p-4">Amount</th>
-                      <th class="p-4">Type</th>
-                      <th class="p-4 pr-6">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-slate-100 text-sm text-slate-700">
-                    <tr class="hover:bg-slate-50/30 transition-colors">
-                      <td class="p-4 pl-6 font-bold text-slate-900">TXN1001</td>
-                      <td class="p-4">Rahul Sharma</td>
-                      <td class="p-4 font-bold text-slate-950">₹25,000</td>
-                      <td class="p-4">Deposit</td>
-                      <td class="p-4 pr-6">
-                        <span class="bg-emerald-50 text-emerald-700 font-bold text-xs px-2.5 py-1 rounded-full border border-emerald-100">
-                          Success
-                        </span>
-                      </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50/30 transition-colors">
-                      <td class="p-4 pl-6 font-bold text-slate-900">TXN1002</td>
-                      <td class="p-4">Priya Das</td>
-                      <td class="p-4 font-bold text-slate-950">₹15,500</td>
-                      <td class="p-4">Withdrawal</td>
-                      <td class="p-4 pr-6">
-                        <span class="bg-amber-50 text-amber-700 font-bold text-xs px-2.5 py-1 rounded-full border border-amber-100">
-                          Pending
-                        </span>
-                      </td>
-                    </tr>
-                    <tr class="hover:bg-slate-50/30 transition-colors">
-                      <td class="p-4 pl-6 font-bold text-slate-900">TXN1003</td>
-                      <td class="p-4">Amit Kumar</td>
-                      <td class="p-4 font-bold text-slate-950">₹40,000</td>
-                      <td class="p-4">Transfer</td>
-                      <td class="p-4 pr-6">
-                        <span class="bg-emerald-50 text-emerald-700 font-bold text-xs px-2.5 py-1 rounded-full border border-emerald-100">
-                          Success
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- Pending Requests Panel (Col-span 1) -->
-          <div class="bg-white border border-slate-100 rounded-2xl shadow-sm p-6 flex flex-col justify-between">
-            <div class="space-y-4">
-              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                <h3 class="text-base font-extrabold text-slate-800 tracking-tight">Pending Activations</h3>
-                <span class="bg-indigo-50 text-indigo-700 text-[10px] font-extrabold px-2 py-0.5 rounded-full">3 New</span>
-              </div>
-              
-              <!-- Activation item list -->
-              <div class="space-y-4">
-                <div class="flex items-center justify-between gap-3 p-3 rounded-xl border border-slate-100 hover:border-slate-200 transition-colors">
-                  <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-lg bg-indigo-500/10 flex items-center justify-center font-bold text-indigo-700 text-sm">
-                      JD
-                    </div>
-                    <div>
-                      <p class="text-xs font-bold text-slate-800">John Doe</p>
-                      <p class="text-[10px] text-slate-400">Savings Account</p>
-                    </div>
-                  </div>
-                  <div class="flex gap-1.5">
-                    <button class="p-1 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-600 cursor-pointer" title="Approve">
-                      <span class="material-icons text-base flex items-center justify-center">check</span>
-                    </button>
-                    <button class="p-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 cursor-pointer" title="Reject">
-                      <span class="material-icons text-base flex items-center justify-center">close</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div class="flex items-center justify-between gap-3 p-3 rounded-xl border border-slate-100 hover:border-slate-200 transition-colors">
-                  <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center font-bold text-emerald-700 text-sm">
-                      AS
-                    </div>
-                    <div>
-                      <p class="text-xs font-bold text-slate-800">Alice Smith</p>
-                      <p class="text-[10px] text-slate-400">Business Account</p>
-                    </div>
-                  </div>
-                  <div class="flex gap-1.5">
-                    <button class="p-1 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-600 cursor-pointer" title="Approve">
-                      <span class="material-icons text-base flex items-center justify-center">check</span>
-                    </button>
-                    <button class="p-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 cursor-pointer" title="Reject">
-                      <span class="material-icons text-base flex items-center justify-center">close</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <button class="w-full mt-4 text-center text-xs text-indigo-600 hover:text-indigo-700 font-extrabold py-2 bg-indigo-50/50 hover:bg-indigo-50 border border-indigo-100/50 rounded-xl transition-all cursor-pointer">
-              Manage All Activations
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Footer Component -->
-      <app-footer class="mt-8"></app-footer>
-    </main>
-
-  </div>
 
 </div>

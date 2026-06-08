@@ -175,13 +175,22 @@ export class CommonService {
     }
   }
 
-  /**
-   * Automatically saves the authentication token if returned in a response.
-   */
   private saveTokenIfPresent(response: any): void {
-    if (response && response.token && typeof response.token === 'string') {
+    let token: string | null = null;
+    if (response) {
+      if (response.token && typeof response.token === 'string') {
+        token = response.token;
+      } else if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+        const firstDataItem = response.data[0];
+        if (firstDataItem && firstDataItem.token && typeof firstDataItem.token === 'string') {
+          token = firstDataItem.token;
+        }
+      }
+    }
+
+    if (token) {
       try {
-        localStorage.setItem('token', response.token);
+        localStorage.setItem('token', token);
       } catch (e) {
         // Fallback for SSR/non-browser contexts
       }
