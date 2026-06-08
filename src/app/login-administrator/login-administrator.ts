@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { LoginAdministratorService } from './login-administrator-service';
+import { LoginAdministratorService } from './service/login-administrator-service';
 
 /**
  * Custom validator to check if field is empty or contains only whitespace characters.

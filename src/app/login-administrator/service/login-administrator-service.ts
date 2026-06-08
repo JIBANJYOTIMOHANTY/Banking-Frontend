@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../environments/environment';
-import { CommonService } from '../common-service/common-service';
+import { environment } from '../../environments/environment';
+import { CommonService } from '../../common-service/common-service';
 
 @Injectable({
   providedIn: 'root',
