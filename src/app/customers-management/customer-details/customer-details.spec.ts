@@ -50,13 +50,20 @@ describe('CustomerDetails', () => {
       initialBalance: 1000,
       dob: '1990-01-01',
       email: 'bob@example.com',
+      countryCode: '+91',
       mobileNumber: '1234567890',
-      govtId: 'ABCDE1234F',
-      govtIdType: 'pan',
+      govtId: '123456789012',
+      govtIdType: 'aadhar',
+      pan: 'ABCDE1234F',
       occupation: 'Developer',
       nomineeName: 'Jane Smith',
       nomineeRelation: 'Spouse',
-      address: '123 Main Street'
+      address: '123 Main Street',
+      landmark: 'near park',
+      city: 'New York',
+      state: 'NY',
+      country: 'USA',
+      pincode: '123456'
     });
     
     component.submitCustomer();

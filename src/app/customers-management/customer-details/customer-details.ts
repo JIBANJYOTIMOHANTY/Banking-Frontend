@@ -34,13 +34,20 @@ export class CustomerDetails implements OnInit {
     initialBalance: [0, [Validators.required, Validators.min(0)]],
     dob: ['', [Validators.required]],
     email: ['', [Validators.email]],
-    mobileNumber: ['', [Validators.required]],
+    countryCode: ['+91', [Validators.required]],
+    mobileNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
     govtId: ['', [Validators.required]],
     govtIdType: ['aadhar', [Validators.required]],
+    pan: ['', [Validators.required, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)]],
     occupation: [''],
     nomineeName: [''],
     nomineeRelation: [''],
-    address: ['', [Validators.required]]
+    address: ['', [Validators.required]],
+    landmark: [''],
+    city: ['', [Validators.required]],
+    state: ['', [Validators.required]],
+    country: ['', [Validators.required]],
+    pincode: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]]
   });
 
   ngOnInit() {
@@ -59,13 +66,19 @@ export class CustomerDetails implements OnInit {
       balance: this.addForm.value.initialBalance,
       dob: this.addForm.value.dob,
       email: this.addForm.value.email,
-      mobileNumber: this.addForm.value.mobileNumber,
+      mobileNumber: `${this.addForm.value.countryCode}${this.addForm.value.mobileNumber}`,
       govtId: this.addForm.value.govtId,
       govtIdType: this.addForm.value.govtIdType,
+      pan: this.addForm.value.pan,
       occupation: this.addForm.value.occupation,
       nomineeName: this.addForm.value.nomineeName,
       nomineeRelation: this.addForm.value.nomineeRelation,
-      address: this.addForm.value.address
+      address: this.addForm.value.address,
+      landmark: this.addForm.value.landmark,
+      city: this.addForm.value.city,
+      state: this.addForm.value.state,
+      country: this.addForm.value.country,
+      pincode: this.addForm.value.pincode
     };
 
     this.isLoading.set(true);

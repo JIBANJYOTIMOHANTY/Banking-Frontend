@@ -82,13 +82,20 @@ describe('CustomersManagement', () => {
       lastName: 'Doe',
       dob: '1985-05-05',
       email: 'johnny.doe@example.com',
+      countryCode: '+91',
       mobileNumber: '9876543210',
       govtId: 'XYZW98765',
       govtIdType: 'aadhar',
+      pan: 'ABCDE1234F',
       occupation: 'Manager',
       nomineeName: 'Mary Doe',
       nomineeRelation: 'Mother',
-      address: '456 Commercial Rd, Business District'
+      address: '456 Commercial Rd, Business District',
+      landmark: 'next to mall',
+      city: 'Delhi',
+      state: 'DL',
+      country: 'India',
+      pincode: '110001'
     });
     component.submitEditCustomer();
     expect(mockCommonService.patch).toHaveBeenCalled();

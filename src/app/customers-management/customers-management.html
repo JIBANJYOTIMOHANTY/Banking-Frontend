@@ -155,6 +155,11 @@
                                                                                                 <p><span class="font-bold text-slate-400">Email Address:</span> {{ customer.email || 'N/A' }}</p>
                                                                                                 <p><span class="font-bold text-slate-400">Mobile Number:</span> {{ customer.mobileNumber || 'N/A' }}</p>
                                                                                                 <p><span class="font-bold text-slate-400">Address:</span> {{ customer.address || 'N/A' }}</p>
+                                                                                                @if (customer.landmark) {
+                                                                                                <p><span class="font-bold text-slate-400">Landmark:</span> {{ customer.landmark }}</p>
+                                                                                                }
+                                                                                                <p><span class="font-bold text-slate-400">City/State/Country:</span> {{ customer.city || 'N/A' }}, {{ customer.state || 'N/A' }}, {{ customer.country || 'N/A' }}</p>
+                                                                                                <p><span class="font-bold text-slate-400">Pincode:</span> {{ customer.pincode || 'N/A' }}</p>
                                                                                         </div>
                                                                                         <!-- KYC details -->
                                                                                         <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm space-y-2">
@@ -162,6 +167,7 @@
                                                                                                         <span class="material-icons text-sm text-indigo-500">verified_user</span>
                                                                                                         KYC & Occupation
                                                                                                 </h4>
+                                                                                                <p><span class="font-bold text-slate-400">PAN Number:</span> <span class="font-mono text-slate-600 uppercase">{{ customer.pan || 'N/A' }}</span></p>
                                                                                                 <p><span class="font-bold text-slate-400">Govt ID Type:</span> <span class="uppercase font-semibold text-slate-600">{{ customer.govtIdType || 'N/A' }}</span></p>
                                                                                                 <p><span class="font-bold text-slate-400">Govt ID No:</span> <span class="font-mono text-slate-600">{{ customer.govtId || 'N/A' }}</span></p>
                                                                                                 <p><span class="font-bold text-slate-400">Occupation:</span> {{ customer.occupation || 'N/A' }}</p>
@@ -278,10 +284,37 @@
 
                                         <div class="space-y-1">
                                                 <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Mobile Number <span class="text-rose-500">*</span></label>
-                                                <input type="text" formControlName="mobileNumber" placeholder="Enter mobile number"
-                                                        class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" />
+                                                 <div class="flex gap-2">
+                                                         <select formControlName="countryCode"
+                                                                 class="w-24 px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white">
+                                                                 <option value="+91">+91 (IN)</option>
+                                                                 <option value="+1">+1 (US)</option>
+                                                                 <option value="+44">+44 (UK)</option>
+                                                                 <option value="+61">+61 (AU)</option>
+                                                                 <option value="+971">+971 (AE)</option>
+                                                         </select>
+                                                         <input type="text" formControlName="mobileNumber" placeholder="10-digit number"
+                                                                 class="flex-1 px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" />
+                                                 </div>
                                                 @if (editForm.get('mobileNumber')?.touched && editForm.get('mobileNumber')?.invalid) {
-                                                <p class="text-rose-500 text-[10px]">Mobile number is mandatory.</p>
+                                                 @if (editForm.get('mobileNumber')?.errors?.['required']) {
+                                                         <p class="text-rose-500 text-[10px]">Mobile number is mandatory.</p>
+                                                 } @else if (editForm.get('mobileNumber')?.errors?.['pattern']) {
+                                                         <p class="text-rose-500 text-[10px]">Mobile number must be exactly 10 digits.</p>
+                                                 }
+                                                }
+                                        </div>
+
+                                        <div class="space-y-1">
+                                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">PAN Number <span class="text-rose-500">*</span></label>
+                                                <input type="text" formControlName="pan" placeholder="Enter 10-digit PAN (e.g. ABCDE1234F)"
+                                                        class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" />
+                                                @if (editForm.get('pan')?.touched && editForm.get('pan')?.invalid) {
+                                                        @if (editForm.get('pan')?.errors?.['required']) {
+                                                                <p class="text-rose-500 text-[10px]">PAN is mandatory.</p>
+                                                        } @else if (editForm.get('pan')?.errors?.['pattern']) {
+                                                                <p class="text-rose-500 text-[10px]">Invalid PAN format (e.g. ABCDE1234F).</p>
+                                                        }
                                                 }
                                         </div>
 
@@ -290,7 +323,6 @@
                                                         <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Govt ID Type <span class="text-rose-500">*</span></label>
                                                         <select formControlName="govtIdType"
                                                                 class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
-                                                                <option value="pan">PAN</option>
                                                                 <option value="passport">Passport</option>
                                                                 <option value="aadhar">Aadhar</option>
                                                                 <option value="voter_id">Voter ID</option>
@@ -315,13 +347,63 @@
                         </div>
 
                         <!-- Full Width Address Field -->
-                        <div class="space-y-1">
-                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Residential Address <span class="text-rose-500">*</span></label>
-                                <textarea formControlName="address" placeholder="Enter full residential address" rows="2"
-                                        class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"></textarea>
-                                @if (editForm.get('address')?.touched && editForm.get('address')?.invalid) {
-                                <p class="text-rose-500 text-[10px]">Address is mandatory.</p>
-                                }
+                        <div class="space-y-4">
+                                <h3 class="text-xs font-bold text-indigo-600 uppercase tracking-wider border-b pb-1">Residential Address</h3>
+                                <div class="space-y-1">
+                                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Street Address <span class="text-rose-500">*</span></label>
+                                        <textarea formControlName="address" placeholder="Enter street address" rows="2"
+                                                class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"></textarea>
+                                        @if (editForm.get('address')?.touched && editForm.get('address')?.invalid) {
+                                        <p class="text-rose-500 text-[10px]">Street address is mandatory.</p>
+                                        }
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="space-y-1">
+                                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Landmark</label>
+                                                <input type="text" formControlName="landmark" placeholder="E.g. near post office"
+                                                        class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" />
+                                        </div>
+                                        <div class="space-y-1">
+                                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">City <span class="text-rose-500">*</span></label>
+                                                <input type="text" formControlName="city" placeholder="City"
+                                                        class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" />
+                                                @if (editForm.get('city')?.touched && editForm.get('city')?.invalid) {
+                                                <p class="text-rose-500 text-[10px]">City is mandatory.</p>
+                                                }
+                                        </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div class="space-y-1">
+                                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">State <span class="text-rose-500">*</span></label>
+                                                <input type="text" formControlName="state" placeholder="State"
+                                                        class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" />
+                                                @if (editForm.get('state')?.touched && editForm.get('state')?.invalid) {
+                                                <p class="text-rose-500 text-[10px]">State is mandatory.</p>
+                                                }
+                                        </div>
+                                        <div class="space-y-1">
+                                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Country <span class="text-rose-500">*</span></label>
+                                                <input type="text" formControlName="country" placeholder="Country"
+                                                        class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" />
+                                                @if (editForm.get('country')?.touched && editForm.get('country')?.invalid) {
+                                                <p class="text-rose-500 text-[10px]">Country is mandatory.</p>
+                                                }
+                                        </div>
+                                        <div class="space-y-1">
+                                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Pincode <span class="text-rose-500">*</span></label>
+                                                <input type="text" formControlName="pincode" placeholder="6-digit pincode"
+                                                        class="w-full px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" />
+                                                @if (editForm.get('pincode')?.touched && editForm.get('pincode')?.invalid) {
+                                                        @if (editForm.get('pincode')?.errors?.['required']) {
+                                                                <p class="text-rose-500 text-[10px]">Pincode is mandatory.</p>
+                                                        } @else if (editForm.get('pincode')?.errors?.['pattern']) {
+                                                                <p class="text-rose-500 text-[10px]">Pincode must be exactly 6 digits.</p>
+                                                        }
+                                                }
+                                        </div>
+                                </div>
                         </div>
 
                         <!-- Nominee Details -->

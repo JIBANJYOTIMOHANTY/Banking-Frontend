@@ -26,6 +26,12 @@ export interface Customer {
   nomineeName?: string;
   nomineeRelation?: string;
   address?: string;
+  pan?: string;
+  landmark?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  pincode?: string;
 }
 
 @Component({
@@ -57,6 +63,11 @@ export class CustomersManagement implements OnInit {
       (c.email && c.email.toLowerCase().includes(query)) ||
       (c.mobileNumber && c.mobileNumber.toLowerCase().includes(query)) ||
       (c.govtId && c.govtId.toLowerCase().includes(query)) ||
+      (c.pan && c.pan.toLowerCase().includes(query)) ||
+      (c.city && c.city.toLowerCase().includes(query)) ||
+      (c.state && c.state.toLowerCase().includes(query)) ||
+      (c.country && c.country.toLowerCase().includes(query)) ||
+      (c.pincode && c.pincode.toLowerCase().includes(query)) ||
       (c.nomineeName && c.nomineeName.toLowerCase().includes(query)) ||
       (c.address && c.address.toLowerCase().includes(query))
     );
@@ -70,19 +81,25 @@ export class CustomersManagement implements OnInit {
   isEditModalOpen = signal(false);
   selectedCustomer = signal<Customer | null>(null);
 
-  // Forms (Edit only)
   editForm: FormGroup = this.fb.group({
     firstName: ['', [Validators.required, Validators.minLength(2)]],
     lastName: ['', [Validators.required, Validators.minLength(2)]],
     dob: ['', [Validators.required]],
     email: ['', [Validators.email]],
-    mobileNumber: ['', [Validators.required]],
+    countryCode: ['+91', [Validators.required]],
+    mobileNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
     govtId: ['', [Validators.required]],
     govtIdType: ['aadhar', [Validators.required]],
+    pan: ['', [Validators.required, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)]],
     occupation: [''],
     nomineeName: [''],
     nomineeRelation: [''],
-    address: ['', [Validators.required]]
+    address: ['', [Validators.required]],
+    landmark: [''],
+    city: ['', [Validators.required]],
+    state: ['', [Validators.required]],
+    country: ['', [Validators.required]],
+    pincode: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]]
   });
 
   ngOnInit() {
@@ -128,18 +145,39 @@ export class CustomersManagement implements OnInit {
 
   openEditModal(customer: Customer) {
     this.selectedCustomer.set(customer);
+    let countryCode = '+91';
+    let mobileNum = '';
+    if (customer.mobileNumber) {
+      if (customer.mobileNumber.startsWith('+')) {
+        if (customer.mobileNumber.length > 10) {
+          countryCode = customer.mobileNumber.slice(0, customer.mobileNumber.length - 10);
+          mobileNum = customer.mobileNumber.slice(customer.mobileNumber.length - 10);
+        } else {
+          mobileNum = customer.mobileNumber;
+        }
+      } else {
+        mobileNum = customer.mobileNumber;
+      }
+    }
     this.editForm.patchValue({
       firstName: customer.firstName,
       lastName: customer.lastName,
       dob: customer.dob || '',
       email: customer.email || '',
-      mobileNumber: customer.mobileNumber || '',
+      countryCode: countryCode,
+      mobileNumber: mobileNum,
       govtId: customer.govtId || '',
       govtIdType: customer.govtIdType || 'aadhar',
+      pan: customer.pan || '',
       occupation: customer.occupation || '',
       nomineeName: customer.nomineeName || '',
       nomineeRelation: customer.nomineeRelation || '',
-      address: customer.address || ''
+      address: customer.address || '',
+      landmark: customer.landmark || '',
+      city: customer.city || '',
+      state: customer.state || '',
+      country: customer.country || '',
+      pincode: customer.pincode || ''
     });
     this.isEditModalOpen.set(true);
     this.errorMessage.set(null);
@@ -158,19 +196,26 @@ export class CustomersManagement implements OnInit {
       return;
     }
 
+    const combinedMobileNumber = `${this.editForm.value.countryCode}${this.editForm.value.mobileNumber}`;
     const payload = {
       accountNumber: customerVal.accountNumber,
       firstName: this.editForm.value.firstName,
       lastName: this.editForm.value.lastName,
       dob: this.editForm.value.dob,
       email: this.editForm.value.email,
-      mobileNumber: this.editForm.value.mobileNumber,
+      mobileNumber: combinedMobileNumber,
       govtId: this.editForm.value.govtId,
       govtIdType: this.editForm.value.govtIdType,
+      pan: this.editForm.value.pan,
       occupation: this.editForm.value.occupation,
       nomineeName: this.editForm.value.nomineeName,
       nomineeRelation: this.editForm.value.nomineeRelation,
-      address: this.editForm.value.address
+      address: this.editForm.value.address,
+      landmark: this.editForm.value.landmark,
+      city: this.editForm.value.city,
+      state: this.editForm.value.state,
+      country: this.editForm.value.country,
+      pincode: this.editForm.value.pincode
     };
 
     this.isLoading.set(true);
