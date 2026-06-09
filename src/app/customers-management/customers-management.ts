@@ -109,7 +109,7 @@ export class CustomersManagement implements OnInit {
   fetchCustomers() {
     this.isLoading.set(true);
     this.errorMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank`;
+    const url = `${environment.BASE_API_URL}bank/customer`;
 
     this.commonService.get<any>(url).subscribe({
       next: (response) => {
@@ -219,7 +219,7 @@ export class CustomersManagement implements OnInit {
     };
 
     this.isLoading.set(true);
-    const url = `${environment.BASE_API_URL}bank`;
+    const url = `${environment.BASE_API_URL}bank/customer`;
 
     this.commonService.patch<any>(url, payload).subscribe({
       next: (response) => {

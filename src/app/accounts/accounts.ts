@@ -90,7 +90,7 @@ export class Accounts implements OnInit {
   fetchAccounts() {
     this.isLoading.set(true);
     this.errorMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank`;
+    const url = `${environment.BASE_API_URL}bank/customer`;
 
     this.commonService.get<any>(url).subscribe({
       next: (response) => {
@@ -139,7 +139,7 @@ export class Accounts implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank/deposit/${currentSel.accountNumber}/${amount}`;
+    const url = `${environment.BASE_API_URL}bank/customer/deposit/${currentSel.accountNumber}/${amount}`;
 
     this.commonService.put<any>(url, {}).subscribe({
       next: (response) => {
@@ -175,7 +175,7 @@ export class Accounts implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank/withdraw/${currentSel.accountNumber}/${amount}`;
+    const url = `${environment.BASE_API_URL}bank/customer/withdraw/${currentSel.accountNumber}/${amount}`;
 
     this.commonService.put<any>(url, {}).subscribe({
       next: (response) => {
@@ -218,7 +218,7 @@ export class Accounts implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank/transfer/${currentSel.accountNumber}/${dest}/${amount}`;
+    const url = `${environment.BASE_API_URL}bank/customer/transfer/${currentSel.accountNumber}/${dest}/${amount}`;
 
     this.commonService.put<any>(url, {}).subscribe({
       next: (response) => {
@@ -253,7 +253,7 @@ export class Accounts implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank/${currentSel.accountNumber}`;
+    const url = `${environment.BASE_API_URL}bank/customer/${currentSel.accountNumber}`;
 
     this.commonService.delete<any>(url).subscribe({
       next: (response) => {
@@ -301,7 +301,7 @@ export class Accounts implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank`;
+    const url = `${environment.BASE_API_URL}bank/customer`;
 
     this.commonService.post<any>(url, payload).subscribe({
       next: (response) => {

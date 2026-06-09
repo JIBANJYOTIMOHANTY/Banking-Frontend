@@ -56,7 +56,7 @@ export class Transactions implements OnInit {
 
   fetchAccounts() {
     this.isLoadingAccounts.set(true);
-    const url = `${environment.BASE_API_URL}bank`;
+    const url = `${environment.BASE_API_URL}bank/customer`;
 
     this.commonService.get<any>(url).subscribe({
       next: (response) => {
