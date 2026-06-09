@@ -10,7 +10,7 @@ export class CustomerService {
   private commonService = inject(CommonService);
 
   createCustomer(payload: any) {
-    const apiUrl = 'customer/create';
+    const apiUrl = 'bank/customer';
     return this.commonService.post(`${this.loginUrl}${apiUrl}`, payload, { skipSanitization: true });
   }
 }
