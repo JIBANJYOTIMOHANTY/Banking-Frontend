@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CommonService } from '../common-service/common-service';
 import { environment } from '../environments/environment';
 import { Sidebar } from '../sidebar/sidebar';
@@ -16,6 +17,15 @@ export interface Customer {
   balance: number;
   created_at?: string;
   updated_at?: string;
+  dob?: string;
+  email?: string;
+  mobileNumber?: string;
+  govtId?: string;
+  govtIdType?: string;
+  occupation?: string;
+  nomineeName?: string;
+  nomineeRelation?: string;
+  address?: string;
 }
 
 @Component({
@@ -28,9 +38,11 @@ export class CustomersManagement implements OnInit {
   sidebarService = inject(SidebarService);
   private commonService = inject(CommonService);
   private fb = inject(FormBuilder);
+  private router = inject(Router);
 
   customers = signal<Customer[]>([]);
   searchQuery = signal<string>('');
+  expandedCustomerNo = signal<string | null>(null);
 
   filteredCustomers = computed(() => {
     const query = this.searchQuery().trim().toLowerCase();
@@ -41,7 +53,12 @@ export class CustomersManagement implements OnInit {
     return list.filter(c =>
       c.firstName.toLowerCase().includes(query) ||
       c.lastName.toLowerCase().includes(query) ||
-      c.accountNumber.toLowerCase().includes(query)
+      c.accountNumber.toLowerCase().includes(query) ||
+      (c.email && c.email.toLowerCase().includes(query)) ||
+      (c.mobileNumber && c.mobileNumber.toLowerCase().includes(query)) ||
+      (c.govtId && c.govtId.toLowerCase().includes(query)) ||
+      (c.nomineeName && c.nomineeName.toLowerCase().includes(query)) ||
+      (c.address && c.address.toLowerCase().includes(query))
     );
   });
 
@@ -49,21 +66,23 @@ export class CustomersManagement implements OnInit {
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
 
-  // Modals state
-  isAddModalOpen = signal(false);
+  // Modals state (Edit only)
   isEditModalOpen = signal(false);
   selectedCustomer = signal<Customer | null>(null);
 
-  // Forms
-  addForm: FormGroup = this.fb.group({
-    firstName: ['', [Validators.required, Validators.minLength(2)]],
-    lastName: ['', [Validators.required, Validators.minLength(2)]],
-    initialBalance: [0, [Validators.required, Validators.min(0)]],
-  });
-
+  // Forms (Edit only)
   editForm: FormGroup = this.fb.group({
     firstName: ['', [Validators.required, Validators.minLength(2)]],
     lastName: ['', [Validators.required, Validators.minLength(2)]],
+    dob: ['', [Validators.required]],
+    email: ['', [Validators.email]],
+    mobileNumber: ['', [Validators.required]],
+    govtId: ['', [Validators.required]],
+    govtIdType: ['aadhar', [Validators.required]],
+    occupation: [''],
+    nomineeName: [''],
+    nomineeRelation: [''],
+    address: ['', [Validators.required]]
   });
 
   ngOnInit() {
@@ -95,15 +114,16 @@ export class CustomersManagement implements OnInit {
     this.searchQuery.set(event.target.value);
   }
 
-  openAddModal() {
-    this.addForm.reset({ firstName: '', lastName: '', initialBalance: 0 });
-    this.isAddModalOpen.set(true);
-    this.errorMessage.set(null);
-    this.successMessage.set(null);
+  toggleExpandCustomer(accountNumber: string) {
+    if (this.expandedCustomerNo() === accountNumber) {
+      this.expandedCustomerNo.set(null);
+    } else {
+      this.expandedCustomerNo.set(accountNumber);
+    }
   }
 
-  closeAddModal() {
-    this.isAddModalOpen.set(false);
+  openAddModal() {
+    this.router.navigate(['/customers/add']);
   }
 
   openEditModal(customer: Customer) {
@@ -111,6 +131,15 @@ export class CustomersManagement implements OnInit {
     this.editForm.patchValue({
       firstName: customer.firstName,
       lastName: customer.lastName,
+      dob: customer.dob || '',
+      email: customer.email || '',
+      mobileNumber: customer.mobileNumber || '',
+      govtId: customer.govtId || '',
+      govtIdType: customer.govtIdType || 'aadhar',
+      occupation: customer.occupation || '',
+      nomineeName: customer.nomineeName || '',
+      nomineeRelation: customer.nomineeRelation || '',
+      address: customer.address || ''
     });
     this.isEditModalOpen.set(true);
     this.errorMessage.set(null);
@@ -120,39 +149,6 @@ export class CustomersManagement implements OnInit {
   closeEditModal() {
     this.isEditModalOpen.set(false);
     this.selectedCustomer.set(null);
-  }
-
-  submitAddCustomer() {
-    if (this.addForm.invalid) {
-      this.addForm.markAllAsTouched();
-      return;
-    }
-
-    const payload = {
-      firstName: this.addForm.value.firstName,
-      lastName: this.addForm.value.lastName,
-      balance: this.addForm.value.initialBalance
-    };
-
-    this.isLoading.set(true);
-    const url = `${environment.BASE_API_URL}bank`;
-
-    this.commonService.post<any>(url, payload).subscribe({
-      next: (response) => {
-        this.isLoading.set(false);
-        if (response && response.status === 0) {
-          this.successMessage.set('Customer registered successfully!');
-          this.fetchCustomers();
-          setTimeout(() => this.closeAddModal(), 1500);
-        } else {
-          this.errorMessage.set(response.message || 'Failed to create customer.');
-        }
-      },
-      error: (err) => {
-        this.isLoading.set(false);
-        this.errorMessage.set(err.message || 'An error occurred during customer creation.');
-      }
-    });
   }
 
   submitEditCustomer() {
@@ -165,7 +161,16 @@ export class CustomersManagement implements OnInit {
     const payload = {
       accountNumber: customerVal.accountNumber,
       firstName: this.editForm.value.firstName,
-      lastName: this.editForm.value.lastName
+      lastName: this.editForm.value.lastName,
+      dob: this.editForm.value.dob,
+      email: this.editForm.value.email,
+      mobileNumber: this.editForm.value.mobileNumber,
+      govtId: this.editForm.value.govtId,
+      govtIdType: this.editForm.value.govtIdType,
+      occupation: this.editForm.value.occupation,
+      nomineeName: this.editForm.value.nomineeName,
+      nomineeRelation: this.editForm.value.nomineeRelation,
+      address: this.editForm.value.address
     };
 
     this.isLoading.set(true);

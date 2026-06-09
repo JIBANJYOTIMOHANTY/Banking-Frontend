@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { provideRouter } from '@angular/router';
+import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 import { CustomersManagement } from './customers-management';
@@ -10,20 +11,20 @@ describe('CustomersManagement', () => {
   let component: CustomersManagement;
   let fixture: ComponentFixture<CustomersManagement>;
   let mockCommonService: any;
+  let mockRouter: any;
 
   const mockCustomersResponse = {
     status: 0,
     message: 'Success',
     data: [
-      { id: 1, accountNumber: 'ACC0001', firstName: 'John', lastName: 'Doe', balance: 5000 },
-      { id: 2, accountNumber: 'ACC0002', firstName: 'Jane', lastName: 'Smith', balance: 15000 }
+      { id: 1, accountNumber: 'ACC0001', firstName: 'John', lastName: 'Doe', balance: 5000, address: '123 Lane' },
+      { id: 2, accountNumber: 'ACC0002', firstName: 'Jane', lastName: 'Smith', balance: 15000, address: '456 road' }
     ]
   };
 
   beforeEach(async () => {
     mockCommonService = {
       get: vi.fn().mockReturnValue(of(mockCustomersResponse)),
-      post: vi.fn().mockReturnValue(of({ status: 0, message: 'Created successfully' })),
       patch: vi.fn().mockReturnValue(of({ status: 0, message: 'Updated successfully' }))
     };
 
@@ -38,6 +39,7 @@ describe('CustomersManagement', () => {
 
     fixture = TestBed.createComponent(CustomersManagement);
     component = fixture.componentInstance;
+    mockRouter = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
@@ -55,19 +57,12 @@ describe('CustomersManagement', () => {
     expect(component.filteredCustomers().length).toBe(1);
     expect(component.filteredCustomers()[0].firstName).toBe('John');
 
-    component.searchQuery.set('ACC0002');
+    component.searchQuery.set('123 Lane');
     expect(component.filteredCustomers().length).toBe(1);
-    expect(component.filteredCustomers()[0].lastName).toBe('Smith');
+    expect(component.filteredCustomers()[0].firstName).toBe('John');
   });
 
-  it('should open and close add modal', () => {
-    component.openAddModal();
-    expect(component.isAddModalOpen()).toBe(true);
-    component.closeAddModal();
-    expect(component.isAddModalOpen()).toBe(false);
-  });
-
-  it('should open and close edit modal', () => {
+  it('should open edit modal', () => {
     const customer = mockCustomersResponse.data[0];
     component.openEditModal(customer);
     expect(component.isEditModalOpen()).toBe(true);
@@ -79,25 +74,29 @@ describe('CustomersManagement', () => {
     expect(component.selectedCustomer()).toBeNull();
   });
 
-  it('should register a new customer', () => {
-    component.openAddModal();
-    component.addForm.setValue({
-      firstName: 'Bob',
-      lastName: 'Smith',
-      initialBalance: 1000
-    });
-    component.submitAddCustomer();
-    expect(mockCommonService.post).toHaveBeenCalled();
-  });
-
   it('should update a customer', () => {
     const customer = mockCustomersResponse.data[0];
     component.openEditModal(customer);
     component.editForm.setValue({
       firstName: 'Johnny',
-      lastName: 'Doe'
+      lastName: 'Doe',
+      dob: '1985-05-05',
+      email: 'johnny.doe@example.com',
+      mobileNumber: '9876543210',
+      govtId: 'XYZW98765',
+      govtIdType: 'aadhar',
+      occupation: 'Manager',
+      nomineeName: 'Mary Doe',
+      nomineeRelation: 'Mother',
+      address: '456 Commercial Rd, Business District'
     });
     component.submitEditCustomer();
     expect(mockCommonService.patch).toHaveBeenCalled();
+  });
+
+  it('should navigate to customers/add on openAddModal', () => {
+    const navigateSpy = vi.spyOn(mockRouter, 'navigate');
+    component.openAddModal();
+    expect(navigateSpy).toHaveBeenCalledWith(['/customers/add']);
   });
 });

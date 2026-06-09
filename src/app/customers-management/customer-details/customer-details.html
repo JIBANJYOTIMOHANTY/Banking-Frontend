@@ -1,0 +1,304 @@
+<div class="flex h-screen bg-slate-50/50 overflow-hidden font-sans">
+        <!-- Sidebar Component -->
+        <app-sidebar></app-sidebar>
+
+        <!-- Mobile Overlay Backdrop -->
+        @if (sidebarService.sidebarOpen()) {
+        <div (click)="sidebarService.closeSidebar()"
+                class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm lg:hidden z-40 transition-opacity duration-300">
+        </div>
+        }
+
+        <!-- Main Viewport Context -->
+        <div class="flex-1 flex flex-col h-full overflow-hidden">
+
+                <!-- Header Component -->
+                <app-header (toggleSidebar)="sidebarService.toggleSidebar()"></app-header>
+
+                <!-- Scrollable Main Content -->
+                <main class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 flex flex-col justify-between">
+                        <div class="space-y-6 w-full">
+                                <!-- Heading Section -->
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                        <div>
+                                                <h1
+                                                        class="text-2xl font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
+                                                        <span class="material-icons text-indigo-600">person_add</span>
+                                                        New Customer Registration
+                                                </h1>
+                                                <p class="text-slate-500 text-sm">Register a new customer profile and
+                                                        create their banking account.</p>
+                                        </div>
+                                        <button (click)="goBack()"
+                                                class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-slate-200 hover:border-indigo-200 text-slate-600 hover:text-indigo-600 bg-white hover:bg-indigo-50/30 font-semibold text-sm transition-all duration-200 cursor-pointer">
+                                                <span class="material-icons text-lg">arrow_back</span>
+                                                Back to Directory
+                                        </button>
+                                </div>
+
+                                <!-- Registration Form Card (Icy Blue Gradient Theme) -->
+                                <div
+                                        class="bg-white border border-slate-200 rounded-3xl shadow-md w-full overflow-hidden">
+                                        <!-- Header Bar -->
+                                        <div
+                                                class="p-6 flex items-center gap-2 bg-gradient-to-r from-indigo-900 via-indigo-950 to-slate-900 text-white">
+                                                <span class="material-icons text-indigo-400">assignment</span>
+                                                <span class="font-bold text-sm tracking-wide">Registration Application
+                                                        Form</span>
+                                        </div>
+
+                                        <form [formGroup]="addForm" (ngSubmit)="submitCustomer()"
+                                                class="p-6 md:p-8 space-y-6 bg-gradient-to-br from-slate-50 via-indigo-50/30 to-slate-50">
+                                                @if (errorMessage()) {
+                                                <div
+                                                        class="p-4 bg-rose-50 border border-rose-100 text-rose-700 rounded-xl text-xs font-medium">
+                                                        {{ errorMessage() }}
+                                                </div>
+                                                }
+                                                @if (successMessage()) {
+                                                <div
+                                                        class="p-4 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-xl text-xs font-medium">
+                                                        {{ successMessage() }}
+                                                </div>
+                                                }
+
+                                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                        <!-- Personal Details Card -->
+                                                        <div
+                                                                class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
+                                                                <h3
+                                                                        class="text-xs font-bold text-indigo-950 uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center gap-1">
+                                                                        <span
+                                                                                class="material-icons text-sm text-indigo-600">face</span>
+                                                                        Personal Details
+                                                                </h3>
+
+                                                                <div class="space-y-1">
+                                                                        <label
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">First
+                                                                                Name <span
+                                                                                        class="text-rose-600">*</span></label>
+                                                                        <input type="text" formControlName="firstName"
+                                                                                placeholder="Enter first name"
+                                                                                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                        @if (addForm.get('firstName')?.touched &&
+                                                                        addForm.get('firstName')?.invalid) {
+                                                                        <p class="text-rose-600 text-[10px]">First name
+                                                                                is required (min 2 characters).</p>
+                                                                        }
+                                                                </div>
+
+                                                                <div class="space-y-1">
+                                                                        <label
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">Last
+                                                                                Name <span
+                                                                                        class="text-rose-600">*</span></label>
+                                                                        <input type="text" formControlName="lastName"
+                                                                                placeholder="Enter last name"
+                                                                                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                        @if (addForm.get('lastName')?.touched &&
+                                                                        addForm.get('lastName')?.invalid) {
+                                                                        <p class="text-rose-600 text-[10px]">Last name
+                                                                                is required (min 2 characters).</p>
+                                                                        }
+                                                                </div>
+
+                                                                <div class="space-y-1">
+                                                                        <label
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">Date
+                                                                                of Birth <span
+                                                                                        class="text-rose-600">*</span></label>
+                                                                        <input type="date" formControlName="dob"
+                                                                                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                        @if (addForm.get('dob')?.touched &&
+                                                                        addForm.get('dob')?.invalid) {
+                                                                        <p class="text-rose-600 text-[10px]">Date of
+                                                                                birth is mandatory.</p>
+                                                                        }
+                                                                </div>
+
+                                                                <div class="space-y-1">
+                                                                        <label
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">Initial
+                                                                                Deposit (Balance) <span
+                                                                                        class="text-rose-600">*</span></label>
+                                                                        <div class="relative">
+                                                                                <span
+                                                                                        class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-sm">₹</span>
+                                                                                <input type="number"
+                                                                                        formControlName="initialBalance"
+                                                                                        placeholder="0"
+                                                                                        class="w-full pl-8 pr-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                        </div>
+                                                                        @if (addForm.get('initialBalance')?.touched &&
+                                                                        addForm.get('initialBalance')?.invalid) {
+                                                                        <p class="text-rose-600 text-[10px]">Initial
+                                                                                deposit must be 0 or greater.</p>
+                                                                        }
+                                                                </div>
+                                                        </div>
+
+                                                        <!-- Contact & KYC Details Card -->
+                                                        <div
+                                                                class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
+                                                                <h3
+                                                                        class="text-xs font-bold text-indigo-950 uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center gap-1">
+                                                                        <span
+                                                                                class="material-icons text-sm text-indigo-600">verified_user</span>
+                                                                        Contact & KYC Details
+                                                                </h3>
+
+                                                                <div class="space-y-1">
+                                                                        <label
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">Email
+                                                                                Address</label>
+                                                                        <input type="email" formControlName="email"
+                                                                                placeholder="email@example.com"
+                                                                                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                        @if (addForm.get('email')?.touched &&
+                                                                        addForm.get('email')?.invalid) {
+                                                                        <p class="text-rose-600 text-[10px]">Invalid
+                                                                                email address format.</p>
+                                                                        }
+                                                                </div>
+
+                                                                <div class="space-y-1">
+                                                                        <label
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">Mobile
+                                                                                Number <span
+                                                                                        class="text-rose-600">*</span></label>
+                                                                        <input type="text"
+                                                                                formControlName="mobileNumber"
+                                                                                placeholder="Enter mobile number"
+                                                                                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                        @if (addForm.get('mobileNumber')?.touched &&
+                                                                        addForm.get('mobileNumber')?.invalid) {
+                                                                        <p class="text-rose-600 text-[10px]">Mobile
+                                                                                number is mandatory.</p>
+                                                                        }
+                                                                </div>
+
+                                                                <div class="grid grid-cols-2 gap-4">
+                                                                        <div class="space-y-1">
+                                                                                <label
+                                                                                        class="text-xs font-bold text-slate-500 uppercase tracking-wider">Govt
+                                                                                        ID Type <span
+                                                                                                class="text-rose-600">*</span></label>
+                                                                                <select formControlName="govtIdType"
+                                                                                        class="w-full px-3 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors">
+                                                                                        <option value="pan">PAN</option>
+                                                                                        <option value="passport">
+                                                                                                Passport</option>
+                                                                                        <option value="aadhar">Aadhar
+                                                                                        </option>
+                                                                                        <option value="voter_id">Voter
+                                                                                                ID</option>
+                                                                                </select>
+                                                                        </div>
+                                                                        <div class="space-y-1">
+                                                                                <label
+                                                                                        class="text-xs font-bold text-slate-500 uppercase tracking-wider">Govt
+                                                                                        ID No <span
+                                                                                                class="text-rose-600">*</span></label>
+                                                                                <input type="text"
+                                                                                        formControlName="govtId"
+                                                                                        placeholder="Enter ID number"
+                                                                                        class="w-full px-3 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                                @if (addForm.get('govtId')?.touched &&
+                                                                                addForm.get('govtId')?.invalid) {
+                                                                                <p class="text-rose-600 text-[10px]">
+                                                                                        Government ID is mandatory.</p>
+                                                                                }
+                                                                        </div>
+                                                                </div>
+
+                                                                <div class="space-y-1">
+                                                                        <label
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">Occupation</label>
+                                                                        <input type="text" formControlName="occupation"
+                                                                                placeholder="Occupation type"
+                                                                                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                </div>
+                                                        </div>
+                                                </div>
+
+                                                <!-- Address Details Card (Full Width) -->
+                                                <div
+                                                        class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
+                                                        <h3
+                                                                class="text-xs font-bold text-indigo-950 uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center gap-1">
+                                                                <span
+                                                                        class="material-icons text-sm text-indigo-600">home</span>
+                                                                Residential Address
+                                                        </h3>
+                                                        <div class="space-y-1">
+                                                                <label
+                                                                        class="text-xs font-bold text-slate-500 uppercase tracking-wider">Full
+                                                                        Address <span
+                                                                                class="text-rose-600">*</span></label>
+                                                                <textarea formControlName="address"
+                                                                        placeholder="Enter complete residential address"
+                                                                        rows="2"
+                                                                        class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors"></textarea>
+                                                                @if (addForm.get('address')?.touched &&
+                                                                addForm.get('address')?.invalid) {
+                                                                <p class="text-rose-600 text-[10px]">Address is
+                                                                        mandatory.</p>
+                                                                }
+                                                        </div>
+                                                </div>
+
+                                                <!-- Nominee Details Card (Full Width) -->
+                                                <div
+                                                        class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
+                                                        <h3
+                                                                class="text-xs font-bold text-indigo-950 uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center gap-1">
+                                                                <span
+                                                                        class="material-icons text-sm text-indigo-600">groups</span>
+                                                                Nominee Information
+                                                        </h3>
+                                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                                <div class="space-y-1">
+                                                                        <label
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">Nominee
+                                                                                Name</label>
+                                                                        <input type="text" formControlName="nomineeName"
+                                                                                placeholder="Enter nominee name"
+                                                                                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                </div>
+                                                                <div class="space-y-1">
+                                                                        <label
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">Nominee
+                                                                                Relation</label>
+                                                                        <input type="text"
+                                                                                formControlName="nomineeRelation"
+                                                                                placeholder="Relation to nominee"
+                                                                                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                </div>
+                                                        </div>
+                                                </div>
+
+                                                <!-- Action Buttons -->
+                                                <div
+                                                        class="pt-6 flex items-center justify-end gap-3 border-t border-slate-200">
+                                                        <button type="button" (click)="goBack()"
+                                                                class="px-5 py-2.5 text-slate-500 hover:text-slate-800 font-semibold text-sm transition-colors cursor-pointer">
+                                                                Cancel
+                                                        </button>
+                                                        <button type="submit" [disabled]="isLoading()"
+                                                                class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm shadow-md shadow-indigo-500/10 transition-colors disabled:opacity-50 cursor-pointer">
+                                                                @if (isLoading()) {
+                                                                <span>Saving Profile...</span>
+                                                                } @else {
+                                                                <span>Register Customer</span>
+                                                                }
+                                                        </button>
+                                                </div>
+                                        </form>
+                                </div>
+                        </div>
+                        <!-- Footer Component -->
+                        <app-footer class="mt-8"></app-footer>
+                </main>
+        </div>
+</div>

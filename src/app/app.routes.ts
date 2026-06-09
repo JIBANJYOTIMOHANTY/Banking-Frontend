@@ -7,5 +7,6 @@ export const routes: Routes = [
     { path: 'accounts', loadComponent: () => import('./accounts/accounts').then(m => m.Accounts), },
     { path: 'transactions', loadComponent: () => import('./transactions/transactions').then(m => m.Transactions), },
     { path: 'customers', loadComponent: () => import('./customers-management/customers-management').then(m => m.CustomersManagement) },
+    { path: 'customers/add', loadComponent: () => import('./customers-management/customer-details/customer-details').then(m => m.CustomerDetails) },
     { path: '**', redirectTo: 'login' }
 ];
