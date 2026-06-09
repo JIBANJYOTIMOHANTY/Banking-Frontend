@@ -39,6 +39,7 @@ export class Transactions implements OnInit {
   accounts = signal<BankAccount[]>([]);
   selectedAccountNumber = signal<string>('');
   transactions = signal<Transaction[]>([]);
+  totalRecord = signal<number>(0);
 
   isLoading = signal(false);
   isLoadingAccounts = signal(false);
@@ -94,6 +95,7 @@ export class Transactions implements OnInit {
     const activeNo = this.selectedAccountNumber();
     if (!activeNo) {
       this.transactions.set([]);
+      this.totalRecord.set(0);
       return;
     }
 
@@ -111,15 +113,19 @@ export class Transactions implements OnInit {
         this.isLoading.set(false);
         if (response && response.status === 0) {
           this.transactions.set(response.data || []);
+          // Accept totalRecords or totalRecord depending on serialization
+          this.totalRecord.set(response.totalRecords ?? response.totalRecord ?? 0);
         } else {
           this.errorMessage.set(response.message || 'No transactions found.');
           this.transactions.set([]);
+          this.totalRecord.set(0);
         }
       },
       error: (err) => {
         this.isLoading.set(false);
         this.errorMessage.set(err.message || 'An error occurred while loading transactions.');
         this.transactions.set([]);
+        this.totalRecord.set(0);
       }
     });
   }

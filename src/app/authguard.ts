@@ -74,7 +74,7 @@ export class Authguard {
     }
 
     const token = this.getAuthToken();
-    if (!token || this.isTokenExpired(token)) {
+    if (!token) {
       return;
     }
 

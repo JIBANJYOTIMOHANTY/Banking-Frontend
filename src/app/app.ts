@@ -25,6 +25,8 @@ export class App implements OnInit {
 
   @HostListener('document:click')
   @HostListener('document:keydown')
+  @HostListener('document:mousedown')
+  @HostListener('document:touchstart')
   onUserActivity() {
     this.authGuard.recordUserActivity();
   }
