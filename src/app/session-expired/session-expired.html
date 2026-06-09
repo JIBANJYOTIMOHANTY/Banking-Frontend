@@ -1,0 +1,26 @@
+<div class="fixed inset-0 flex items-center justify-center z-[9999] p-4 animate-fade-in">
+  <!-- Backdrop Overlay with blur -->
+  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity duration-300"></div>
+
+  <!-- Modal Container -->
+  <div class="relative w-full max-w-md bg-white border border-slate-100 rounded-3xl p-8 shadow-2xl relative z-10 flex flex-col items-center text-center space-y-6 animate-scale-up">
+    <!-- Icon Circle -->
+    <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shadow-inner">
+      <span class="material-icons text-3xl">hourglass_disabled</span>
+    </div>
+
+    <!-- Title and message -->
+    <div class="space-y-2">
+      <h3 class="text-xl font-extrabold text-slate-800 tracking-tight">Session Expired</h3>
+      <p class="text-sm font-medium text-slate-500 leading-relaxed max-w-sm">
+        Your banking session has expired due to inactivity. Please log in again to securely access your accounts.
+      </p>
+    </div>
+
+    <!-- Action Button -->
+    <button (click)="onConfirm()"
+      class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-sm shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all duration-200 cursor-pointer">
+      Proceed to Login
+    </button>
+  </div>
+</div>

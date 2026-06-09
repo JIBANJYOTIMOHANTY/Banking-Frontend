@@ -1,7 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { Authguard } from '../authguard';
 
 export interface RequestOptions {
   headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -17,6 +19,8 @@ export interface RequestOptions {
 })
 export class CommonService {
   private http = inject(HttpClient);
+  private router = inject(Router);
+  private authGuard = inject(Authguard);
 
   // Base API URL can be updated to point to a specific environment API path
   private baseUrl = '';
@@ -177,6 +181,7 @@ export class CommonService {
 
   private saveTokenIfPresent(response: any): void {
     let token: string | null = null;
+    let validityDuration: number | null = null;
     if (response) {
       if (response.token && typeof response.token === 'string') {
         token = response.token;
@@ -185,12 +190,18 @@ export class CommonService {
         if (firstDataItem && firstDataItem.token && typeof firstDataItem.token === 'string') {
           token = firstDataItem.token;
         }
+        if (firstDataItem && typeof firstDataItem.expiresInMs === 'number') {
+          validityDuration = firstDataItem.expiresInMs;
+        }
       }
     }
 
     if (token) {
       try {
         localStorage.setItem('token', token);
+        if (validityDuration !== null) {
+          localStorage.setItem('validityDuration', String(validityDuration));
+        }
       } catch (e) {
         // Fallback for SSR/non-browser contexts
       }
@@ -260,8 +271,6 @@ export class CommonService {
       // A client-side or network error occurred.
       console.error('Client-side error:', error.error.message);
     } else {
-      // The backend returned an unsuccessful response code.
-      console.error(`Backend returned code ${error.status}, body was:`, error.error);
 
       // Extract specific message from backend if available
       if (error.error && typeof error.error.message === 'string') {
@@ -278,6 +287,13 @@ export class CommonService {
           userMessage = 'Requested resource not found.';
         } else if (error.status >= 500) {
           userMessage = 'A server error occurred. Our engineering team has been notified.';
+        }
+      }
+
+      // Handle specific status-based side effects (e.g. redirect on 401)
+      if (error.status === 401) {
+        if (typeof window !== 'undefined') {
+          this.authGuard.handleSessionExpiration();
         }
       }
     }

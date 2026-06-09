@@ -1,1 +1,4 @@
 <router-outlet></router-outlet>
+@if (showSessionExpiredModal()) {
+  <app-session-expired (confirm)="onSessionExpiredConfirm()"></app-session-expired>
+}

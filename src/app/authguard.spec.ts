@@ -1,22 +1,22 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter } from '@angular/router';
-import { CommonService } from './common-service';
+import { Authguard } from './authguard';
 
-describe('CommonService', () => {
-  let service: CommonService;
+describe('Authguard', () => {
+  let service: Authguard;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        CommonService,
+        Authguard,
+        provideRouter([]),
         provideHttpClient(),
-        provideHttpClientTesting(),
-        provideRouter([])
+        provideHttpClientTesting()
       ]
     });
-    service = TestBed.inject(CommonService);
+    service = TestBed.inject(Authguard);
   });
 
   it('should be created', () => {

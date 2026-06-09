@@ -8,6 +8,7 @@ import { Sidebar } from '../../sidebar/sidebar';
 import { Header } from '../../header/header';
 import { Footer } from '../../footer/footer';
 import { SidebarService } from '../../sidebar/service/sidebar-service';
+import { CustomerService } from '../service/customer-service';
 
 @Component({
   selector: 'app-customer-details',
@@ -20,6 +21,7 @@ export class CustomerDetails implements OnInit {
   private commonService = inject(CommonService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private customerService = inject(CustomerService);
 
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
@@ -69,10 +71,9 @@ export class CustomerDetails implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank`;
 
-    this.commonService.post<any>(url, payload).subscribe({
-      next: (response) => {
+    this.customerService.createCustomer(payload).subscribe({
+      next: (response: any) => {
         this.isLoading.set(false);
         if (response && response.status === 0) {
           this.successMessage.set('Customer registered successfully! Redirecting...');
