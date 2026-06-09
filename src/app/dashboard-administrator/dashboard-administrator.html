@@ -1,11 +1,11 @@
 <div class="flex h-screen bg-slate-50/50 overflow-hidden font-sans">
 
         <!-- Sidebar Component -->
-        <app-sidebar [isOpen]="sidebarOpen" (close)="sidebarOpen = false"></app-sidebar>
+        <app-sidebar></app-sidebar>
 
         <!-- Mobile Overlay Backdrop -->
-        @if (sidebarOpen) {
-        <div (click)="sidebarOpen = false"
+        @if (sidebarService.sidebarOpen()) {
+        <div (click)="sidebarService.closeSidebar()"
                 class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm lg:hidden z-40 transition-opacity duration-300">
         </div>
         }
@@ -14,7 +14,7 @@
         <div class="flex-1 flex flex-col h-full overflow-hidden">
 
                 <!-- Header Component -->
-                <app-header (toggleSidebar)="sidebarOpen = !sidebarOpen"></app-header>
+                <app-header (toggleSidebar)="sidebarService.toggleSidebar()"></app-header>
 
                 <!-- Scrollable Main Content -->
                 <main class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 flex flex-col justify-between">

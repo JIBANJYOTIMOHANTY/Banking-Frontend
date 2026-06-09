@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, HostListener, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
@@ -19,18 +19,39 @@ export function noWhitespaceValidator(control: AbstractControl): ValidationError
   templateUrl: './login-administrator.html',
   styleUrl: './login-administrator.css',
 })
-export class LoginAdministrator {
+export class LoginAdministrator implements OnInit {
   private fb = inject(FormBuilder);
   private loginService = inject(LoginAdministratorService);
   private router = inject(Router);
+
+  ngOnInit() {
+    if (this.hasToken()) {
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  @HostListener('window:storage', ['$event'])
+  onStorageChange(event: StorageEvent) {
+    if (event.key === 'token' && event.newValue) {
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  private hasToken(): boolean {
+    try {
+      return !!(localStorage.getItem('token') || sessionStorage.getItem('token'));
+    } catch (e) {
+      return false;
+    }
+  }
 
   loginForm: FormGroup = this.fb.group({
     username: ['', [Validators.required, noWhitespaceValidator]],
     password: ['', [Validators.required, noWhitespaceValidator]]
   });
 
-  isLoading = false;
-  errorMessage: string | null = null;
+  isLoading = signal(false);
+  errorMessage = signal<string | null>(null);
 
   onSubmit() {
     if (this.loginForm.invalid) {
@@ -38,20 +59,20 @@ export class LoginAdministrator {
       return;
     }
 
-    this.isLoading = true;
-    this.errorMessage = null;
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
 
     const payload = this.loginForm.value;
 
     this.loginService.login(payload).subscribe({
       next: (response) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         // The token is automatically saved inside CommonService
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
-        this.isLoading = false;
-        this.errorMessage = err.message || 'Login failed. Please verify credentials.';
+        this.isLoading.set(false);
+        this.errorMessage.set(err.message || 'Login failed. Please verify credentials.');
       }
     });
   }

@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CommonService } from '../common-service/common-service';
 import { environment } from '../environments/environment';
+import { SidebarService, SidebarItem } from './service/sidebar-service';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,16 +12,16 @@ import { environment } from '../environments/environment';
   styleUrl: './sidebar.css',
 })
 export class Sidebar {
-  @Input() isOpen = false;
-  @Output() close = new EventEmitter<void>();
-
+  sidebarService = inject(SidebarService);
   private commonService = inject(CommonService);
   private router = inject(Router);
 
-  activeItem = 'Dashboard';
-
-  setActive(item: string) {
-    this.activeItem = item;
+  navigate(item: SidebarItem) {
+    this.router.navigate([item.route]);
+    // Auto-close on mobile layout
+    if (window.innerWidth < 1024) {
+      this.sidebarService.closeSidebar();
+    }
   }
 
   logout() {
@@ -46,4 +47,3 @@ export class Sidebar {
     this.router.navigate(['/login']);
   }
 }
-

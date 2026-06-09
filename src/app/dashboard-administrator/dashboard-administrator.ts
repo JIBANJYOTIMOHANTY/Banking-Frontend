@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Sidebar } from '../sidebar/sidebar';
 import { Header } from '../header/header';
 import { Footer } from '../footer/footer';
+import { SidebarService } from '../sidebar/service/sidebar-service';
 
 @Component({
   selector: 'app-dashboard-administrator',
@@ -10,5 +11,5 @@ import { Footer } from '../footer/footer';
   styleUrl: './dashboard-administrator.css',
 })
 export class DashboardAdministrator {
-  sidebarOpen = true; // default to true so that the sidebar is visible on page load on desktop
+  sidebarService = inject(SidebarService);
 }
