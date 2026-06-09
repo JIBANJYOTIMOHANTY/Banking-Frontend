@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from '../../common-service/common-service';
 import { environment } from '../../environments/environment';
 import { Sidebar } from '../../sidebar/sidebar';
@@ -21,11 +21,14 @@ export class CustomerDetails implements OnInit {
   private commonService = inject(CommonService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private customerService = inject(CustomerService);
 
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
+  isEditMode = signal(false);
+  accountNumber = signal<string | null>(null);
 
   // Registration Form with mandatory validations
   addForm: FormGroup = this.fb.group({
@@ -51,7 +54,82 @@ export class CustomerDetails implements OnInit {
   });
 
   ngOnInit() {
-    // Component initialization
+    this.route.paramMap.subscribe(params => {
+      const accNum = params.get('accountNumber');
+      if (accNum) {
+        this.isEditMode.set(true);
+        this.accountNumber.set(accNum);
+        this.addForm.get('initialBalance')?.clearValidators();
+        this.addForm.get('initialBalance')?.updateValueAndValidity();
+        this.loadCustomerDetails(accNum);
+      } else {
+        this.isEditMode.set(false);
+        this.accountNumber.set(null);
+        this.addForm.get('initialBalance')?.setValidators([Validators.required, Validators.min(0)]);
+        this.addForm.get('initialBalance')?.updateValueAndValidity();
+        this.addForm.reset({
+          countryCode: '+91',
+          govtIdType: 'aadhar',
+          initialBalance: 0
+        });
+      }
+    });
+  }
+
+  loadCustomerDetails(accountNumber: string) {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+    this.customerService.getCustomer(accountNumber).subscribe({
+      next: (response: any) => {
+        this.isLoading.set(false);
+        if (response && response.status === 0 && response.data && response.data.length > 0) {
+          const customer = response.data[0];
+
+          let countryCode = '+91';
+          let mobileNum = '';
+          if (customer.mobileNumber) {
+            if (customer.mobileNumber.startsWith('+')) {
+              if (customer.mobileNumber.length > 10) {
+                countryCode = customer.mobileNumber.slice(0, customer.mobileNumber.length - 10);
+                mobileNum = customer.mobileNumber.slice(customer.mobileNumber.length - 10);
+              } else {
+                mobileNum = customer.mobileNumber;
+              }
+            } else {
+              mobileNum = customer.mobileNumber;
+            }
+          }
+
+          this.addForm.patchValue({
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            initialBalance: customer.balance || 0,
+            dob: customer.dob || '',
+            email: customer.email || '',
+            countryCode: countryCode,
+            mobileNumber: mobileNum,
+            govtId: customer.govtId || '',
+            govtIdType: customer.govtIdType || 'aadhar',
+            pan: customer.pan || '',
+            occupation: customer.occupation || '',
+            nomineeName: customer.nomineeName || '',
+            nomineeRelation: customer.nomineeRelation || '',
+            address: customer.address || '',
+            landmark: customer.landmark || '',
+            city: customer.city || '',
+            state: customer.state || '',
+            country: customer.country || '',
+            pincode: customer.pincode || ''
+          });
+        } else {
+          this.errorMessage.set(response.message || 'Failed to fetch customer details.');
+        }
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        this.errorMessage.set(err.message || 'An error occurred while fetching customer details.');
+      }
+    });
   }
 
   submitCustomer() {
@@ -60,10 +138,9 @@ export class CustomerDetails implements OnInit {
       return;
     }
 
-    const payload = {
+    const payload: any = {
       firstName: this.addForm.value.firstName,
       lastName: this.addForm.value.lastName,
-      balance: this.addForm.value.initialBalance,
       dob: this.addForm.value.dob,
       email: this.addForm.value.email,
       mobileNumber: `${this.addForm.value.countryCode}${this.addForm.value.mobileNumber}`,
@@ -85,21 +162,41 @@ export class CustomerDetails implements OnInit {
     this.errorMessage.set(null);
     this.successMessage.set(null);
 
-    this.customerService.createCustomer(payload).subscribe({
-      next: (response: any) => {
-        this.isLoading.set(false);
-        if (response && response.status === 0) {
-          this.successMessage.set('Customer registered successfully! Redirecting...');
-          this.router.navigate(['/customers']);
-        } else {
-          this.errorMessage.set(response.message || 'Failed to create customer.');
+    if (this.isEditMode()) {
+      payload.accountNumber = this.accountNumber();
+      this.customerService.updateCustomer(payload).subscribe({
+        next: (response: any) => {
+          this.isLoading.set(false);
+          if (response && response.status === 0) {
+            this.successMessage.set('Customer updated successfully! Redirecting...');
+            this.router.navigate(['/customers']);
+          } else {
+            this.errorMessage.set(response.message || 'Failed to update customer.');
+          }
+        },
+        error: (err) => {
+          this.isLoading.set(false);
+          this.errorMessage.set(err.message || 'An error occurred during customer update.');
         }
-      },
-      error: (err) => {
-        this.isLoading.set(false);
-        this.errorMessage.set(err.message || 'An error occurred during customer creation.');
-      }
-    });
+      });
+    } else {
+      payload.balance = this.addForm.value.initialBalance;
+      this.customerService.createCustomer(payload).subscribe({
+        next: (response: any) => {
+          this.isLoading.set(false);
+          if (response && response.status === 0) {
+            this.successMessage.set('Customer registered successfully! Redirecting...');
+            this.router.navigate(['/customers']);
+          } else {
+            this.errorMessage.set(response.message || 'Failed to create customer.');
+          }
+        },
+        error: (err) => {
+          this.isLoading.set(false);
+          this.errorMessage.set(err.message || 'An error occurred during customer creation.');
+        }
+      });
+    }
   }
 
   goBack() {

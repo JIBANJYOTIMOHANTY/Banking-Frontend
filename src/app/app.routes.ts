@@ -10,5 +10,6 @@ export const routes: Routes = [
     { path: 'transactions', loadComponent: () => import('./transactions/transactions').then(m => m.Transactions), canActivate: [() => inject(Authguard).canActivate()] },
     { path: 'customers', loadComponent: () => import('./customers-management/customers-management').then(m => m.CustomersManagement), canActivate: [() => inject(Authguard).canActivate()] },
     { path: 'customers/add', loadComponent: () => import('./customers-management/customer-details/customer-details').then(m => m.CustomerDetails), canActivate: [() => inject(Authguard).canActivate()] },
+    { path: 'customers/edit/:accountNumber', loadComponent: () => import('./customers-management/customer-details/customer-details').then(m => m.CustomerDetails), canActivate: [() => inject(Authguard).canActivate()] },
     { path: '**', redirectTo: 'login' }
 ];

@@ -204,6 +204,12 @@ export class CommonService {
         if (validityDuration !== null) {
           localStorage.setItem('validityDuration', String(validityDuration));
         }
+        // Save to cookie as well for SSR support
+        let cookieStr = `token=${token}; path=/; SameSite=Strict`;
+        if (validityDuration !== null) {
+          cookieStr += `; max-age=${Math.floor(validityDuration / 1000)}`;
+        }
+        document.cookie = cookieStr;
       } catch (e) {
         // Fallback for SSR/non-browser contexts
       }

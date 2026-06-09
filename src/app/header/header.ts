@@ -47,6 +47,7 @@ export class Header {
     try {
       localStorage.removeItem('token');
       sessionStorage.removeItem('token');
+      document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     } catch (e) {
       console.error('Failed to clear storage:', e);
     }
