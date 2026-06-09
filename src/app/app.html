@@ -2,3 +2,6 @@
 @if (showSessionExpiredModal()) {
   <app-session-expired (confirm)="onSessionExpiredConfirm()"></app-session-expired>
 }
+@if (showConnectionLostModal()) {
+  <app-connection-lost></app-connection-lost>
+}

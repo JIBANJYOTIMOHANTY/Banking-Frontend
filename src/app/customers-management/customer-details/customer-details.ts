@@ -90,9 +90,7 @@ export class CustomerDetails implements OnInit {
         this.isLoading.set(false);
         if (response && response.status === 0) {
           this.successMessage.set('Customer registered successfully! Redirecting...');
-          setTimeout(() => {
-            this.router.navigate(['/customers']);
-          }, 1500);
+          this.router.navigate(['/customers']);
         } else {
           this.errorMessage.set(response.message || 'Failed to create customer.');
         }

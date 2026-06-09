@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Authguard } from '../authguard';
+import { ConnectionService } from './connection-service';
 
 export interface RequestOptions {
   headers?: HttpHeaders | { [header: string]: string | string[] };
@@ -21,6 +22,7 @@ export class CommonService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private authGuard = inject(Authguard);
+  private connectionService = inject(ConnectionService);
 
   // Base API URL can be updated to point to a specific environment API path
   private baseUrl = '';
@@ -266,6 +268,11 @@ export class CommonService {
    */
   private handleError(error: HttpErrorResponse): Observable<never> {
     let userMessage = 'An unexpected error occurred. Please try again later.';
+
+    if (error.status === 0) {
+      this.connectionService.setConnectionLost(true);
+      userMessage = 'Unable to connect to the server. Please check your network connection.';
+    }
 
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred.
