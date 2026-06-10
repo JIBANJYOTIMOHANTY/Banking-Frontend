@@ -60,7 +60,10 @@ export class Authguard {
     }
 
     // Show the custom session-expired component popup modal
-    this.isSessionExpired.set(true);
+    const isLoginPage = this.router.url && this.router.url.includes('/login');
+    if (!isLoginPage) {
+      this.isSessionExpired.set(true);
+    }
   }
 
   public confirmSessionExpiration() {

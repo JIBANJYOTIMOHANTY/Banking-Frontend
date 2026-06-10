@@ -305,7 +305,9 @@ export class CommonService {
 
       // Handle specific status-based side effects (e.g. redirect on 401)
       if (error.status === 401) {
-        if (typeof window !== 'undefined') {
+        const isLoginRequest = error.url && (error.url.includes('/auth/login') || error.url.endsWith('auth/login'));
+        const isCurrentlyOnLoginPage = this.router.url && this.router.url.includes('/login');
+        if (typeof window !== 'undefined' && !isLoginRequest && !isCurrentlyOnLoginPage) {
           this.authGuard.handleSessionExpiration();
         }
       }
