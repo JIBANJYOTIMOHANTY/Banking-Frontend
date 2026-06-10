@@ -24,7 +24,24 @@ describe('CustomersManagement', () => {
 
   beforeEach(async () => {
     mockCommonService = {
-      get: vi.fn().mockReturnValue(of(mockCustomersResponse)),
+      get: vi.fn().mockImplementation((url: string) => {
+        let data = mockCustomersResponse.data;
+        const decodedUrl = decodeURIComponent(url);
+        if (decodedUrl.includes('?query=')) {
+          const queryPart = decodedUrl.split('?query=')[1].toLowerCase();
+          data = data.filter(c =>
+            c.firstName.toLowerCase().includes(queryPart) ||
+            c.lastName.toLowerCase().includes(queryPart) ||
+            c.accountNumber.toLowerCase().includes(queryPart) ||
+            c.address.toLowerCase().includes(queryPart)
+          );
+        }
+        return of({
+          status: 0,
+          message: 'Success',
+          data: data
+        });
+      }),
       patch: vi.fn().mockReturnValue(of({ status: 0, message: 'Updated successfully' }))
     };
 
@@ -52,53 +69,23 @@ describe('CustomersManagement', () => {
     expect(component.customers().length).toBe(2);
   });
 
-  it('should filter customers by search query', () => {
+  it('should filter customers by search query via backend request', () => {
     component.searchQuery.set('john');
+    component.fetchCustomers();
     expect(component.filteredCustomers().length).toBe(1);
     expect(component.filteredCustomers()[0].firstName).toBe('John');
 
     component.searchQuery.set('123 Lane');
+    component.fetchCustomers();
     expect(component.filteredCustomers().length).toBe(1);
     expect(component.filteredCustomers()[0].firstName).toBe('John');
   });
 
-  it('should open edit modal', () => {
+  it('should navigate to customers/edit on openEditPage', () => {
+    const navigateSpy = vi.spyOn(mockRouter, 'navigate');
     const customer = mockCustomersResponse.data[0];
-    component.openEditModal(customer);
-    expect(component.isEditModalOpen()).toBe(true);
-    expect(component.selectedCustomer()).toEqual(customer);
-    expect(component.editForm.value.firstName).toBe('John');
-    
-    component.closeEditModal();
-    expect(component.isEditModalOpen()).toBe(false);
-    expect(component.selectedCustomer()).toBeNull();
-  });
-
-  it('should update a customer', () => {
-    const customer = mockCustomersResponse.data[0];
-    component.openEditModal(customer);
-    component.editForm.setValue({
-      firstName: 'Johnny',
-      lastName: 'Doe',
-      dob: '1985-05-05',
-      email: 'johnny.doe@example.com',
-      countryCode: '+91',
-      mobileNumber: '9876543210',
-      govtId: 'XYZW98765',
-      govtIdType: 'aadhar',
-      pan: 'ABCDE1234F',
-      occupation: 'Manager',
-      nomineeName: 'Mary Doe',
-      nomineeRelation: 'Mother',
-      address: '456 Commercial Rd, Business District',
-      landmark: 'next to mall',
-      city: 'Delhi',
-      state: 'DL',
-      country: 'India',
-      pincode: '110001'
-    });
-    component.submitEditCustomer();
-    expect(mockCommonService.patch).toHaveBeenCalled();
+    component.openEditPage(customer);
+    expect(navigateSpy).toHaveBeenCalledWith(['/customers/edit', customer.accountNumber]);
   });
 
   it('should navigate to customers/add on openAddModal', () => {

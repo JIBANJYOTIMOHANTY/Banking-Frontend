@@ -46,36 +46,18 @@ export class CustomersManagement implements OnInit {
 
   customers = signal<Customer[]>([]);
   searchQuery = signal<string>('');
+  totalCustomersCount = signal<number>(0);
   expandedCustomerNo = signal<string | null>(null);
 
   filteredCustomers = computed(() => {
-    const query = this.searchQuery().trim().toLowerCase();
-    const list = this.customers();
-    if (!query) {
-      return list;
-    }
-    return list.filter(c =>
-      c.firstName.toLowerCase().includes(query) ||
-      c.lastName.toLowerCase().includes(query) ||
-      c.accountNumber.toLowerCase().includes(query) ||
-      (c.email && c.email.toLowerCase().includes(query)) ||
-      (c.mobileNumber && c.mobileNumber.toLowerCase().includes(query)) ||
-      (c.govtId && c.govtId.toLowerCase().includes(query)) ||
-      (c.pan && c.pan.toLowerCase().includes(query)) ||
-      (c.city && c.city.toLowerCase().includes(query)) ||
-      (c.state && c.state.toLowerCase().includes(query)) ||
-      (c.country && c.country.toLowerCase().includes(query)) ||
-      (c.pincode && c.pincode.toLowerCase().includes(query)) ||
-      (c.nomineeName && c.nomineeName.toLowerCase().includes(query)) ||
-      (c.address && c.address.toLowerCase().includes(query))
-    );
+    return this.customers();
   });
 
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
 
-
+  private searchTimeout: any;
 
   ngOnInit() {
     this.fetchCustomers();
@@ -84,13 +66,22 @@ export class CustomersManagement implements OnInit {
   fetchCustomers() {
     this.isLoading.set(true);
     this.errorMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank/customer`;
+    
+    let url = `${environment.BASE_API_URL}bank/customer`;
+    const query = this.searchQuery().trim();
+    if (query) {
+      url += `?query=${encodeURIComponent(query)}`;
+    }
 
     this.commonService.get<any>(url).subscribe({
       next: (response) => {
         this.isLoading.set(false);
         if (response && response.status === 0) {
-          this.customers.set(response.data || []);
+          const list = response.data || [];
+          this.customers.set(list);
+          if (!query) {
+            this.totalCustomersCount.set(list.length);
+          }
         } else {
           this.errorMessage.set(response.message || 'Failed to fetch customers.');
         }
@@ -103,7 +94,16 @@ export class CustomersManagement implements OnInit {
   }
 
   onSearch(event: any) {
-    this.searchQuery.set(event.target.value);
+    const val = event.target.value;
+    this.searchQuery.set(val);
+
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+
+    this.searchTimeout = setTimeout(() => {
+      this.fetchCustomers();
+    }, 300);
   }
 
   toggleExpandCustomer(accountNumber: string) {
