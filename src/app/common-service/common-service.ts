@@ -27,10 +27,10 @@ export class CommonService {
   // Base API URL can be updated to point to a specific environment API path
   private baseUrl = '';
 
-  /**
-   * Performs a secure GET request.
-   */
-  get<T>(endpoint: string, options: RequestOptions = {}): Observable<T> {
+  get<T>(endpoint: string, query?: string, options: RequestOptions = {}): Observable<T> {
+    if (query) {
+      options.params = { ...options.params, 'query': query };
+    }
     const url = this.resolveUrl(endpoint);
     const httpOptions = this.prepareOptions(options, 'GET');
     return this.http.get<T>(url, httpOptions as { observe: 'body'; responseType: 'json' }).pipe(

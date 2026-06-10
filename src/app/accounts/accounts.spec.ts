@@ -59,6 +59,14 @@ describe('Accounts', () => {
     expect(component.selectedAccount()).toEqual(account);
   });
 
+  it('should deselect an account', () => {
+    const account = mockAccountsResponse.data[0];
+    component.selectAccount(account);
+    expect(component.selectedAccount()).toEqual(account);
+    component.deselectAccount();
+    expect(component.selectedAccount()).toBeNull();
+  });
+
   it('should deposit funds successfully', () => {
     component.selectAccount(mockAccountsResponse.data[0]);
     component.depositForm.setValue({ amount: 1000 });
@@ -89,5 +97,14 @@ describe('Accounts', () => {
     expect(component.isDeleteConfirmOpen()).toBe(true);
     component.executeDeleteAccount();
     expect(mockAccountsService.deleteAccount).toHaveBeenCalledWith('ACC0001');
+  });
+
+  it('should search accounts using backend api after debounce', () => {
+    vi.useFakeTimers();
+    mockAccountsService.getAccounts.mockClear();
+    component.onSearch({ target: { value: 'Srinibas' } });
+    vi.advanceTimersByTime(300);
+    expect(mockAccountsService.getAccounts).toHaveBeenCalledWith('Srinibas');
+    vi.useRealTimers();
   });
 });

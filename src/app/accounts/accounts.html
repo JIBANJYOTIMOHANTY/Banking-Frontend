@@ -137,7 +137,7 @@
             <div class="bg-white border border-slate-100 rounded-3xl shadow-sm overflow-hidden flex flex-col">
               <!-- Selected Account Summary Header -->
               <div
-                class="p-6 bg-slate-50 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                class="p-6 bg-slate-50 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative">
                 <div>
                   <span
                     class="text-[10px] font-black uppercase tracking-wider text-indigo-600 bg-indigo-50 border border-indigo-100/50 px-2 py-0.5 rounded-md">
@@ -149,37 +149,81 @@
                   <p class="font-mono text-xs font-semibold text-indigo-500 mt-0.5">{{ selectedAccount()?.accountNumber
                     }}</p>
                 </div>
-                <div class="text-right sm:text-right">
+                <div class="text-right sm:text-right sm:pr-10">
                   <p class="text-xs font-semibold text-slate-400">Current Balance</p>
                   <h3 class="text-2xl font-black text-slate-900 tracking-tight mt-0.5">₹{{ selectedAccount()?.balance |
                     number:'1.2-2' }}</h3>
                 </div>
+                <button (click)="deselectAccount()"
+                  class="absolute top-3 right-4 p-1.5 rounded-xl hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition-all duration-200 cursor-pointer flex items-center justify-center"
+                  title="Close Details">
+                  <span class="material-icons text-base">close</span>
+                </button>
               </div>
 
               <!-- Operation Tabs navigation -->
-              <div class="flex border-b border-slate-100 bg-white">
-                <button (click)="activeTab.set('deposit')" [class.border-indigo-600]="activeTab() === 'deposit'"
-                  [class.text-indigo-600]="activeTab() === 'deposit'"
-                  class="flex-1 py-3.5 border-b-2 border-transparent text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-                  <span class="material-icons text-lg">add_circle_outline</span>
+              <div class="p-3 bg-slate-50 border-b border-slate-100 flex gap-2">
+                <!-- Deposit Button -->
+                <button (click)="activeTab.set('deposit')" [class.bg-indigo-600]="activeTab() === 'deposit'"
+                  [class.text-white]="activeTab() === 'deposit'" [class.shadow-lg]="activeTab() === 'deposit'"
+                  [class.shadow-indigo-500/20]="activeTab() === 'deposit'"
+                  [class.border-indigo-600]="activeTab() === 'deposit'" [class.bg-slate-100]="activeTab() !== 'deposit'"
+                  [class.text-slate-600]="activeTab() !== 'deposit'"
+                  [class.border-slate-100]="activeTab() !== 'deposit'"
+                  [class.hover:bg-slate-200]="activeTab() !== 'deposit'"
+                  [class.hover:text-slate-800]="activeTab() !== 'deposit'"
+                  class="flex-1 py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer border scale-102">
+                  <span class="material-icons text-base transition-colors duration-200"
+                    [class.text-white]="activeTab() === 'deposit'"
+                    [class.text-slate-400]="activeTab() !== 'deposit'">add_circle_outline</span>
                   Deposit
                 </button>
-                <button (click)="activeTab.set('withdraw')" [class.border-indigo-600]="activeTab() === 'withdraw'"
-                  [class.text-indigo-600]="activeTab() === 'withdraw'"
-                  class="flex-1 py-3.5 border-b-2 border-transparent text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-                  <span class="material-icons text-lg">remove_circle_outline</span>
+
+                <!-- Withdraw Button -->
+                <button (click)="activeTab.set('withdraw')" [class.bg-indigo-600]="activeTab() === 'withdraw'"
+                  [class.text-white]="activeTab() === 'withdraw'" [class.shadow-lg]="activeTab() === 'withdraw'"
+                  [class.shadow-indigo-500/20]="activeTab() === 'withdraw'"
+                  [class.border-indigo-600]="activeTab() === 'withdraw'"
+                  [class.bg-slate-100]="activeTab() !== 'withdraw'" [class.text-slate-600]="activeTab() !== 'withdraw'"
+                  [class.border-slate-100]="activeTab() !== 'withdraw'"
+                  [class.hover:bg-slate-200]="activeTab() !== 'withdraw'"
+                  [class.hover:text-slate-800]="activeTab() !== 'withdraw'"
+                  class="flex-1 py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer border scale-102">
+                  <span class="material-icons text-base transition-colors duration-200"
+                    [class.text-white]="activeTab() === 'withdraw'"
+                    [class.text-slate-400]="activeTab() !== 'withdraw'">remove_circle_outline</span>
                   Withdraw
                 </button>
-                <button (click)="activeTab.set('transfer')" [class.border-indigo-600]="activeTab() === 'transfer'"
-                  [class.text-indigo-600]="activeTab() === 'transfer'"
-                  class="flex-1 py-3.5 border-b-2 border-transparent text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-                  <span class="material-icons text-lg">swap_horiz</span>
+
+                <!-- Transfer Button -->
+                <button (click)="activeTab.set('transfer')" [class.bg-indigo-600]="activeTab() === 'transfer'"
+                  [class.text-white]="activeTab() === 'transfer'" [class.shadow-lg]="activeTab() === 'transfer'"
+                  [class.shadow-indigo-500/20]="activeTab() === 'transfer'"
+                  [class.border-indigo-600]="activeTab() === 'transfer'"
+                  [class.bg-slate-100]="activeTab() !== 'transfer'" [class.text-slate-600]="activeTab() !== 'transfer'"
+                  [class.border-slate-100]="activeTab() !== 'transfer'"
+                  [class.hover:bg-slate-200]="activeTab() !== 'transfer'"
+                  [class.hover:text-slate-800]="activeTab() !== 'transfer'"
+                  class="flex-1 py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer border scale-102">
+                  <span class="material-icons text-base transition-colors duration-200"
+                    [class.text-white]="activeTab() === 'transfer'"
+                    [class.text-slate-400]="activeTab() !== 'transfer'">swap_horiz</span>
                   Transfer
                 </button>
-                <button (click)="activeTab.set('settings')" [class.border-red-600]="activeTab() === 'settings'"
-                  [class.text-red-600]="activeTab() === 'settings'"
-                  class="flex-1 py-3.5 border-b-2 border-transparent text-sm font-bold text-slate-500 hover:text-red-600 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-                  <span class="material-icons text-lg">settings</span>
+
+                <!-- Settings Button -->
+                <button (click)="activeTab.set('settings')" [class.bg-rose-600]="activeTab() === 'settings'"
+                  [class.text-white]="activeTab() === 'settings'" [class.shadow-lg]="activeTab() === 'settings'"
+                  [class.shadow-rose-500/20]="activeTab() === 'settings'"
+                  [class.border-rose-600]="activeTab() === 'settings'" [class.bg-slate-100]="activeTab() !== 'settings'"
+                  [class.text-slate-600]="activeTab() !== 'settings'"
+                  [class.border-slate-100]="activeTab() !== 'settings'"
+                  [class.hover:bg-rose-50]="activeTab() !== 'settings'"
+                  [class.hover:text-rose-600]="activeTab() !== 'settings'"
+                  class="flex-1 py-2.5 px-3 rounded-xl text-xs font-extrabold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer border scale-102">
+                  <span class="material-icons text-base transition-colors duration-200"
+                    [class.text-white]="activeTab() === 'settings'"
+                    [class.text-slate-400]="activeTab() !== 'settings'">settings</span>
                   Settings
                 </button>
               </div>

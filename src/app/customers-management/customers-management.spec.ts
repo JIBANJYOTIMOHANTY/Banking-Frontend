@@ -24,11 +24,30 @@ describe('CustomersManagement', () => {
 
   beforeEach(async () => {
     mockCommonService = {
-      get: vi.fn().mockImplementation((url: string) => {
+      get: vi.fn().mockImplementation((url: string, query?: string) => {
         let data = mockCustomersResponse.data;
         const decodedUrl = decodeURIComponent(url);
-        if (decodedUrl.includes('?query=')) {
-          const queryPart = decodedUrl.split('?query=')[1].toLowerCase();
+        const queryVal = query || (decodedUrl.includes('?query=') ? decodedUrl.split('?query=')[1] : '');
+        if (queryVal) {
+          const queryPart = queryVal.toLowerCase();
+          data = data.filter(c =>
+            c.firstName.toLowerCase().includes(queryPart) ||
+            c.lastName.toLowerCase().includes(queryPart) ||
+            c.accountNumber.toLowerCase().includes(queryPart) ||
+            c.address.toLowerCase().includes(queryPart)
+          );
+        }
+        return of({
+          status: 0,
+          message: 'Success',
+          data: data
+        });
+      }),
+      post: vi.fn().mockImplementation((url: string, body: any) => {
+        let data = mockCustomersResponse.data;
+        const queryVal = body && body.query ? body.query : '';
+        if (queryVal) {
+          const queryPart = queryVal.toLowerCase();
           data = data.filter(c =>
             c.firstName.toLowerCase().includes(queryPart) ||
             c.lastName.toLowerCase().includes(queryPart) ||
@@ -65,7 +84,7 @@ describe('CustomersManagement', () => {
   });
 
   it('should load customers on init', () => {
-    expect(mockCommonService.get).toHaveBeenCalled();
+    expect(mockCommonService.post).toHaveBeenCalled();
     expect(component.customers().length).toBe(2);
   });
 

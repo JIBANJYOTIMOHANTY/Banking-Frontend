@@ -44,18 +44,11 @@ export class Accounts implements OnInit {
   isDeleteConfirmOpen = signal(false);
   isAddAccountOpen = signal(false);
 
+  private searchTimeout: any;
+
   // Computed state
   filteredAccounts = computed(() => {
-    const query = this.searchQuery().trim().toLowerCase();
-    const list = this.accounts();
-    if (!query) {
-      return list;
-    }
-    return list.filter(a =>
-      a.accountNumber.toLowerCase().includes(query) ||
-      a.firstName.toLowerCase().includes(query) ||
-      a.lastName.toLowerCase().includes(query)
-    );
+    return this.accounts();
   });
 
   totalBalanceSum = computed(() => {
@@ -90,7 +83,8 @@ export class Accounts implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    this.accountsService.getAccounts().subscribe({
+    const query = this.searchQuery().trim();
+    this.accountsService.getAccounts(query).subscribe({
       next: (response) => {
         this.isLoading.set(false);
         if (response && response.status === 0) {
@@ -114,7 +108,16 @@ export class Accounts implements OnInit {
   }
 
   onSearch(event: any) {
-    this.searchQuery.set(event.target.value);
+    const val = event.target.value;
+    this.searchQuery.set(val);
+
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+
+    this.searchTimeout = setTimeout(() => {
+      this.fetchAccounts();
+    }, 300);
   }
 
   selectAccount(account: BankAccount) {
@@ -124,6 +127,12 @@ export class Accounts implements OnInit {
     this.depositForm.reset();
     this.withdrawForm.reset();
     this.transferForm.reset();
+  }
+
+  deselectAccount() {
+    this.selectedAccount.set(null);
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
   }
 
   executeDeposit() {

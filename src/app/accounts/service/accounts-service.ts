@@ -10,8 +10,8 @@ export class AccountsService {
   private commonService = inject(CommonService);
   private readonly baseUrl = `${environment.BASE_API_URL}bank/customer`;
 
-  getAccounts(): Observable<any> {
-    return this.commonService.get<any>(this.baseUrl);
+  getAccounts(query?: string): Observable<any> {
+    return this.commonService.post<any>(`${this.baseUrl}/search`, { query: query || '' });
   }
 
   createAccount(payload: { firstName: string; lastName: string; balance: number }): Observable<any> {

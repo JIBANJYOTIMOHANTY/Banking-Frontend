@@ -67,13 +67,8 @@ export class CustomersManagement implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     
-    let url = `${environment.BASE_API_URL}bank/customer`;
     const query = this.searchQuery().trim();
-    if (query) {
-      url += `?query=${encodeURIComponent(query)}`;
-    }
-
-    this.commonService.get<any>(url).subscribe({
+    this.commonService.post<any>(`${environment.BASE_API_URL}bank/customer/search`, { query: query || '' }).subscribe({
       next: (response) => {
         this.isLoading.set(false);
         if (response && response.status === 0) {
