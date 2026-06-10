@@ -4,12 +4,12 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 import { Accounts } from './accounts';
-import { CommonService } from '../common-service/common-service';
+import { AccountsService } from './service/accounts-service';
 
 describe('Accounts', () => {
   let component: Accounts;
   let fixture: ComponentFixture<Accounts>;
-  let mockCommonService: any;
+  let mockAccountsService: any;
 
   const mockAccountsResponse = {
     status: 0,
@@ -21,18 +21,20 @@ describe('Accounts', () => {
   };
 
   beforeEach(async () => {
-    mockCommonService = {
-      get: vi.fn().mockReturnValue(of(mockAccountsResponse)),
-      post: vi.fn().mockReturnValue(of({ status: 0, message: 'Created successfully' })),
-      put: vi.fn().mockReturnValue(of({ status: 0, message: 'Transaction successful' })),
-      delete: vi.fn().mockReturnValue(of({ status: 0, message: 'Deleted successfully' }))
+    mockAccountsService = {
+      getAccounts: vi.fn().mockReturnValue(of(mockAccountsResponse)),
+      createAccount: vi.fn().mockReturnValue(of({ status: 0, message: 'Created successfully' })),
+      deposit: vi.fn().mockReturnValue(of({ status: 0, message: 'Transaction successful' })),
+      withdraw: vi.fn().mockReturnValue(of({ status: 0, message: 'Transaction successful' })),
+      transfer: vi.fn().mockReturnValue(of({ status: 0, message: 'Transaction successful' })),
+      deleteAccount: vi.fn().mockReturnValue(of({ status: 0, message: 'Deleted successfully' }))
     };
 
     await TestBed.configureTestingModule({
       imports: [Accounts, ReactiveFormsModule],
       providers: [
         provideRouter([]),
-        { provide: CommonService, useValue: mockCommonService }
+        { provide: AccountsService, useValue: mockAccountsService }
       ]
     }).compileComponents();
 
@@ -46,7 +48,7 @@ describe('Accounts', () => {
   });
 
   it('should load accounts and compute balance metrics', () => {
-    expect(mockCommonService.get).toHaveBeenCalled();
+    expect(mockAccountsService.getAccounts).toHaveBeenCalled();
     expect(component.accounts().length).toBe(2);
     expect(component.totalBalanceSum()).toBe(20000);
   });
@@ -61,14 +63,14 @@ describe('Accounts', () => {
     component.selectAccount(mockAccountsResponse.data[0]);
     component.depositForm.setValue({ amount: 1000 });
     component.executeDeposit();
-    expect(mockCommonService.put).toHaveBeenCalled();
+    expect(mockAccountsService.deposit).toHaveBeenCalledWith('ACC0001', 1000);
   });
 
   it('should withdraw funds successfully', () => {
     component.selectAccount(mockAccountsResponse.data[0]);
     component.withdrawForm.setValue({ amount: 1000 });
     component.executeWithdraw();
-    expect(mockCommonService.put).toHaveBeenCalled();
+    expect(mockAccountsService.withdraw).toHaveBeenCalledWith('ACC0001', 1000);
   });
 
   it('should transfer funds successfully', () => {
@@ -78,7 +80,7 @@ describe('Accounts', () => {
       amount: 1000
     });
     component.executeTransfer();
-    expect(mockCommonService.put).toHaveBeenCalled();
+    expect(mockAccountsService.transfer).toHaveBeenCalledWith('ACC0001', 'ACC0002', 1000);
   });
 
   it('should delete account successfully', () => {
@@ -86,6 +88,6 @@ describe('Accounts', () => {
     component.openDeleteConfirm();
     expect(component.isDeleteConfirmOpen()).toBe(true);
     component.executeDeleteAccount();
-    expect(mockCommonService.delete).toHaveBeenCalled();
+    expect(mockAccountsService.deleteAccount).toHaveBeenCalledWith('ACC0001');
   });
 });

@@ -1,8 +1,7 @@
 import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CommonService } from '../common-service/common-service';
-import { environment } from '../environments/environment';
+import { AccountsService } from './service/accounts-service';
 import { Sidebar } from '../sidebar/sidebar';
 import { Header } from '../header/header';
 import { Footer } from '../footer/footer';
@@ -27,7 +26,7 @@ export interface BankAccount {
 })
 export class Accounts implements OnInit {
   sidebarService = inject(SidebarService);
-  private commonService = inject(CommonService);
+  private accountsService = inject(AccountsService);
   private fb = inject(FormBuilder);
 
   accounts = signal<BankAccount[]>([]);
@@ -90,14 +89,13 @@ export class Accounts implements OnInit {
   fetchAccounts() {
     this.isLoading.set(true);
     this.errorMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank/customer`;
 
-    this.commonService.get<any>(url).subscribe({
+    this.accountsService.getAccounts().subscribe({
       next: (response) => {
         this.isLoading.set(false);
         if (response && response.status === 0) {
           this.accounts.set(response.data || []);
-          
+
           // Re-select active account if it was updated
           const currentSel = this.selectedAccount();
           if (currentSel) {
@@ -139,9 +137,8 @@ export class Accounts implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank/customer/deposit/${currentSel.accountNumber}/${amount}`;
 
-    this.commonService.put<any>(url, {}).subscribe({
+    this.accountsService.deposit(currentSel.accountNumber, amount).subscribe({
       next: (response) => {
         this.isLoading.set(false);
         if (response && response.status === 0) {
@@ -175,9 +172,8 @@ export class Accounts implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank/customer/withdraw/${currentSel.accountNumber}/${amount}`;
 
-    this.commonService.put<any>(url, {}).subscribe({
+    this.accountsService.withdraw(currentSel.accountNumber, amount).subscribe({
       next: (response) => {
         this.isLoading.set(false);
         if (response && response.status === 0) {
@@ -218,9 +214,8 @@ export class Accounts implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank/customer/transfer/${currentSel.accountNumber}/${dest}/${amount}`;
 
-    this.commonService.put<any>(url, {}).subscribe({
+    this.accountsService.transfer(currentSel.accountNumber, dest, amount).subscribe({
       next: (response) => {
         this.isLoading.set(false);
         if (response && response.status === 0) {
@@ -253,9 +248,8 @@ export class Accounts implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank/customer/${currentSel.accountNumber}`;
 
-    this.commonService.delete<any>(url).subscribe({
+    this.accountsService.deleteAccount(currentSel.accountNumber).subscribe({
       next: (response) => {
         this.isLoading.set(false);
         this.isDeleteConfirmOpen.set(false);
@@ -301,9 +295,8 @@ export class Accounts implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
-    const url = `${environment.BASE_API_URL}bank/customer`;
 
-    this.commonService.post<any>(url, payload).subscribe({
+    this.accountsService.createAccount(payload).subscribe({
       next: (response) => {
         this.isLoading.set(false);
         if (response && response.status === 0) {
