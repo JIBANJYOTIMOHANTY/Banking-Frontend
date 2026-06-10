@@ -23,11 +23,15 @@
                                         <div>
                                                 <h1
                                                         class="text-2xl font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
-                                                        <span class="material-icons text-indigo-600">{{ isEditMode() ? 'edit' : 'person_add' }}</span>
-                                                        {{ isEditMode() ? 'Update Customer Details' : 'New Customer Registration' }}
+                                                        <span class="material-icons text-indigo-600">{{ isEditMode() ?
+                                                                'edit' : 'person_add' }}</span>
+                                                        {{ isEditMode() ? 'Update Customer Details' : 'New Customer
+                                                        Registration' }}
                                                 </h1>
                                                 <p class="text-slate-500 text-sm">
-                                                        {{ isEditMode() ? 'Edit and update the profile details for account ' + accountNumber() : 'Register a new customer profile and create their banking account.' }}
+                                                        {{ isEditMode() ? 'Edit and update the profile details for
+                                                        account ' + accountNumber() : 'Register a new customer profile
+                                                        and create their banking account.' }}
                                                 </p>
                                         </div>
                                         <button (click)="goBack()"
@@ -45,7 +49,8 @@
                                                 class="p-6 flex items-center gap-2 bg-gradient-to-r from-indigo-900 via-indigo-950 to-slate-900 text-white">
                                                 <span class="material-icons text-indigo-400">assignment</span>
                                                 <span class="font-bold text-sm tracking-wide">
-                                                        {{ isEditMode() ? 'Edit Profile Application Form' : 'Registration Application Form' }}
+                                                        {{ isEditMode() ? 'Edit Profile Application Form' :
+                                                        'Registration Application Form' }}
                                                 </span>
                                         </div>
 
@@ -171,45 +176,59 @@
                                                                                 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Mobile
                                                                                 Number <span
                                                                                         class="text-rose-600">*</span></label>
-                                                                         <div class="flex gap-2">
-                                                                                 <select formControlName="countryCode"
-                                                                                         class="w-24 px-3 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors">
-                                                                                         <option value="+91">+91 (IN)</option>
-                                                                                         <option value="+1">+1 (US)</option>
-                                                                                         <option value="+44">+44 (UK)</option>
-                                                                                         <option value="+61">+61 (AU)</option>
-                                                                                         <option value="+971">+971 (AE)</option>
-                                                                                 </select>
-                                                                                 <input type="text"
-                                                                                         formControlName="mobileNumber"
-                                                                                         placeholder="10-digit number"
-                                                                                         class="flex-1 px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
-                                                                         </div>
+                                                                        <div class="flex gap-2">
+                                                                                <select formControlName="countryCode"
+                                                                                        class="w-24 px-3 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors">
+                                                                                        <option value="+91">+91 (IN)
+                                                                                        </option>
+                                                                                        <option value="+1">+1 (US)
+                                                                                        </option>
+                                                                                        <option value="+44">+44 (UK)
+                                                                                        </option>
+                                                                                        <option value="+61">+61 (AU)
+                                                                                        </option>
+                                                                                        <option value="+971">+971 (AE)
+                                                                                        </option>
+                                                                                </select>
+                                                                                <input type="text"
+                                                                                        formControlName="mobileNumber"
+                                                                                        placeholder="10-digit number"
+                                                                                        class="flex-1 px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                        </div>
                                                                         @if (controls['mobileNumber']?.touched &&
                                                                         controls['mobileNumber']?.invalid) {
-                                                                                @if (controls['mobileNumber']?.errors?.['required']) {
-                                                                                        <p class="text-rose-600 text-[10px]">Mobile number is mandatory.</p>
-                                                                                } @else if (controls['mobileNumber']?.errors?.['pattern']) {
-                                                                                        <p class="text-rose-600 text-[10px]">Mobile number must be exactly 10 digits.</p>
-                                                                                }
+                                                                        @if
+                                                                        (controls['mobileNumber']?.errors?.['required'])
+                                                                        {
+                                                                        <p class="text-rose-600 text-[10px]">Mobile
+                                                                                number is mandatory.</p>
+                                                                        } @else if
+                                                                        (controls['mobileNumber']?.errors?.['pattern'])
+                                                                        {
+                                                                        <p class="text-rose-600 text-[10px]">Mobile
+                                                                                number must be exactly 10 digits.</p>
+                                                                        }
                                                                         }
                                                                 </div>
 
                                                                 <div class="space-y-1">
                                                                         <label
-                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">PAN Number <span
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">PAN
+                                                                                Number <span
                                                                                         class="text-rose-600">*</span></label>
-                                                                        <input type="text"
-                                                                                formControlName="pan"
+                                                                        <input type="text" formControlName="pan"
                                                                                 placeholder="Enter 10-digit PAN (e.g. ABCDE1234F)"
                                                                                 class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
                                                                         @if (controls['pan']?.touched &&
                                                                         controls['pan']?.invalid) {
-                                                                                @if (controls['pan']?.errors?.['required']) {
-                                                                                        <p class="text-rose-600 text-[10px]">PAN is mandatory.</p>
-                                                                                } @else if (controls['pan']?.errors?.['pattern']) {
-                                                                                        <p class="text-rose-600 text-[10px]">Invalid PAN format (e.g. ABCDE1234F).</p>
-                                                                                }
+                                                                        @if (controls['pan']?.errors?.['required']) {
+                                                                        <p class="text-rose-600 text-[10px]">PAN is
+                                                                                mandatory.</p>
+                                                                        } @else if
+                                                                        (controls['pan']?.errors?.['pattern']) {
+                                                                        <p class="text-rose-600 text-[10px]">Invalid PAN
+                                                                                format (e.g. ABCDE1234F).</p>
+                                                                        }
                                                                         }
                                                                 </div>
 
@@ -257,98 +276,105 @@
                                                 </div>
 
                                                 <!-- Address Details Card (Full Width) -->
-                                                 <div
-                                                         class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
-                                                         <h3
-                                                                 class="text-xs font-bold text-indigo-950 uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center gap-1">
-                                                                 <span
-                                                                         class="material-icons text-sm text-indigo-600">home</span>
-                                                                 Residential Address
-                                                         </h3>
-                                                         <div class="space-y-1">
-                                                                 <label
-                                                                         class="text-xs font-bold text-slate-500 uppercase tracking-wider">Street
-                                                                         Address <span
-                                                                                 class="text-rose-600">*</span></label>
-                                                                 <textarea formControlName="address"
-                                                                         placeholder="Enter street address"
-                                                                         rows="2"
-                                                                         class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors"></textarea>
-                                                                 @if (controls['address']?.touched &&
-                                                                 controls['address']?.invalid) {
-                                                                 <p class="text-rose-600 text-[10px]">Street address is
-                                                                         mandatory.</p>
-                                                                 }
-                                                         </div>
+                                                <div
+                                                        class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
+                                                        <h3
+                                                                class="text-xs font-bold text-indigo-950 uppercase tracking-wider border-b border-slate-100 pb-2 flex items-center gap-1">
+                                                                <span
+                                                                        class="material-icons text-sm text-indigo-600">home</span>
+                                                                Residential Address
+                                                        </h3>
+                                                        <div class="space-y-1">
+                                                                <label
+                                                                        class="text-xs font-bold text-slate-500 uppercase tracking-wider">Street
+                                                                        Address <span
+                                                                                class="text-rose-600">*</span></label>
+                                                                <textarea formControlName="address"
+                                                                        placeholder="Enter street address" rows="2"
+                                                                        class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors"></textarea>
+                                                                @if (controls['address']?.touched &&
+                                                                controls['address']?.invalid) {
+                                                                <p class="text-rose-600 text-[10px]">Street address is
+                                                                        mandatory.</p>
+                                                                }
+                                                        </div>
 
-                                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                                 <div class="space-y-1">
-                                                                         <label
-                                                                                 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Landmark</label>
-                                                                         <input type="text" formControlName="landmark"
-                                                                                 placeholder="E.g. near post office"
-                                                                                 class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
-                                                                 </div>
-                                                                 <div class="space-y-1">
-                                                                         <label
-                                                                                 class="text-xs font-bold text-slate-500 uppercase tracking-wider">City <span
-                                                                                         class="text-rose-600">*</span></label>
-                                                                         <input type="text" formControlName="city"
-                                                                                 placeholder="City"
-                                                                                 class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
-                                                                         @if (controls['city']?.touched &&
-                                                                         controls['city']?.invalid) {
-                                                                         <p class="text-rose-600 text-[10px]">City is
-                                                                                 mandatory.</p>
-                                                                         }
-                                                                 </div>
-                                                         </div>
+                                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                                <div class="space-y-1">
+                                                                        <label
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">Landmark</label>
+                                                                        <input type="text" formControlName="landmark"
+                                                                                placeholder="E.g. near post office"
+                                                                                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                </div>
+                                                                <div class="space-y-1">
+                                                                        <label
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">City
+                                                                                <span
+                                                                                        class="text-rose-600">*</span></label>
+                                                                        <input type="text" formControlName="city"
+                                                                                placeholder="City"
+                                                                                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                        @if (controls['city']?.touched &&
+                                                                        controls['city']?.invalid) {
+                                                                        <p class="text-rose-600 text-[10px]">City is
+                                                                                mandatory.</p>
+                                                                        }
+                                                                </div>
+                                                        </div>
 
-                                                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                                                 <div class="space-y-1">
-                                                                         <label
-                                                                                 class="text-xs font-bold text-slate-500 uppercase tracking-wider">State <span
-                                                                                         class="text-rose-600">*</span></label>
-                                                                         <input type="text" formControlName="state"
-                                                                                 placeholder="State"
-                                                                                 class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
-                                                                         @if (controls['state']?.touched &&
-                                                                         controls['state']?.invalid) {
-                                                                         <p class="text-rose-600 text-[10px]">State is
-                                                                                 mandatory.</p>
-                                                                         }
-                                                                 </div>
-                                                                 <div class="space-y-1">
-                                                                         <label
-                                                                                 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Country <span
-                                                                                         class="text-rose-600">*</span></label>
-                                                                         <input type="text" formControlName="country"
-                                                                                 placeholder="Country"
-                                                                                 class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
-                                                                         @if (controls['country']?.touched &&
-                                                                         controls['country']?.invalid) {
-                                                                         <p class="text-rose-600 text-[10px]">Country is
-                                                                                 mandatory.</p>
-                                                                         }
-                                                                 </div>
-                                                                 <div class="space-y-1">
-                                                                         <label
-                                                                                 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Pincode <span
-                                                                                         class="text-rose-600">*</span></label>
-                                                                         <input type="text" formControlName="pincode"
-                                                                                 placeholder="6-digit pincode"
-                                                                                 class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
-                                                                         @if (controls['pincode']?.touched &&
-                                                                         controls['pincode']?.invalid) {
-                                                                                 @if (controls['pincode']?.errors?.['required']) {
-                                                                                         <p class="text-rose-600 text-[10px]">Pincode is mandatory.</p>
-                                                                                 } @else if (controls['pincode']?.errors?.['pattern']) {
-                                                                                         <p class="text-rose-600 text-[10px]">Pincode must be exactly 6 digits.</p>
-                                                                                 }
-                                                                         }
-                                                                 </div>
-                                                         </div>
-                                                 </div>
+                                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                                                <div class="space-y-1">
+                                                                        <label
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">State
+                                                                                <span
+                                                                                        class="text-rose-600">*</span></label>
+                                                                        <input type="text" formControlName="state"
+                                                                                placeholder="State"
+                                                                                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                        @if (controls['state']?.touched &&
+                                                                        controls['state']?.invalid) {
+                                                                        <p class="text-rose-600 text-[10px]">State is
+                                                                                mandatory.</p>
+                                                                        }
+                                                                </div>
+                                                                <div class="space-y-1">
+                                                                        <label
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">Country
+                                                                                <span
+                                                                                        class="text-rose-600">*</span></label>
+                                                                        <input type="text" formControlName="country"
+                                                                                placeholder="Country"
+                                                                                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                        @if (controls['country']?.touched &&
+                                                                        controls['country']?.invalid) {
+                                                                        <p class="text-rose-600 text-[10px]">Country is
+                                                                                mandatory.</p>
+                                                                        }
+                                                                </div>
+                                                                <div class="space-y-1">
+                                                                        <label
+                                                                                class="text-xs font-bold text-slate-500 uppercase tracking-wider">Pincode
+                                                                                <span
+                                                                                        class="text-rose-600">*</span></label>
+                                                                        <input type="text" formControlName="pincode"
+                                                                                placeholder="6-digit pincode"
+                                                                                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                        @if (controls['pincode']?.touched &&
+                                                                        controls['pincode']?.invalid) {
+                                                                        @if (controls['pincode']?.errors?.['required'])
+                                                                        {
+                                                                        <p class="text-rose-600 text-[10px]">Pincode is
+                                                                                mandatory.</p>
+                                                                        } @else if
+                                                                        (controls['pincode']?.errors?.['pattern']) {
+                                                                        <p class="text-rose-600 text-[10px]">Pincode
+                                                                                must be exactly 6 digits.</p>
+                                                                        }
+                                                                        }
+                                                                </div>
+                                                        </div>
+                                                </div>
 
                                                 <!-- Nominee Details Card (Full Width) -->
                                                 <div
@@ -390,9 +416,11 @@
                                                         <button type="submit" [disabled]="isLoading()"
                                                                 class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm shadow-md shadow-indigo-500/10 transition-colors disabled:opacity-50 cursor-pointer">
                                                                 @if (isLoading()) {
-                                                                <span>{{ isEditMode() ? 'Updating Profile...' : 'Saving Profile...' }}</span>
+                                                                <span>{{ isEditMode() ? 'Updating Profile...' : 'Saving
+                                                                        Profile...' }}</span>
                                                                 } @else {
-                                                                <span>{{ isEditMode() ? 'Update Profile' : 'Register Customer' }}</span>
+                                                                <span>{{ isEditMode() ? 'Update Profile' : 'Register
+                                                                        Customer' }}</span>
                                                                 }
                                                         </button>
                                                 </div>

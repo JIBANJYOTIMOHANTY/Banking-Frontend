@@ -24,6 +24,7 @@ export class SidebarService {
 
   activeItem = signal<string>('Dashboard');
   sidebarOpen = signal<boolean>(true);
+  isManuallyClosed = signal<boolean>(false);
 
   constructor() {
     this.syncActiveItem(this.router.url);
@@ -43,7 +44,11 @@ export class SidebarService {
   }
 
   toggleSidebar() {
-    this.sidebarOpen.set(!this.sidebarOpen());
+    const newState = !this.sidebarOpen();
+    this.sidebarOpen.set(newState);
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      this.isManuallyClosed.set(!newState);
+    }
   }
 
   closeSidebar() {

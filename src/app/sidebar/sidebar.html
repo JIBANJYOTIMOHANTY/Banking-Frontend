@@ -1,58 +1,78 @@
 <aside
-  class="fixed lg:relative z-50 w-64 h-full bg-slate-900 text-slate-100 flex flex-col justify-between transition-transform duration-300 shadow-2xl border-r border-slate-800"
-  [class.-translate-x-full]="!sidebarService.sidebarOpen()" [class.translate-x-0]="sidebarService.sidebarOpen()" [class.lg:hidden]="!sidebarService.sidebarOpen()">
-  <div>
-    <!-- Brand Title & Close btn -->
-    <div class="p-6 border-b border-slate-800 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-          <span class="material-icons text-white text-xl">account_balance</span>
+  class="fixed lg:relative z-50 h-full bg-slate-900 text-slate-100 shadow-2xl border-r border-slate-800 overflow-hidden"
+  [class.sidebar-transition]="isInitialized && !isResizing"
+  [class.w-64]="sidebarService.sidebarOpen() || !sidebarService.sidebarOpen()"
+  [class.lg:w-20]="!sidebarService.sidebarOpen()" [class.lg:w-64]="sidebarService.sidebarOpen()"
+  [class.sidebar-closed]="!sidebarService.sidebarOpen()">
+  <div class="h-full flex flex-col justify-between transition-all duration-300"
+    [class.w-64]="sidebarService.sidebarOpen() || !sidebarService.sidebarOpen()"
+    [class.lg:w-64]="sidebarService.sidebarOpen()" [class.lg:w-20]="!sidebarService.sidebarOpen()">
+    <div>
+      <!-- Brand Title & Close btn -->
+      <div class="p-6 border-b border-slate-800 flex items-center justify-between"
+        [class.lg:justify-center]="!sidebarService.sidebarOpen()" [class.lg:px-0]="!sidebarService.sidebarOpen()">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+            <span class="material-icons text-white text-xl">account_balance</span>
+          </div>
+          <h2
+            class="text-xl font-bold tracking-tight text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400"
+            [class.lg:hidden]="!sidebarService.sidebarOpen()">
+            TrustBank
+          </h2>
         </div>
-        <h2
-          class="text-xl font-bold tracking-tight text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-          TrustBank
-        </h2>
+        <button (click)="sidebarService.closeSidebar()"
+          class="lg:hidden p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
+          aria-label="Close sidebar">
+          <span class="material-icons text-xl">close</span>
+        </button>
       </div>
-      <button (click)="sidebarService.closeSidebar()"
-        class="lg:hidden p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
-        aria-label="Close sidebar">
-        <span class="material-icons text-xl">close</span>
-      </button>
-    </div>
 
-    <!-- Navigation Menu -->
-    <nav class="mt-6 px-4 space-y-1.5">
-      @for (item of sidebarService.items; track item.id) {
+      <!-- Navigation Menu -->
+      <nav class="mt-6 px-4 space-y-1.5" [class.lg:px-2]="!sidebarService.sidebarOpen()">
+        @for (item of sidebarService.items; track item.id) {
         <a (click)="navigate(item)" [class.bg-indigo-600]="sidebarService.activeItem() === item.id"
-          [class.text-white]="sidebarService.activeItem() === item.id" [class.shadow-lg]="sidebarService.activeItem() === item.id"
-          [class.shadow-indigo-500/20]="sidebarService.activeItem() === item.id" [class.bg-slate-800\/50]="sidebarService.activeItem() !== item.id"
+          [class.text-white]="sidebarService.activeItem() === item.id"
+          [class.shadow-lg]="sidebarService.activeItem() === item.id"
+          [class.shadow-indigo-500/20]="sidebarService.activeItem() === item.id"
+          [class.bg-slate-800\/50]="sidebarService.activeItem() !== item.id"
           [class.text-slate-400]="sidebarService.activeItem() !== item.id"
-          class="flex items-center gap-3 px-4 py-3 rounded-xl hover:text-white hover:bg-slate-800 transition-all duration-200 cursor-pointer group">
+          class="flex items-center gap-3 px-4 py-3 rounded-xl hover:text-white hover:bg-slate-800 transition-all duration-200 cursor-pointer group"
+          [class.lg:justify-center]="!sidebarService.sidebarOpen()" [class.lg:px-0]="!sidebarService.sidebarOpen()">
           <span class="material-icons transition-colors duration-200"
             [class.text-indigo-400]="sidebarService.activeItem() !== item.id">{{ item.icon }}</span>
-          <span class="font-medium text-sm">{{ item.label }}</span>
+          <span class="font-medium text-sm" [class.lg:hidden]="!sidebarService.sidebarOpen()">{{ item.label }}</span>
         </a>
-      }
-    </nav>
-  </div>
+        }
+      </nav>
+    </div>
 
-  <!-- Logout/Profile section in Sidebar Footer -->
-  <div class="p-4 border-t border-slate-800 bg-slate-950/40">
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
-          <span class="material-icons text-indigo-400 text-sm">admin_panel_settings</span>
+    <!-- Logout/Profile section in Sidebar Footer -->
+    <div class="p-4 border-t border-slate-800 bg-slate-950/40">
+      <div class="flex items-center justify-between" [class.lg:justify-center]="!sidebarService.sidebarOpen()">
+        @if (sidebarService.sidebarOpen()) {
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center">
+            <span class="material-icons text-indigo-400 text-sm">admin_panel_settings</span>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-white">System Admin</p>
+            <p class="text-[10px] text-slate-500">Online</p>
+          </div>
         </div>
-        <div>
-          <p class="text-xs font-bold text-white">System Admin</p>
-          <p class="text-[10px] text-slate-500">Online</p>
-        </div>
+        <button (click)="logout()"
+          class="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-red-400 transition-colors cursor-pointer"
+          title="Sign Out">
+          <span class="material-icons text-lg">logout</span>
+        </button>
+        } @else {
+        <button (click)="logout()"
+          class="p-2 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-red-400 transition-colors cursor-pointer flex items-center justify-center"
+          title="Sign Out">
+          <span class="material-icons text-xl">logout</span>
+        </button>
+        }
       </div>
-      <button (click)="logout()"
-        class="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-red-400 transition-colors cursor-pointer"
-        title="Sign Out">
-        <span class="material-icons text-lg">logout</span>
-      </button>
     </div>
   </div>
 </aside>

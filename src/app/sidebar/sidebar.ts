@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CommonService } from '../common-service/common-service';
@@ -11,10 +11,46 @@ import { SidebarService, SidebarItem } from './service/sidebar-service';
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })
-export class Sidebar {
+export class Sidebar implements OnInit {
   sidebarService = inject(SidebarService);
   private commonService = inject(CommonService);
   private router = inject(Router);
+
+  isInitialized = false;
+  isResizing = false;
+  private resizeTimeout: any;
+
+  ngOnInit() {
+    this.checkScreenSize();
+    setTimeout(() => {
+      this.isInitialized = true;
+    }, 50);
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: UIEvent) {
+    this.isResizing = true;
+    this.checkScreenSize();
+
+    if (this.resizeTimeout) {
+      clearTimeout(this.resizeTimeout);
+    }
+    this.resizeTimeout = setTimeout(() => {
+      this.isResizing = false;
+    }, 100);
+  }
+
+  private checkScreenSize() {
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth < 1024) {
+        this.sidebarService.closeSidebar();
+      } else {
+        if (!this.sidebarService.isManuallyClosed()) {
+          this.sidebarService.openSidebar();
+        }
+      }
+    }
+  }
 
   navigate(item: SidebarItem) {
     this.router.navigate([item.route]);
