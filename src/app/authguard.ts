@@ -20,8 +20,12 @@ export class Authguard {
   canActivate(): boolean {
     const isServer = isPlatformServer(this.platformId);
 
+    if (isServer) {
+      return true;
+    }
+
     // If we are currently showing the session expired modal, block routing but do NOT redirect yet
-    if (!isServer && this.isSessionExpired()) {
+    if (this.isSessionExpired()) {
       return false;
     }
 
