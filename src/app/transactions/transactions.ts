@@ -1,8 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { CommonService } from '../common-service/common-service';
-import { environment } from '../environments/environment';
+import { TransactionsService } from './service/transactions-service';
 import { Sidebar } from '../sidebar/sidebar';
 import { Header } from '../header/header';
 import { Footer } from '../footer/footer';
@@ -33,7 +32,7 @@ export interface Transaction {
 })
 export class Transactions implements OnInit {
   sidebarService = inject(SidebarService);
-  private commonService = inject(CommonService);
+  private transactionsService = inject(TransactionsService);
   private fb = inject(FormBuilder);
 
   accounts = signal<BankAccount[]>([]);
@@ -57,9 +56,8 @@ export class Transactions implements OnInit {
 
   fetchAccounts() {
     this.isLoadingAccounts.set(true);
-    const url = `${environment.BASE_API_URL}bank/customer`;
 
-    this.commonService.get<any>(url).subscribe({
+    this.transactionsService.getAccounts().subscribe({
       next: (response) => {
         this.isLoadingAccounts.set(false);
         if (response && response.status === 0) {
@@ -103,12 +101,8 @@ export class Transactions implements OnInit {
     this.errorMessage.set(null);
 
     let date = this.filterForm.value.dateFilter || '';
-    let url = `${environment.BASE_API_URL}bank/${activeNo}/transactions`;
-    if (date) {
-      url += `?date=${date}`;
-    }
 
-    this.commonService.get<any>(url).subscribe({
+    this.transactionsService.getTransactions(activeNo, date).subscribe({
       next: (response) => {
         this.isLoading.set(false);
         if (response && response.status === 0) {

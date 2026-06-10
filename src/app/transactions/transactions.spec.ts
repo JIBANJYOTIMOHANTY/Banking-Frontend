@@ -4,12 +4,12 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 import { Transactions } from './transactions';
-import { CommonService } from '../common-service/common-service';
+import { TransactionsService } from './service/transactions-service';
 
 describe('Transactions', () => {
   let component: Transactions;
   let fixture: ComponentFixture<Transactions>;
-  let mockCommonService: any;
+  let mockTransactionsService: any;
 
   const mockAccountsResponse = {
     status: 0,
@@ -30,20 +30,16 @@ describe('Transactions', () => {
   };
 
   beforeEach(async () => {
-    mockCommonService = {
-      get: vi.fn().mockImplementation((url: string) => {
-        if (url.includes('transactions')) {
-          return of(mockTransactionsResponse);
-        }
-        return of(mockAccountsResponse);
-      })
+    mockTransactionsService = {
+      getAccounts: vi.fn().mockReturnValue(of(mockAccountsResponse)),
+      getTransactions: vi.fn().mockReturnValue(of(mockTransactionsResponse))
     };
 
     await TestBed.configureTestingModule({
       imports: [Transactions, ReactiveFormsModule],
       providers: [
         provideRouter([]),
-        { provide: CommonService, useValue: mockCommonService }
+        { provide: TransactionsService, useValue: mockTransactionsService }
       ]
     }).compileComponents();
 
@@ -57,31 +53,32 @@ describe('Transactions', () => {
   });
 
   it('should load accounts and auto-select first account transactions on init', () => {
-    expect(mockCommonService.get).toHaveBeenCalled();
+    expect(mockTransactionsService.getAccounts).toHaveBeenCalled();
     expect(component.accounts().length).toBe(2);
     expect(component.selectedAccountNumber()).toBe('ACC0001');
+    expect(mockTransactionsService.getTransactions).toHaveBeenCalledWith('ACC0001', '');
     expect(component.transactions().length).toBe(2);
   });
 
   it('should reload transactions on account number selection change', () => {
-    mockCommonService.get.mockClear();
+    mockTransactionsService.getTransactions.mockClear();
     component.onAccountChange({ target: { value: 'ACC0002' } });
     expect(component.selectedAccountNumber()).toBe('ACC0002');
-    expect(mockCommonService.get).toHaveBeenCalled();
+    expect(mockTransactionsService.getTransactions).toHaveBeenCalledWith('ACC0002', '');
   });
 
   it('should reload transactions with date query param when date change occurs', () => {
-    mockCommonService.get.mockClear();
+    mockTransactionsService.getTransactions.mockClear();
     component.filterForm.patchValue({ dateFilter: '2026-06-09' });
     component.onDateChange();
-    expect(mockCommonService.get).toHaveBeenCalledWith(expect.stringContaining('?date=2026-06-09'));
+    expect(mockTransactionsService.getTransactions).toHaveBeenCalledWith('ACC0001', '2026-06-09');
   });
 
   it('should clear date filter and fetch all transactions', () => {
     component.filterForm.patchValue({ dateFilter: '2026-06-09' });
-    mockCommonService.get.mockClear();
+    mockTransactionsService.getTransactions.mockClear();
     component.clearDateFilter();
     expect(component.filterForm.value.dateFilter).toBe('');
-    expect(mockCommonService.get).toHaveBeenCalled();
+    expect(mockTransactionsService.getTransactions).toHaveBeenCalledWith('ACC0001', '');
   });
 });
