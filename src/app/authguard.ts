@@ -41,6 +41,9 @@ export class Authguard {
     // If token exists but is expired, clear and trigger custom popup
     if (this.isTokenExpired(token)) {
       if (!isServer) {
+        if (this.isRefreshing) {
+          return true; // Allow routing if we are already refreshing the token in the background
+        }
         this.handleSessionExpiration();
       }
       return false;
@@ -168,7 +171,8 @@ export class Authguard {
       const decodedPayload = JSON.parse(atob(parts[1]));
       if (decodedPayload && decodedPayload.exp) {
         const expirationDate = decodedPayload.exp * 1000;
-        return expirationDate < Date.now();
+        // Allow a 5-second grace period for clock skew, network latency, and active refresh processes
+        return (expirationDate + 5000) < Date.now();
       }
     } catch (e) {
       return true;
