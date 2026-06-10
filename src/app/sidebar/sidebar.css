@@ -1,5 +1,5 @@
 /* Mobile transitions (only transition translate/transform, NOT width) */
-@media (max-width: 1023.98px) {
+@media (max-width: 767.98px) {
   .sidebar-transition {
     transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1),
       translate 500ms cubic-bezier(0.16, 1, 0.3, 1),
@@ -8,15 +8,15 @@
 }
 
 /* Desktop transitions (only transition width, NOT translate/transform) */
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .sidebar-transition {
     transition: width 500ms cubic-bezier(0.16, 1, 0.3, 1),
       border-color 500ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 
-/* Closed state only for mobile (below desktop breakpoint of 1024px) */
-@media (max-width: 1023.98px) {
+/* Closed state only for mobile (below desktop breakpoint of 768px) */
+@media (max-width: 767.98px) {
   .sidebar-closed {
     translate: -100% 0;
   }

@@ -42,7 +42,7 @@ export class Sidebar implements OnInit {
 
   private checkScreenSize() {
     if (typeof window !== 'undefined') {
-      if (window.innerWidth < 1024) {
+      if (window.innerWidth < 768) {
         this.sidebarService.closeSidebar();
       } else {
         if (!this.sidebarService.isManuallyClosed()) {
@@ -55,7 +55,7 @@ export class Sidebar implements OnInit {
   navigate(item: SidebarItem) {
     this.router.navigate([item.route]);
     // Auto-close on mobile layout
-    if (window.innerWidth < 1024) {
+    if (window.innerWidth < 768) {
       this.sidebarService.closeSidebar();
     }
   }
