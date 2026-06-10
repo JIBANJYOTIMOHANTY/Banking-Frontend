@@ -69,4 +69,46 @@ describe('CustomerDetails', () => {
     component.submitCustomer();
     expect(mockCommonService.post).toHaveBeenCalled();
   });
+
+  it('should update customer with only dirty fields', () => {
+    component.isEditMode.set(true);
+    component.accountNumber.set('ACC0001');
+    component.addForm.setValue({
+      firstName: 'Bob',
+      lastName: 'Smith',
+      initialBalance: 0,
+      dob: '1990-01-01',
+      email: 'bob@example.com',
+      countryCode: '+91',
+      mobileNumber: '1234567890',
+      govtId: '123456789012',
+      govtIdType: 'aadhar',
+      pan: 'ABCDE1234F',
+      occupation: 'Developer',
+      nomineeName: 'Jane Smith',
+      nomineeRelation: 'Spouse',
+      address: '123 Main Street',
+      landmark: 'near park',
+      city: 'New York',
+      state: 'NY',
+      country: 'USA',
+      pincode: '123456'
+    });
+    
+    // Mark only firstName as dirty
+    component.controls['firstName'].markAsDirty();
+
+    // Mock patch method on the service
+    mockCommonService.patch = vi.fn().mockReturnValue(of({ status: 0, message: 'Updated successfully' }));
+
+    component.submitCustomer();
+
+    // Verify patch was called with only accountNumber and firstName
+    expect(mockCommonService.patch).toHaveBeenCalled();
+    const callArgs = mockCommonService.patch.mock.calls[0];
+    expect(callArgs[1]).toEqual({
+      accountNumber: 'ACC0001',
+      firstName: 'Bob'
+    });
+  });
 });

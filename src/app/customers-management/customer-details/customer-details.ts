@@ -53,20 +53,24 @@ export class CustomerDetails implements OnInit {
     pincode: ['', [Validators.required, Validators.pattern(/^[0-9]{6}$/)]]
   });
 
+  get controls() {
+    return this.addForm.controls;
+  }
+
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       const accNum = params.get('accountNumber');
       if (accNum) {
         this.isEditMode.set(true);
         this.accountNumber.set(accNum);
-        this.addForm.get('initialBalance')?.clearValidators();
-        this.addForm.get('initialBalance')?.updateValueAndValidity();
+        this.controls['initialBalance']?.clearValidators();
+        this.controls['initialBalance']?.updateValueAndValidity();
         this.loadCustomerDetails(accNum);
       } else {
         this.isEditMode.set(false);
         this.accountNumber.set(null);
-        this.addForm.get('initialBalance')?.setValidators([Validators.required, Validators.min(0)]);
-        this.addForm.get('initialBalance')?.updateValueAndValidity();
+        this.controls['initialBalance']?.setValidators([Validators.required, Validators.min(0)]);
+        this.controls['initialBalance']?.updateValueAndValidity();
         this.addForm.reset({
           countryCode: '+91',
           govtIdType: 'aadhar',
@@ -138,32 +142,50 @@ export class CustomerDetails implements OnInit {
       return;
     }
 
-    const payload: any = {
-      firstName: this.addForm.value.firstName,
-      lastName: this.addForm.value.lastName,
-      dob: this.addForm.value.dob,
-      email: this.addForm.value.email,
-      mobileNumber: `${this.addForm.value.countryCode}${this.addForm.value.mobileNumber}`,
-      govtId: this.addForm.value.govtId,
-      govtIdType: this.addForm.value.govtIdType,
-      pan: this.addForm.value.pan,
-      occupation: this.addForm.value.occupation,
-      nomineeName: this.addForm.value.nomineeName,
-      nomineeRelation: this.addForm.value.nomineeRelation,
-      address: this.addForm.value.address,
-      landmark: this.addForm.value.landmark,
-      city: this.addForm.value.city,
-      state: this.addForm.value.state,
-      country: this.addForm.value.country,
-      pincode: this.addForm.value.pincode
-    };
-
     this.isLoading.set(true);
     this.errorMessage.set(null);
     this.successMessage.set(null);
 
     if (this.isEditMode()) {
-      payload.accountNumber = this.accountNumber();
+      const controls = this.controls;
+      const payload: any = {
+        accountNumber: this.accountNumber()
+      };
+      
+      let hasChanges = false;
+
+      if (controls['firstName'].dirty) { payload.firstName = controls['firstName'].value; hasChanges = true; }
+      if (controls['lastName'].dirty) { payload.lastName = controls['lastName'].value; hasChanges = true; }
+      if (controls['dob'].dirty) { payload.dob = controls['dob'].value; hasChanges = true; }
+      if (controls['email'].dirty) { payload.email = controls['email'].value; hasChanges = true; }
+      
+      if (controls['countryCode'].dirty || controls['mobileNumber'].dirty) {
+        payload.mobileNumber = `${controls['countryCode'].value}${controls['mobileNumber'].value}`;
+        hasChanges = true;
+      }
+      
+      if (controls['govtId'].dirty) { payload.govtId = controls['govtId'].value; hasChanges = true; }
+      if (controls['govtIdType'].dirty) { payload.govtIdType = controls['govtIdType'].value; hasChanges = true; }
+      if (controls['pan'].dirty) { payload.pan = controls['pan'].value; hasChanges = true; }
+      if (controls['occupation'].dirty) { payload.occupation = controls['occupation'].value; hasChanges = true; }
+      if (controls['nomineeName'].dirty) { payload.nomineeName = controls['nomineeName'].value; hasChanges = true; }
+      if (controls['nomineeRelation'].dirty) { payload.nomineeRelation = controls['nomineeRelation'].value; hasChanges = true; }
+      if (controls['address'].dirty) { payload.address = controls['address'].value; hasChanges = true; }
+      if (controls['landmark'].dirty) { payload.landmark = controls['landmark'].value; hasChanges = true; }
+      if (controls['city'].dirty) { payload.city = controls['city'].value; hasChanges = true; }
+      if (controls['state'].dirty) { payload.state = controls['state'].value; hasChanges = true; }
+      if (controls['country'].dirty) { payload.country = controls['country'].value; hasChanges = true; }
+      if (controls['pincode'].dirty) { payload.pincode = controls['pincode'].value; hasChanges = true; }
+
+      if (!hasChanges) {
+        this.isLoading.set(false);
+        this.successMessage.set('No changes detected. Redirecting...');
+        setTimeout(() => {
+          this.router.navigate(['/customers']);
+        }, 1500);
+        return;
+      }
+
       this.customerService.updateCustomer(payload).subscribe({
         next: (response: any) => {
           this.isLoading.set(false);
@@ -180,7 +202,27 @@ export class CustomerDetails implements OnInit {
         }
       });
     } else {
-      payload.balance = this.addForm.value.initialBalance;
+      const payload: any = {
+        firstName: this.addForm.value.firstName,
+        lastName: this.addForm.value.lastName,
+        dob: this.addForm.value.dob,
+        email: this.addForm.value.email,
+        mobileNumber: `${this.addForm.value.countryCode}${this.addForm.value.mobileNumber}`,
+        govtId: this.addForm.value.govtId,
+        govtIdType: this.addForm.value.govtIdType,
+        pan: this.addForm.value.pan,
+        occupation: this.addForm.value.occupation,
+        nomineeName: this.addForm.value.nomineeName,
+        nomineeRelation: this.addForm.value.nomineeRelation,
+        address: this.addForm.value.address,
+        landmark: this.addForm.value.landmark,
+        city: this.addForm.value.city,
+        state: this.addForm.value.state,
+        country: this.addForm.value.country,
+        pincode: this.addForm.value.pincode,
+        balance: this.addForm.value.initialBalance
+      };
+
       this.customerService.createCustomer(payload).subscribe({
         next: (response: any) => {
           this.isLoading.set(false);
