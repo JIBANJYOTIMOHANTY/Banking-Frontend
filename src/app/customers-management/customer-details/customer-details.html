@@ -80,7 +80,9 @@
                                                                         Personal Details
                                                                 </h3>
 
-                                                                <div class="space-y-1">
+
+
+                                                                 <div class="space-y-1">
                                                                         <label
                                                                                 class="text-xs font-bold text-slate-500 uppercase tracking-wider">First
                                                                                 Name <span
@@ -90,8 +92,11 @@
                                                                                 class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
                                                                         @if (controls['firstName']?.touched &&
                                                                         controls['firstName']?.invalid) {
-                                                                        <p class="text-rose-600 text-[10px]">First name
-                                                                                is required (min 2 characters).</p>
+                                                                           @if (controls['firstName']?.errors?.['pattern']) {
+                                                                             <p class="text-rose-600 text-[10px]">First name cannot contain numbers or special characters.</p>
+                                                                           } @else {
+                                                                             <p class="text-rose-600 text-[10px]">First name is required (min 2 characters).</p>
+                                                                           }
                                                                         }
                                                                 </div>
 
@@ -105,8 +110,11 @@
                                                                                 class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
                                                                         @if (controls['lastName']?.touched &&
                                                                         controls['lastName']?.invalid) {
-                                                                        <p class="text-rose-600 text-[10px]">Last name
-                                                                                is required (min 2 characters).</p>
+                                                                           @if (controls['lastName']?.errors?.['pattern']) {
+                                                                             <p class="text-rose-600 text-[10px]">Last name cannot contain numbers or special characters.</p>
+                                                                           } @else {
+                                                                             <p class="text-rose-600 text-[10px]">Last name is required (min 2 characters).</p>
+                                                                           }
                                                                         }
                                                                 </div>
 
@@ -259,8 +267,11 @@
                                                                                         class="w-full px-3 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
                                                                                 @if (controls['govtId']?.touched &&
                                                                                 controls['govtId']?.invalid) {
-                                                                                <p class="text-rose-600 text-[10px]">
-                                                                                        Government ID is mandatory.</p>
+                                                                                  @if (controls['govtId']?.errors?.['required']) {
+                                                                                    <p class="text-rose-600 text-[10px]">Government ID is mandatory.</p>
+                                                                                  } @else if (controls['govtId']?.errors?.['pattern']) {
+                                                                                    <p class="text-rose-600 text-[10px]">Aadhar number must be exactly 12 digits (numbers only).</p>
+                                                                                  }
                                                                                 }
                                                                         </div>
                                                                 </div>
@@ -385,14 +396,19 @@
                                                                         class="material-icons text-sm text-indigo-600">groups</span>
                                                                 Nominee Information
                                                         </h3>
-                                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                                <div class="space-y-1">
+                                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">                                                                 <div class="space-y-1">
                                                                         <label
                                                                                 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Nominee
                                                                                 Name</label>
                                                                         <input type="text" formControlName="nomineeName"
                                                                                 placeholder="Enter nominee name"
                                                                                 class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm text-slate-800 transition-colors" />
+                                                                        @if (controls['nomineeName']?.touched &&
+                                                                        controls['nomineeName']?.invalid) {
+                                                                            @if (controls['nomineeName']?.errors?.['pattern']) {
+                                                                                <p class="text-rose-600 text-[10px]">Nominee name must contain only alphabetic characters and spaces.</p>
+                                                                            }
+                                                                        }
                                                                 </div>
                                                                 <div class="space-y-1">
                                                                         <label

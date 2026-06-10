@@ -32,8 +32,8 @@ export class CustomerDetails implements OnInit {
 
   // Registration Form with mandatory validations
   addForm: FormGroup = this.fb.group({
-    firstName: ['', [Validators.required, Validators.minLength(2)]],
-    lastName: ['', [Validators.required, Validators.minLength(2)]],
+    firstName: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[a-zA-Z\s]+$/)]],
+    lastName: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[a-zA-Z\s]+$/)]],
     initialBalance: [0, [Validators.required, Validators.min(0)]],
     dob: ['', [Validators.required]],
     email: ['', [Validators.email]],
@@ -43,7 +43,7 @@ export class CustomerDetails implements OnInit {
     govtIdType: ['aadhar', [Validators.required]],
     pan: ['', [Validators.required, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)]],
     occupation: [''],
-    nomineeName: [''],
+    nomineeName: ['', [Validators.pattern(/^[a-zA-Z\s]*$/)]],
     nomineeRelation: [''],
     address: ['', [Validators.required]],
     landmark: [''],
@@ -58,6 +58,10 @@ export class CustomerDetails implements OnInit {
   }
 
   ngOnInit() {
+    this.addForm.get('govtIdType')?.valueChanges.subscribe(value => {
+      this.updateGovtIdValidator(value);
+    });
+
     this.route.paramMap.subscribe(params => {
       const accNum = params.get('accountNumber');
       if (accNum) {
@@ -76,8 +80,21 @@ export class CustomerDetails implements OnInit {
           govtIdType: 'aadhar',
           initialBalance: 0
         });
+        this.updateGovtIdValidator('aadhar');
       }
     });
+  }
+
+  private updateGovtIdValidator(type: string) {
+    const govtIdControl = this.addForm.get('govtId');
+    if (govtIdControl) {
+      if (type === 'aadhar') {
+        govtIdControl.setValidators([Validators.required, Validators.pattern(/^[0-9]{12}$/)]);
+      } else {
+        govtIdControl.setValidators([Validators.required]);
+      }
+      govtIdControl.updateValueAndValidity({ emitEvent: false });
+    }
   }
 
   loadCustomerDetails(accountNumber: string) {
@@ -151,19 +168,19 @@ export class CustomerDetails implements OnInit {
       const payload: any = {
         accountNumber: this.accountNumber()
       };
-      
+
       let hasChanges = false;
 
       if (controls['firstName'].dirty) { payload.firstName = controls['firstName'].value; hasChanges = true; }
       if (controls['lastName'].dirty) { payload.lastName = controls['lastName'].value; hasChanges = true; }
       if (controls['dob'].dirty) { payload.dob = controls['dob'].value; hasChanges = true; }
       if (controls['email'].dirty) { payload.email = controls['email'].value; hasChanges = true; }
-      
+
       if (controls['countryCode'].dirty || controls['mobileNumber'].dirty) {
         payload.mobileNumber = `${controls['countryCode'].value}${controls['mobileNumber'].value}`;
         hasChanges = true;
       }
-      
+
       if (controls['govtId'].dirty) { payload.govtId = controls['govtId'].value; hasChanges = true; }
       if (controls['govtIdType'].dirty) { payload.govtIdType = controls['govtIdType'].value; hasChanges = true; }
       if (controls['pan'].dirty) { payload.pan = controls['pan'].value; hasChanges = true; }
