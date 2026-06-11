@@ -709,7 +709,7 @@
                       <td class="p-3" [class.text-indigo-600]="log.status === 'Active'" [class.font-bold]="log.status === 'Active'">
                         {{ log.activity }}
                       </td>
-                      <td class="p-3">{{ log.time }}</td>
+                      <td class="p-3">{{ log.timestamp || log.time }}</td>
                       <td class="p-3 text-right">
                         <span [class.bg-emerald-50]="log.status === 'Active'" [class.text-emerald-700]="log.status === 'Active'"
                               [class.bg-slate-50]="log.status !== 'Active'" [class.text-slate-400]="log.status !== 'Active'"
