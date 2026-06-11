@@ -17,10 +17,12 @@ export interface BankAccount {
   updated_at?: string;
 }
 
+import { PopUpModal } from '../custom-pop-up-modal/pop-up-modal/pop-up-modal';
+
 @Component({
   selector: 'app-accounts',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, Sidebar, Header, Footer],
+  imports: [CommonModule, ReactiveFormsModule, Sidebar, Header, Footer, PopUpModal],
   templateUrl: './accounts.html',
   styleUrl: './accounts.css',
 })

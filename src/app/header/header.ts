@@ -13,10 +13,11 @@ import { MyProfile } from './my-profile/my-profile';
 import { Settings } from './settings/settings';
 import { Security } from './security/security';
 import { QuickAction } from './quick-action/quick-action';
+import { PopUpModal } from '../custom-pop-up-modal/pop-up-modal/pop-up-modal';
 
 @Component({
   selector: 'app-header',
-  imports: [MyProfile, Settings, Security, QuickAction],
+  imports: [MyProfile, Settings, Security, QuickAction, PopUpModal],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })

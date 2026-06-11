@@ -333,158 +333,124 @@
 }
 
 <!-- Freeze / Unfreeze Account Modal -->
-@if (showFreezeModal()) {
-<div
-  class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity animate-in fade-in duration-200">
-  <div
-    class="bg-white rounded-3xl border border-slate-100 max-w-md w-full shadow-2xl p-6 relative overflow-hidden animate-in zoom-in-95 duration-200">
-    <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
-      <h3 class="text-base font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
-        <span class="material-icons text-indigo-600">ac_unit</span>
-        Freeze / Unfreeze Account
-      </h3>
-      <button (click)="closeFreezeModal()"
-        class="p-1 rounded-lg hover:bg-slate-50 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
-        <span class="material-icons text-base">close</span>
-      </button>
-    </div>
-
-    <!-- Feedback alerts -->
-    @if (quickActionsMessage()) {
-    <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-bold mb-4 border border-emerald-100">
-      {{ quickActionsMessage() }}
-    </div>
-    }
-    @if (quickActionsError()) {
-    <div class="p-3 bg-rose-50 text-rose-700 rounded-xl text-xs font-bold mb-4 border border-rose-100">
-      {{ quickActionsError() }}
-    </div>
-    }
-
-    <div class="space-y-4">
-      <div class="space-y-1.5">
-        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Account Number</label>
-        <div class="relative">
-          <span class="material-icons absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base">badge</span>
-          <input type="text" [value]="freezeFormAccountNo()" (input)="onFreezeAccountInput($event)"
-            placeholder="ACC0001"
-            class="w-full pl-10 pr-4 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-slate-50/50 text-slate-800 font-semibold" />
-        </div>
-      </div>
-
-      <div class="space-y-1.5">
-        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Action Type</label>
-        <div class="grid grid-cols-2 gap-3">
-          <!-- Freeze Option Button -->
-          <button (click)="setFreezeAction('freeze')" [class.bg-rose-600]="freezeFormAction() === 'freeze'"
-            [class.text-white]="freezeFormAction() === 'freeze'"
-            [class.border-rose-600]="freezeFormAction() === 'freeze'" [class.bg-white]="freezeFormAction() !== 'freeze'"
-            [class.text-slate-600]="freezeFormAction() !== 'freeze'"
-            [class.border-slate-200]="freezeFormAction() !== 'freeze'"
-            class="flex items-center justify-center gap-2 p-3 border rounded-xl text-xs font-bold transition-all cursor-pointer hover:opacity-90 shadow-sm flex-1">
-            <span class="material-icons text-base">ac_unit</span>
-            <span>Freeze</span>
-          </button>
-
-          <!-- Unfreeze Option Button -->
-          <button (click)="setFreezeAction('unfreeze')" [class.bg-emerald-600]="freezeFormAction() === 'unfreeze'"
-            [class.text-white]="freezeFormAction() === 'unfreeze'"
-            [class.border-emerald-600]="freezeFormAction() === 'unfreeze'"
-            [class.bg-white]="freezeFormAction() !== 'unfreeze'"
-            [class.text-slate-600]="freezeFormAction() !== 'unfreeze'"
-            [class.border-slate-200]="freezeFormAction() !== 'unfreeze'"
-            class="flex items-center justify-center gap-2 p-3 border rounded-xl text-xs font-bold transition-all cursor-pointer hover:opacity-90 shadow-sm flex-1">
-            <span class="material-icons text-base">lock_open</span>
-            <span>Unfreeze</span>
-          </button>
-        </div>
-      </div>
-
-      <button (click)="submitFreeze()"
-        class="w-full mt-6 bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-md">
-        Apply Status Change
-      </button>
-    </div>
+<app-pop-up-modal [isOpen]="showFreezeModal()" title="Freeze / Unfreeze Account" icon="ac_unit" size="md" (closeModalEvent)="closeFreezeModal()">
+  <!-- Feedback alerts -->
+  @if (quickActionsMessage()) {
+  <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-bold mb-4 border border-emerald-100">
+    {{ quickActionsMessage() }}
   </div>
-</div>
-}
+  }
+  @if (quickActionsError()) {
+  <div class="p-3 bg-rose-50 text-rose-700 rounded-xl text-xs font-bold mb-4 border border-rose-100">
+    {{ quickActionsError() }}
+  </div>
+  }
+
+  <div class="space-y-4">
+    <div class="space-y-1.5">
+      <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Account Number</label>
+      <div class="relative">
+        <span class="material-icons absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base">badge</span>
+        <input type="text" [value]="freezeFormAccountNo()" (input)="onFreezeAccountInput($event)"
+          placeholder="ACC0001"
+          class="w-full pl-10 pr-4 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-slate-50/50 text-slate-800 font-semibold" />
+      </div>
+    </div>
+
+    <div class="space-y-1.5">
+      <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Action Type</label>
+      <div class="grid grid-cols-2 gap-3">
+        <!-- Freeze Option Button -->
+        <button (click)="setFreezeAction('freeze')" [class.bg-rose-600]="freezeFormAction() === 'freeze'"
+          [class.text-white]="freezeFormAction() === 'freeze'"
+          [class.border-rose-600]="freezeFormAction() === 'freeze'" [class.bg-white]="freezeFormAction() !== 'freeze'"
+          [class.text-slate-600]="freezeFormAction() !== 'freeze'"
+          [class.border-slate-200]="freezeFormAction() !== 'freeze'"
+          class="flex items-center justify-center gap-2 p-3 border rounded-xl text-xs font-bold transition-all cursor-pointer hover:opacity-90 shadow-sm flex-1">
+          <span class="material-icons text-base">ac_unit</span>
+          <span>Freeze</span>
+        </button>
+
+        <!-- Unfreeze Option Button -->
+        <button (click)="setFreezeAction('unfreeze')" [class.bg-emerald-600]="freezeFormAction() === 'unfreeze'"
+          [class.text-white]="freezeFormAction() === 'unfreeze'"
+          [class.border-emerald-600]="freezeFormAction() === 'unfreeze'"
+          [class.bg-white]="freezeFormAction() !== 'unfreeze'"
+          [class.text-slate-600]="freezeFormAction() !== 'unfreeze'"
+          [class.border-slate-200]="freezeFormAction() !== 'unfreeze'"
+          class="flex items-center justify-center gap-2 p-3 border rounded-xl text-xs font-bold transition-all cursor-pointer hover:opacity-90 shadow-sm flex-1">
+          <span class="material-icons text-base">lock_open</span>
+          <span>Unfreeze</span>
+        </button>
+      </div>
+    </div>
+
+    <button (click)="submitFreeze()"
+      class="w-full mt-6 bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-md">
+      Apply Status Change
+    </button>
+  </div>
+</app-pop-up-modal>
 
 <!-- Broadcast Alert Modal -->
-@if (showBroadcastModal()) {
-<div
-  class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity animate-in fade-in duration-200">
-  <div
-    class="bg-white rounded-3xl border border-slate-100 max-w-md w-full shadow-2xl p-6 relative overflow-hidden animate-in zoom-in-95 duration-200">
-    <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
-      <h3 class="text-base font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
-        <span class="material-icons text-indigo-600">campaign</span>
-        Broadcast System Alert
-      </h3>
-      <button (click)="closeBroadcastModal()"
-        class="p-1 rounded-lg hover:bg-slate-50 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
-        <span class="material-icons text-base">close</span>
+<app-pop-up-modal [isOpen]="showBroadcastModal()" title="Broadcast System Alert" icon="campaign" size="md" (closeModalEvent)="closeBroadcastModal()">
+  <!-- Feedback alerts -->
+  @if (quickActionsMessage()) {
+  <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-bold mb-4 border border-emerald-100">
+    {{ quickActionsMessage() }}
+  </div>
+  }
+  @if (quickActionsError()) {
+  <div class="p-3 bg-rose-50 text-rose-700 rounded-xl text-xs font-bold mb-4 border border-rose-100">
+    {{ quickActionsError() }}
+  </div>
+  }
+
+  <div class="space-y-4">
+    <div class="space-y-1.5">
+      <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Alert Message</label>
+      <textarea [value]="broadcastFormMessage()" (input)="onBroadcastMessageInput($event)" rows="4"
+        placeholder="Enter system announcement..."
+        class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-slate-50/50 text-slate-800 font-semibold resize-none"></textarea>
+    </div>
+
+    <div class="space-y-1.5">
+      <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Alert Category</label>
+      <div class="grid grid-cols-2 gap-3">
+        <!-- Announcement Option Button -->
+        <button (click)="setBroadcastType('INFO')" [class.bg-emerald-600]="broadcastFormType() === 'INFO'"
+          [class.text-white]="broadcastFormType() === 'INFO'"
+          [class.border-emerald-600]="broadcastFormType() === 'INFO'"
+          [class.bg-white]="broadcastFormType() !== 'INFO'" [class.text-slate-600]="broadcastFormType() !== 'INFO'"
+          [class.border-slate-200]="broadcastFormType() !== 'INFO'"
+          class="flex items-center justify-center gap-2 p-3 border rounded-xl text-xs font-bold transition-all cursor-pointer hover:opacity-90 shadow-sm flex-1">
+          <span class="material-icons text-base">info</span>
+          <span>Announcement</span>
+        </button>
+
+        <!-- Lockout Option Button -->
+        <button (click)="setBroadcastType('CRITICAL')" [class.bg-rose-600]="broadcastFormType() === 'CRITICAL'"
+          [class.text-white]="broadcastFormType() === 'CRITICAL'"
+          [class.border-rose-600]="broadcastFormType() === 'CRITICAL'"
+          [class.bg-white]="broadcastFormType() !== 'CRITICAL'"
+          [class.text-slate-600]="broadcastFormType() !== 'CRITICAL'"
+          [class.border-slate-200]="broadcastFormType() !== 'CRITICAL'"
+          class="flex items-center justify-center gap-2 p-3 border rounded-xl text-xs font-bold transition-all cursor-pointer hover:opacity-90 shadow-sm flex-1">
+          <span class="material-icons text-base">block</span>
+          <span>Lockout Alert</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 mt-6">
+      <button (click)="clearBroadcast()"
+        class="w-full border border-rose-200 hover:bg-rose-50 text-rose-600 font-bold py-2.5 rounded-xl text-xs transition-all cursor-pointer">
+        Clear Active Alert
+      </button>
+      <button (click)="submitBroadcast()"
+        class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-md">
+        Publish Alert
       </button>
     </div>
-
-    <!-- Feedback alerts -->
-    @if (quickActionsMessage()) {
-    <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-bold mb-4 border border-emerald-100">
-      {{ quickActionsMessage() }}
-    </div>
-    }
-    @if (quickActionsError()) {
-    <div class="p-3 bg-rose-50 text-rose-700 rounded-xl text-xs font-bold mb-4 border border-rose-100">
-      {{ quickActionsError() }}
-    </div>
-    }
-
-    <div class="space-y-4">
-      <div class="space-y-1.5">
-        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Alert Message</label>
-        <textarea [value]="broadcastFormMessage()" (input)="onBroadcastMessageInput($event)" rows="4"
-          placeholder="Enter system announcement..."
-          class="w-full px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-slate-50/50 text-slate-800 font-semibold resize-none"></textarea>
-      </div>
-
-      <div class="space-y-1.5">
-        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Alert Category</label>
-        <div class="grid grid-cols-2 gap-3">
-          <!-- Announcement Option Button -->
-          <button (click)="setBroadcastType('INFO')" [class.bg-emerald-600]="broadcastFormType() === 'INFO'"
-            [class.text-white]="broadcastFormType() === 'INFO'"
-            [class.border-emerald-600]="broadcastFormType() === 'INFO'"
-            [class.bg-white]="broadcastFormType() !== 'INFO'" [class.text-slate-600]="broadcastFormType() !== 'INFO'"
-            [class.border-slate-200]="broadcastFormType() !== 'INFO'"
-            class="flex items-center justify-center gap-2 p-3 border rounded-xl text-xs font-bold transition-all cursor-pointer hover:opacity-90 shadow-sm flex-1">
-            <span class="material-icons text-base">info</span>
-            <span>Announcement</span>
-          </button>
-
-          <!-- Lockout Option Button -->
-          <button (click)="setBroadcastType('CRITICAL')" [class.bg-rose-600]="broadcastFormType() === 'CRITICAL'"
-            [class.text-white]="broadcastFormType() === 'CRITICAL'"
-            [class.border-rose-600]="broadcastFormType() === 'CRITICAL'"
-            [class.bg-white]="broadcastFormType() !== 'CRITICAL'"
-            [class.text-slate-600]="broadcastFormType() !== 'CRITICAL'"
-            [class.border-slate-200]="broadcastFormType() !== 'CRITICAL'"
-            class="flex items-center justify-center gap-2 p-3 border rounded-xl text-xs font-bold transition-all cursor-pointer hover:opacity-90 shadow-sm flex-1">
-            <span class="material-icons text-base">block</span>
-            <span>Lockout Alert</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-3 mt-6">
-        <button (click)="clearBroadcast()"
-          class="w-full border border-rose-200 hover:bg-rose-50 text-rose-600 font-bold py-2.5 rounded-xl text-xs transition-all cursor-pointer">
-          Clear Active Alert
-        </button>
-        <button (click)="submitBroadcast()"
-          class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-md">
-          Publish Alert
-        </button>
-      </div>
-    </div>
   </div>
-</div>
-}
+</app-pop-up-modal>

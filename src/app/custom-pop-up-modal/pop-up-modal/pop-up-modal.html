@@ -1,1 +1,27 @@
-<p>pop-up-modal works!</p>
+@if (isOpen()) {
+<div
+  class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity animate-in fade-in duration-200 backdrop-overlay"
+  (click)="onBackdropClick($event)">
+  <div
+    [class]="'bg-white rounded-3xl border border-slate-100 w-full shadow-2xl p-6 relative overflow-hidden animate-in zoom-in-95 duration-200 ' + sizeClass()">
+    
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
+      <h3 class="text-base font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
+        @if (icon()) {
+        <span class="material-icons text-indigo-600">{{ icon() }}</span>
+        }
+        {{ title() }}
+      </h3>
+      <button (click)="closeModal()"
+        class="p-1 rounded-lg hover:bg-slate-50 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
+        <span class="material-icons text-base">close</span>
+      </button>
+    </div>
+
+    <!-- Projected Content Body -->
+    <ng-content></ng-content>
+
+  </div>
+</div>
+}
