@@ -31,6 +31,17 @@ export class DashboardAdministrator implements OnInit {
   depositsTrend = signal('+0.0%');
   transactionsTrend = signal('Real-time');
 
+  private totalSystemBalance = 0;
+  private recentDepositSum = 0;
+
+  private updateDepositsTrend() {
+    let depositPct = 0;
+    if (this.totalSystemBalance > 0) {
+      depositPct = (this.recentDepositSum / this.totalSystemBalance) * 100;
+    }
+    this.depositsTrend.set(`+${depositPct.toFixed(1)}%`);
+  }
+
   ngOnInit() {
     this.loadAccounts();
     this.loadTransactions();
@@ -45,7 +56,8 @@ export class DashboardAdministrator implements OnInit {
           this.accountsOpen.set(accounts.length);
 
           const sum = accounts.reduce((total: number, acc: any) => total + acc.balance, 0);
-          this.totalDeposits.set(sum);
+          this.totalSystemBalance = sum;
+          this.updateDepositsTrend();
 
           // Calculate 24h trend threshold
           const now = new Date();
@@ -89,35 +101,28 @@ export class DashboardAdministrator implements OnInit {
           const txs = response.data || [];
           this.totalTransactionsCount.set(txs.length);
 
-          // Calculate deposits trend based on transaction activity in last 24h
-          const now = new Date();
-          const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-          const year = oneDayAgo.getFullYear();
-          const month = String(oneDayAgo.getMonth() + 1).padStart(2, '0');
-          const day = String(oneDayAgo.getDate()).padStart(2, '0');
-          const hours = String(oneDayAgo.getHours()).padStart(2, '0');
-          const minutes = String(oneDayAgo.getMinutes()).padStart(2, '0');
-          const seconds = String(oneDayAgo.getSeconds()).padStart(2, '0');
-          const thresholdStr = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+          // Get calendar day string (yyyy-MM-dd)
+          const today = new Date();
+          const y = today.getFullYear();
+          const m = String(today.getMonth() + 1).padStart(2, '0');
+          const d = String(today.getDate()).padStart(2, '0');
+          const todayStr = `${y}-${m}-${d}`;
 
-          const recentTxs = txs.filter((tx: any) => {
+          const todayTxs = txs.filter((tx: any) => {
             const timestamp = tx.timestamp || '';
-            return timestamp >= thresholdStr;
+            return timestamp.startsWith(todayStr);
           });
 
-          const recentDepositSum = recentTxs
+          const todayDepositSum = todayTxs
             .filter((tx: any) => tx.transactionType === 'DEPOSIT' || tx.transactionType === 'INITIAL_DEPOSIT')
             .reduce((sum: number, tx: any) => sum + tx.amount, 0);
 
-          const totalCurrentDeposits = this.totalDeposits();
-          let depositPct = 0;
-          if (totalCurrentDeposits > 0) {
-            depositPct = (recentDepositSum / totalCurrentDeposits) * 100;
-          }
-          this.depositsTrend.set(`+${depositPct.toFixed(1)}%`);
+          this.recentDepositSum = todayDepositSum;
+          this.totalDeposits.set(todayDepositSum);
+          this.updateDepositsTrend();
 
           // Transactions trend
-          const txsToday = recentTxs.length;
+          const txsToday = todayTxs.length;
           this.transactionsTrend.set(`+${txsToday} today`);
 
           // Sort lexicographically by timestamp descending (yyyy-MM-dd HH:mm:ss format)
