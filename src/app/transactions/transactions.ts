@@ -6,6 +6,8 @@ import { Sidebar } from '../sidebar/sidebar';
 import { Header } from '../header/header';
 import { Footer } from '../footer/footer';
 import { SidebarService } from '../sidebar/service/sidebar-service';
+import { CustomTable } from '../custom-tables/custom-table';
+import { TableColumn } from '../custom-tables/custom-table-models/custom-table-model';
 
 export interface BankAccount {
   accountNumber: string;
@@ -26,7 +28,7 @@ export interface Transaction {
 @Component({
   selector: 'app-transactions',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, Sidebar, Header, Footer],
+  imports: [CommonModule, ReactiveFormsModule, Sidebar, Header, Footer, CustomTable],
   templateUrl: './transactions.html',
   styleUrl: './transactions.css',
 })
@@ -38,6 +40,14 @@ export class Transactions implements OnInit {
   accounts = signal<BankAccount[]>([]);
   selectedAccountNumber = signal<string>('');
   transactions = signal<Transaction[]>([]);
+
+  txnColumns: TableColumn[] = [
+    { key: 'id', header: 'Statement ID', type: 'mono', prefix: 'TXN#' },
+    { key: 'transactionType', header: 'Operation Type', type: 'transaction-type-badge' },
+    { key: 'amount', header: 'Transaction Amount', type: 'transaction-amount' },
+    { key: 'postBalance', header: 'Remaining Balance', type: 'currency' },
+    { key: 'timestamp', header: 'Transaction Date & Time', type: 'text' }
+  ];
   totalRecord = signal<number>(0);
 
   isLoading = signal(false);

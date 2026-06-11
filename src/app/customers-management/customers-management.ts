@@ -7,6 +7,8 @@ import { Sidebar } from '../sidebar/sidebar';
 import { Header } from '../header/header';
 import { Footer } from '../footer/footer';
 import { SidebarService } from '../sidebar/service/sidebar-service';
+import { CustomTable } from '../custom-tables/custom-table';
+import { TableColumn } from '../custom-tables/custom-table-models/custom-table-model';
 
 export interface Customer {
   id?: number;
@@ -35,7 +37,7 @@ export interface Customer {
 
 @Component({
   selector: 'app-customers-management',
-  imports: [CommonModule, Sidebar, Header, Footer],
+  imports: [CommonModule, Sidebar, Header, Footer, CustomTable],
   templateUrl: './customers-management.html',
   styleUrl: './customers-management.css',
 })
@@ -48,6 +50,39 @@ export class CustomersManagement implements OnInit {
   searchQuery = signal<string>('');
   totalCustomersCount = signal<number>(0);
   expandedCustomerNo = signal<string | null>(null);
+
+  customerColumns: TableColumn[] = [
+    { key: 'customerProfile', header: 'Customer Profile', type: 'customer-profile' },
+    { key: 'accountNumber', header: 'Account Number', type: 'badge-mono' },
+    { key: 'created_at', header: 'Created Date', type: 'text' },
+    { key: 'balance', header: 'Available Balance', type: 'currency' },
+    {
+      key: 'actions',
+      header: 'Actions',
+      type: 'actions',
+      align: 'right',
+      buttons: [
+        {
+          label: (row) => this.expandedCustomerNo() === row.accountNumber ? 'Collapse' : 'Details',
+          icon: (row) => this.expandedCustomerNo() === row.accountNumber ? 'expand_less' : 'expand_more',
+          actionName: 'expand'
+        },
+        {
+          label: 'Edit',
+          icon: 'edit',
+          actionName: 'edit'
+        }
+      ]
+    }
+  ];
+
+  handleTableAction(event: { action: string; row: any }) {
+    if (event.action === 'expand') {
+      this.toggleExpandCustomer(event.row.accountNumber);
+    } else if (event.action === 'edit') {
+      this.openEditPage(event.row);
+    }
+  }
 
   filteredCustomers = computed(() => {
     return this.customers();
@@ -68,7 +103,7 @@ export class CustomersManagement implements OnInit {
   fetchCustomers() {
     this.isLoading.set(true);
     this.errorMessage.set(null);
-    
+
     const query = this.searchQuery().trim();
     this.commonService.post<any>(`${environment.BASE_API_URL}bank/customer/search`, { query: query || '' }).subscribe({
       next: (response) => {

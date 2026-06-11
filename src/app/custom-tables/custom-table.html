@@ -1,0 +1,148 @@
+<div class="rounded-2xl overflow-hidden shadow-sm bg-white">
+  <table class="w-full text-left border-collapse text-xs">
+    <thead>
+      <tr
+        class="bg-slate-50/50 border-b border-slate-150 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+        @for (col of columns(); track col.key) {
+        <th class="p-4" [ngClass]="[
+            getAlignmentClass(col.align),
+            col.key === columns()[0].key ? 'pl-6' : '',
+            col.key === columns()[columns().length - 1].key ? 'pr-6' : ''
+          ]">{{ col.header }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100 font-medium text-slate-650">
+      @if (filteredData().length === 0) {
+      <tr>
+        <td [attr.colspan]="columns().length" class="p-8 text-center text-slate-400 font-bold">
+          No matching records found.
+        </td>
+      </tr>
+      } @else {
+      @for (row of filteredData(); track row[rowIdKey()] || $index) {
+      <tr class="hover:bg-slate-50/30 transition-colors group">
+        @for (col of columns(); track col.key) {
+        <td class="p-4" [ngClass]="[
+                getAlignmentClass(col.align),
+                col.key === columns()[0].key ? 'pl-6' : '',
+                col.key === columns()[columns().length - 1].key ? 'pr-6' : ''
+              ]">
+          <!-- Type: customer-profile (initials avatar + name + customer ID) -->
+          @if (col.type === 'customer-profile') {
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-base shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-200 select-none">
+              {{ (row.firstName?.charAt(0) || '') + (row.lastName?.charAt(0) || '') }}
+            </div>
+            <div>
+              <div class="font-extrabold text-slate-800 tracking-tight group-hover:text-indigo-600 transition-colors">
+                {{ row.firstName }} {{ row.lastName }}
+              </div>
+              <div class="text-slate-400 text-xs font-medium">
+                Customer Profile ID: #{{ row.id || 'N/A' }}
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- Type: icon-text (icon + text layout) -->
+          @else if (col.type === 'icon-text') {
+          <div class="flex items-center gap-2 font-bold text-slate-700">
+            @if (col.iconKey && row[col.iconKey]) {
+            <span class="material-icons text-slate-400 text-sm">{{ row[col.iconKey] }}</span>
+            }
+            <span>{{ col.prefix || '' }}{{ row[col.key] }}</span>
+          </div>
+          }
+
+          <!-- Type: mono -->
+          @else if (col.type === 'mono') {
+          <span class="font-mono">{{ col.prefix || '' }}{{ row[col.key] }}</span>
+          }
+
+          <!-- Type: status-text (activity text highlight) -->
+          @else if (col.type === 'status-text') {
+          <span [ngClass]="{
+                    'text-indigo-600 font-bold': col.statusKey && row[col.statusKey] === 'Active'
+                  }">
+            {{ col.prefix || '' }}{{ row[col.key] }}
+          </span>
+          }
+
+          <!-- Type: badge-mono (styled monospace badge) -->
+          @else if (col.type === 'badge-mono') {
+          <span
+            class="font-mono text-xs font-bold text-indigo-600 bg-indigo-50/70 border border-indigo-100/50 px-2.5 py-1 rounded-lg">
+            {{ row[col.key] }}
+          </span>
+          }
+
+          <!-- Type: currency (currency formatter with symbol) -->
+          @else if (col.type === 'currency') {
+          <span class="font-bold text-slate-900">₹{{ row[col.key] | number:'1.2-2' }}</span>
+          }
+
+          <!-- Type: transaction-amount (debit/credit sign and color) -->
+          @else if (col.type === 'transaction-amount') {
+          <span class="font-bold" [class.text-emerald-600]="isCredit(row.transactionType)"
+            [class.text-rose-600]="!isCredit(row.transactionType)">
+            {{ isCredit(row.transactionType) ? '+' : '-' }}₹{{ row[col.key] | number:'1.2-2' }}
+          </span>
+          }
+
+          <!-- Type: transaction-type-badge -->
+          @else if (col.type === 'transaction-type-badge') {
+          <span [class]="getTransactionClass(row[col.key])"
+            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border">
+            <span class="material-icons text-xs flex items-center justify-center">{{ getTransactionIcon(row[col.key])
+              }}</span>
+            {{ row[col.key] }}
+          </span>
+          }
+
+          <!-- Type: badge (color badge layouts) -->
+          @else if (col.type === 'badge') {
+          <span [ngClass]="{
+                    'bg-emerald-50 text-emerald-700 border-emerald-100': row[col.key] === 'Active' || row[col.key] === 'Success',
+                    'bg-slate-50 text-slate-400 border-slate-100': row[col.key] !== 'Active' && row[col.key] !== 'Success'
+                  }" class="font-bold px-2.5 py-0.5 rounded-full text-[11px] border">
+            {{ row[col.key] }}
+          </span>
+          }
+
+          <!-- Type: actions -->
+          @else if (col.type === 'actions') {
+          <div class="inline-flex items-center gap-2">
+            @for (btn of col.buttons; track btn.actionName) {
+            <button (click)="onButtonClick(btn.actionName, row)"
+              [class]="btn.class || 'inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 hover:border-indigo-200 text-slate-600 hover:text-indigo-600 bg-white hover:bg-indigo-50/30 text-xs font-bold transition-all duration-200 cursor-pointer'">
+              @if (btn.icon) {
+              <span class="material-icons text-sm">{{ getButtonIcon(btn, row) }}</span>
+              }
+              <span>{{ getButtonLabel(btn, row) }}</span>
+            </button>
+            }
+          </div>
+          }
+
+          <!-- Default / Type: text -->
+          @else {
+          <span>{{ col.prefix || '' }}{{ row[col.key] }}</span>
+          }
+        </td>
+        }
+      </tr>
+      @if (expandedDetailTemplate && expandedRowId() === row[rowIdKey()]) {
+      <tr class="bg-slate-50/40">
+        <td [attr.colspan]="columns().length" class="p-6 border-b border-slate-100">
+          <ng-container [ngTemplateOutlet]="expandedDetailTemplate"
+            [ngTemplateOutletContext]="{ $implicit: row }"></ng-container>
+        </td>
+      </tr>
+      }
+      }
+      }
+    </tbody>
+  </table>
+</div>

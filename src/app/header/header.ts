@@ -6,9 +6,12 @@ import { HeaderService } from './service/header-service';
 import { Subject, of, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
 
+import { CustomTable } from '../custom-tables/custom-table';
+import { TableColumn } from '../custom-tables/custom-table-models/custom-table-model';
+
 @Component({
   selector: 'app-header',
-  imports: [],
+  imports: [CustomTable],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
@@ -42,7 +45,7 @@ export class Header implements OnInit, OnDestroy {
   // User Center (Profile, Settings, Security)
   showUserCenterModal = signal(false);
   activeUserCenterTab = signal<'profile' | 'settings' | 'security'>('profile');
-  
+
   // Profile edits
   editFirstName = signal('');
   editLastName = signal('');
@@ -62,6 +65,15 @@ export class Header implements OnInit, OnDestroy {
   securityErrorMessage = signal<string | null>(null);
   securitySuccessMessage = signal<string | null>(null);
   sessionLogs = signal<any[]>([]);
+  sessionLogSearchQuery = signal('');
+
+  sessionLogColumns: TableColumn[] = [
+    { key: 'deviceName', header: 'Device / Browser', type: 'icon-text', iconKey: 'deviceIcon' },
+    { key: 'ipAddress', header: 'IP Address', type: 'mono' },
+    { key: 'activity', header: 'Activity', type: 'status-text', statusKey: 'status' },
+    { key: 'timestamp', header: 'Session Time', type: 'text' },
+    { key: 'status', header: 'Status', type: 'badge', align: 'right' }
+  ];
 
 
   private searchSubject = new Subject<string>();
@@ -105,7 +117,7 @@ export class Header implements OnInit, OnDestroy {
   ngOnInit() {
     if (typeof window !== 'undefined') {
       this.fetchActiveBroadcast();
-      
+
       // Load and apply visual theme
       try {
         const storedTheme = localStorage.getItem('theme') || 'slate';
@@ -332,6 +344,11 @@ export class Header implements OnInit, OnDestroy {
     this.searchSubject.next(value);
   }
 
+  onSessionLogSearch(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.sessionLogSearchQuery.set(input.value);
+  }
+
   selectAccount(account: any) {
     this.searchQuery.set('');
     this.searchResults.set([]);
@@ -369,7 +386,7 @@ export class Header implements OnInit, OnDestroy {
   openUserCenter(tab: 'profile' | 'settings' | 'security') {
     this.showProfileMenu.set(false);
     this.activeUserCenterTab.set(tab);
-    
+
     // Initialize fields
     this.editFirstName.set(this.userFirstName());
     this.editLastName.set(this.userLastName());
@@ -380,16 +397,17 @@ export class Header implements OnInit, OnDestroy {
     this.currentPassword.set('');
     this.newPassword.set('');
     this.confirmPassword.set('');
-    
+    this.sessionLogSearchQuery.set('');
+
     // Initialize session logs and theme selection
     this.initSessionLogs();
     if (typeof window !== 'undefined') {
       try {
         const storedTheme = localStorage.getItem('theme') || 'slate';
         this.selectedTheme.set(storedTheme);
-      } catch (e) {}
+      } catch (e) { }
     }
-    
+
     this.showUserCenterModal.set(true);
   }
 
@@ -420,10 +438,10 @@ export class Header implements OnInit, OnDestroy {
     if (!fName || !lName) {
       return;
     }
-    
+
     this.userFirstName.set(fName);
     this.userLastName.set(lName);
-    
+
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem('firstName', fName);
@@ -432,7 +450,7 @@ export class Header implements OnInit, OnDestroy {
         console.error('Failed to save to local storage', e);
       }
     }
-    
+
     this.profileSuccessMessage.set('Profile details updated successfully!');
     this.addSessionLogEntry('Profile details updated');
     setTimeout(() => this.profileSuccessMessage.set(null), 3000);
@@ -488,26 +506,26 @@ export class Header implements OnInit, OnDestroy {
   submitPasswordChange() {
     this.securityErrorMessage.set(null);
     this.securitySuccessMessage.set(null);
-    
+
     const curr = this.currentPassword();
     const newPass = this.newPassword();
     const conf = this.confirmPassword();
-    
+
     if (!curr || !newPass || !conf) {
       this.securityErrorMessage.set('All fields are required.');
       return;
     }
-    
+
     if (newPass.length < 6) {
       this.securityErrorMessage.set('New password must be at least 6 characters.');
       return;
     }
-    
+
     if (newPass !== conf) {
       this.securityErrorMessage.set('New password and confirmation do not match.');
       return;
     }
-    
+
     this.securitySuccessMessage.set('Password successfully updated!');
     this.addSessionLogEntry('Credentials updated');
     this.currentPassword.set('');
@@ -520,7 +538,7 @@ export class Header implements OnInit, OnDestroy {
   detectCurrentDevice(): { deviceName: string; deviceIcon: string } {
     let deviceName = 'Chrome (Windows 11)';
     let deviceIcon = 'laptop_windows';
-    
+
     if (typeof window === 'undefined' || !navigator) {
       return { deviceName, deviceIcon };
     }

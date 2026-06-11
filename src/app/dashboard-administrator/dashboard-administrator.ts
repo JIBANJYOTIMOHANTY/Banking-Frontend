@@ -6,10 +6,12 @@ import { Footer } from '../footer/footer';
 import { SidebarService } from '../sidebar/service/sidebar-service';
 import { AccountsService } from '../accounts/service/accounts-service';
 import { TransactionsService } from '../transactions/service/transactions-service';
+import { CustomTable } from '../custom-tables/custom-table';
+import { TableColumn } from '../custom-tables/custom-table-models/custom-table-model';
 
 @Component({
   selector: 'app-dashboard-administrator',
-  imports: [Sidebar, Header, Footer],
+  imports: [Sidebar, Header, Footer, CustomTable],
   templateUrl: './dashboard-administrator.html',
   styleUrl: './dashboard-administrator.css',
 })
@@ -25,6 +27,13 @@ export class DashboardAdministrator implements OnInit {
   totalTransactionsCount = signal(0);
   recentTransactions = signal<any[]>([]);
   recentAccounts = signal<any[]>([]);
+  recentTxColumns: TableColumn[] = [
+    { key: 'id', header: 'Transaction ID', type: 'text', prefix: 'TXN' },
+    { key: 'accountNumber', header: 'Account Number', type: 'text' },
+    { key: 'amount', header: 'Amount', type: 'currency' },
+    { key: 'transactionType', header: 'Type', type: 'text' },
+    { key: 'status', header: 'Status', type: 'badge' }
+  ];
   userFirstName = signal('Sarah');
   userLastName = signal('Jenkins');
 
@@ -171,7 +180,11 @@ export class DashboardAdministrator implements OnInit {
             const tB = b.timestamp || '';
             return tB.localeCompare(tA);
           });
-          this.recentTransactions.set(sorted.slice(0, 3));
+          const mappedTxs = sorted.slice(0, 3).map(tx => ({
+            ...tx,
+            status: 'Success'
+          }));
+          this.recentTransactions.set(mappedTxs);
         }
       },
       error: (err) => console.error('Failed to load transactions for dashboard:', err)

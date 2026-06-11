@@ -129,7 +129,8 @@
                                                                 {{ totalTransactionsCount() }}</h3>
                                                         <span
                                                                 class="text-emerald-600 text-[10px] font-bold bg-emerald-50 px-2 py-0.5 rounded-md flex items-center gap-0.5 w-fit">
-                                                                <span class="material-icons text-[10px]">trending_up</span>
+                                                                <span
+                                                                        class="material-icons text-[10px]">trending_up</span>
                                                                 {{ transactionsTrend() }}
                                                         </span>
                                                 </div>
@@ -155,61 +156,9 @@
                                                                         class="text-xs text-indigo-600 hover:text-indigo-700 font-bold hover:underline cursor-pointer">View
                                                                         All</button>
                                                         </div>
-                                                        <div class="overflow-x-auto">
-                                                                <table class="w-full min-w-[500px]">
-                                                                        <thead>
-                                                                                <tr
-                                                                                        class="bg-slate-50/50 border-b border-slate-100 text-left text-xs font-bold uppercase tracking-wider text-slate-400">
-                                                                                        <th class="p-4 pl-6">Transaction
-                                                                                                ID</th>
-                                                                                        <th class="p-4">Account Number
-                                                                                        </th>
-                                                                                        <th class="p-4">Amount</th>
-                                                                                        <th class="p-4">Type</th>
-                                                                                        <th class="p-4 pr-6">Status</th>
-                                                                                </tr>
-                                                                        </thead>
-                                                                        <tbody
-                                                                                class="divide-y divide-slate-100 text-sm text-slate-700">
-                                                                                @if (recentTransactions().length === 0)
-                                                                                {
-                                                                                <tr>
-                                                                                        <td colspan="5"
-                                                                                                class="p-8 text-center text-slate-400 text-xs font-semibold">
-                                                                                                No transactions found
-                                                                                        </td>
-                                                                                </tr>
-                                                                                } @else {
-                                                                                @for (txn of recentTransactions(); track
-                                                                                txn.id) {
-                                                                                <tr
-                                                                                        class="hover:bg-slate-50/30 transition-colors">
-                                                                                        <td
-                                                                                                class="p-4 pl-6 font-bold text-slate-900">
-                                                                                                TXN{{ txn.id }}
-                                                                                        </td>
-                                                                                        <td class="p-4">
-                                                                                                {{ txn.accountNumber }}
-                                                                                        </td>
-                                                                                        <td
-                                                                                                class="p-4 font-bold text-slate-950">
-                                                                                                ₹{{ formatAmount(txn.amount) }}
-                                                                                        </td>
-                                                                                        <td class="p-4">
-                                                                                                {{ txn.transactionType
-                                                                                                }}
-                                                                                        </td>
-                                                                                        <td class="p-4 pr-6">
-                                                                                                <span
-                                                                                                        class="bg-emerald-50 text-emerald-700 font-bold text-xs px-2.5 py-1 rounded-full border border-emerald-100">
-                                                                                                        Success
-                                                                                                </span>
-                                                                                        </td>
-                                                                                </tr>
-                                                                                }
-                                                                                }
-                                                                        </tbody>
-                                                                </table>
+                                                        <div class="p-6">
+                                                                <app-custom-table [columns]="recentTxColumns"
+                                                                        [data]="recentTransactions()"></app-custom-table>
                                                         </div>
                                                 </div>
                                         </div>
