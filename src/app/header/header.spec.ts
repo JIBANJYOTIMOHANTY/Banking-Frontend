@@ -17,7 +17,8 @@ describe('Header', () => {
       post: vi.fn().mockReturnValue(of({ status: 0 }))
     };
     mockHeaderService = {
-      getAccounts: vi.fn().mockReturnValue(of({ status: 0, data: [] }))
+      getAccounts: vi.fn().mockReturnValue(of({ status: 0, data: [] })),
+      getActiveBroadcast: vi.fn().mockReturnValue(of({ status: 0, data: [] }))
     };
 
     await TestBed.configureTestingModule({
