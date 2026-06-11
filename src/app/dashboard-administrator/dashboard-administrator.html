@@ -36,8 +36,9 @@
                                                         back, Sarah Jenkins!</h2>
                                                 <p class="text-slate-300 text-sm font-medium">
                                                         The banking system is active and running optimally. You have
-                                                        <span class="text-indigo-300 font-bold underline">34 new
-                                                                activation requests</span> waiting for your approval.
+                                                        <span class="text-indigo-300 font-bold underline">{{
+                                                                accountsOpen() }} active
+                                                                customer accounts</span> open in the system.
                                                 </p>
                                         </div>
                                 </div>
@@ -53,12 +54,12 @@
                                                                 Total Customers</p>
                                                         <h3
                                                                 class="text-2xl font-extrabold text-slate-800 tracking-tight">
-                                                                12,548</h3>
+                                                                {{ totalCustomers() }}</h3>
                                                         <span
                                                                 class="text-emerald-600 text-[10px] font-bold bg-emerald-50 px-2 py-0.5 rounded-md flex items-center gap-0.5 w-fit">
                                                                 <span
                                                                         class="material-icons text-[10px]">trending_up</span>
-                                                                +3.2%
+                                                                {{ customersTrend() }}
                                                         </span>
                                                 </div>
                                                 <div
@@ -77,12 +78,12 @@
                                                                 Accounts Open</p>
                                                         <h3
                                                                 class="text-2xl font-extrabold text-slate-800 tracking-tight">
-                                                                18,920</h3>
+                                                                {{ accountsOpen() }}</h3>
                                                         <span
                                                                 class="text-emerald-600 text-[10px] font-bold bg-emerald-50 px-2 py-0.5 rounded-md flex items-center gap-0.5 w-fit">
                                                                 <span
                                                                         class="material-icons text-[10px]">trending_up</span>
-                                                                +5.8%
+                                                                {{ accountsTrend() }}
                                                         </span>
                                                 </div>
                                                 <div
@@ -101,12 +102,12 @@
                                                                 Total Deposits</p>
                                                         <h3
                                                                 class="text-2xl font-extrabold text-slate-800 tracking-tight">
-                                                                ₹52.4 Cr</h3>
+                                                                ₹{{ totalDeposits() }}</h3>
                                                         <span
                                                                 class="text-emerald-600 text-[10px] font-bold bg-emerald-50 px-2 py-0.5 rounded-md flex items-center gap-0.5 w-fit">
                                                                 <span
                                                                         class="material-icons text-[10px]">trending_up</span>
-                                                                +12.4%
+                                                                {{ depositsTrend() }}
                                                         </span>
                                                 </div>
                                                 <div
@@ -122,25 +123,23 @@
                                                 <div class="space-y-1">
                                                         <p
                                                                 class="text-xs font-bold uppercase tracking-wider text-slate-400">
-                                                                Activation Requests</p>
+                                                                System Transactions</p>
                                                         <h3
                                                                 class="text-2xl font-extrabold text-slate-800 tracking-tight">
-                                                                34</h3>
+                                                                {{ totalTransactionsCount() }}</h3>
                                                         <span
-                                                                class="text-rose-600 text-[10px] font-bold bg-rose-50 px-2 py-0.5 rounded-md flex items-center gap-0.5 w-fit">
-                                                                <span
-                                                                        class="material-icons text-[10px]">priority_high</span>
-                                                                High Priority
+                                                                class="text-emerald-600 text-[10px] font-bold bg-emerald-50 px-2 py-0.5 rounded-md flex items-center gap-0.5 w-fit">
+                                                                <span class="material-icons text-[10px]">trending_up</span>
+                                                                {{ transactionsTrend() }}
                                                         </span>
                                                 </div>
                                                 <div
-                                                        class="bg-rose-50 p-4 rounded-xl text-rose-600 transition-colors duration-200 group-hover:bg-rose-600 group-hover:text-white">
+                                                        class="bg-cyan-50 p-4 rounded-xl text-cyan-600 transition-colors duration-200 group-hover:bg-cyan-600 group-hover:text-white">
                                                         <span
-                                                                class="material-icons text-2xl flex items-center justify-center">pending_actions</span>
+                                                                class="material-icons text-2xl flex items-center justify-center">currency_exchange</span>
                                                 </div>
                                         </div>
                                 </div>
-
                                 <!-- Data Grid: Transactions & Pending Requests -->
                                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                                         <!-- Recent Transactions (Col-span 2) -->
@@ -152,7 +151,7 @@
                                                                 <h3
                                                                         class="text-base font-extrabold text-slate-800 tracking-tight">
                                                                         Recent System Transactions</h3>
-                                                                <button
+                                                                <button (click)="navigateToTransactions()"
                                                                         class="text-xs text-indigo-600 hover:text-indigo-700 font-bold hover:underline cursor-pointer">View
                                                                         All</button>
                                                         </div>
@@ -163,7 +162,8 @@
                                                                                         class="bg-slate-50/50 border-b border-slate-100 text-left text-xs font-bold uppercase tracking-wider text-slate-400">
                                                                                         <th class="p-4 pl-6">Transaction
                                                                                                 ID</th>
-                                                                                        <th class="p-4">Customer</th>
+                                                                                        <th class="p-4">Account Number
+                                                                                        </th>
                                                                                         <th class="p-4">Amount</th>
                                                                                         <th class="p-4">Type</th>
                                                                                         <th class="p-4 pr-6">Status</th>
@@ -171,17 +171,34 @@
                                                                         </thead>
                                                                         <tbody
                                                                                 class="divide-y divide-slate-100 text-sm text-slate-700">
+                                                                                @if (recentTransactions().length === 0)
+                                                                                {
+                                                                                <tr>
+                                                                                        <td colspan="5"
+                                                                                                class="p-8 text-center text-slate-400 text-xs font-semibold">
+                                                                                                No transactions found
+                                                                                        </td>
+                                                                                </tr>
+                                                                                } @else {
+                                                                                @for (txn of recentTransactions(); track
+                                                                                txn.id) {
                                                                                 <tr
                                                                                         class="hover:bg-slate-50/30 transition-colors">
                                                                                         <td
                                                                                                 class="p-4 pl-6 font-bold text-slate-900">
-                                                                                                TXN1001</td>
-                                                                                        <td class="p-4">Rahul Sharma
+                                                                                                TXN{{ txn.id }}
+                                                                                        </td>
+                                                                                        <td class="p-4">
+                                                                                                {{ txn.accountNumber }}
                                                                                         </td>
                                                                                         <td
                                                                                                 class="p-4 font-bold text-slate-950">
-                                                                                                ₹25,000</td>
-                                                                                        <td class="p-4">Deposit</td>
+                                                                                                ₹{{ txn.amount }}
+                                                                                        </td>
+                                                                                        <td class="p-4">
+                                                                                                {{ txn.transactionType
+                                                                                                }}
+                                                                                        </td>
                                                                                         <td class="p-4 pr-6">
                                                                                                 <span
                                                                                                         class="bg-emerald-50 text-emerald-700 font-bold text-xs px-2.5 py-1 rounded-full border border-emerald-100">
@@ -189,127 +206,77 @@
                                                                                                 </span>
                                                                                         </td>
                                                                                 </tr>
-                                                                                <tr
-                                                                                        class="hover:bg-slate-50/30 transition-colors">
-                                                                                        <td
-                                                                                                class="p-4 pl-6 font-bold text-slate-900">
-                                                                                                TXN1002</td>
-                                                                                        <td class="p-4">Priya Das</td>
-                                                                                        <td
-                                                                                                class="p-4 font-bold text-slate-950">
-                                                                                                ₹15,500</td>
-                                                                                        <td class="p-4">Withdrawal</td>
-                                                                                        <td class="p-4 pr-6">
-                                                                                                <span
-                                                                                                        class="bg-amber-50 text-amber-700 font-bold text-xs px-2.5 py-1 rounded-full border border-amber-100">
-                                                                                                        Pending
-                                                                                                </span>
-                                                                                        </td>
-                                                                                </tr>
-                                                                                <tr
-                                                                                        class="hover:bg-slate-50/30 transition-colors">
-                                                                                        <td
-                                                                                                class="p-4 pl-6 font-bold text-slate-900">
-                                                                                                TXN1003</td>
-                                                                                        <td class="p-4">Amit Kumar</td>
-                                                                                        <td
-                                                                                                class="p-4 font-bold text-slate-950">
-                                                                                                ₹40,000</td>
-                                                                                        <td class="p-4">Transfer</td>
-                                                                                        <td class="p-4 pr-6">
-                                                                                                <span
-                                                                                                        class="bg-emerald-50 text-emerald-700 font-bold text-xs px-2.5 py-1 rounded-full border border-emerald-100">
-                                                                                                        Success
-                                                                                                </span>
-                                                                                        </td>
-                                                                                </tr>
+                                                                                }
+                                                                                }
                                                                         </tbody>
                                                                 </table>
                                                         </div>
                                                 </div>
                                         </div>
 
-                                        <!-- Pending Requests Panel (Col-span 1) -->
+                                        <!-- Recent Accounts Panel (Col-span 1) -->
                                         <div
-                                                class="bg-white border border-slate-100 rounded-2xl shadow-sm p-6 flex flex-col justify-between">
+                                                class="bg-white border border-slate-150 rounded-2xl shadow-sm p-6 flex flex-col justify-between">
                                                 <div class="space-y-4">
                                                         <div
                                                                 class="flex items-center justify-between pb-3 border-b border-slate-100">
                                                                 <h3
                                                                         class="text-base font-extrabold text-slate-800 tracking-tight">
-                                                                        Pending Activations</h3>
+                                                                        Recent Accounts</h3>
                                                                 <span
-                                                                        class="bg-indigo-50 text-indigo-700 text-[10px] font-extrabold px-2 py-0.5 rounded-full">3
-                                                                        New</span>
+                                                                        class="bg-indigo-50 text-indigo-700 text-[10px] font-extrabold px-2 py-0.5 rounded-full">New</span>
                                                         </div>
 
-                                                        <!-- Activation item list -->
+                                                        <!-- Recent account item list -->
                                                         <div class="space-y-4">
+                                                                @if (recentAccounts().length === 0) {
+                                                                <div
+                                                                        class="p-8 text-center text-slate-400 text-xs font-semibold">
+                                                                        No accounts found
+                                                                </div>
+                                                                } @else {
+                                                                @for (account of recentAccounts(); track
+                                                                account.accountNumber) {
                                                                 <div
                                                                         class="flex items-center justify-between gap-3 p-3 rounded-xl border border-slate-100 hover:border-slate-200 transition-colors">
                                                                         <div class="flex items-center gap-3">
                                                                                 <div
-                                                                                        class="w-9 h-9 rounded-lg bg-indigo-500/10 flex items-center justify-center font-bold text-indigo-700 text-sm">
-                                                                                        JD
+                                                                                        class="w-9 h-9 rounded-lg bg-indigo-500/10 flex items-center justify-center font-bold text-indigo-700 text-xs select-none">
+                                                                                        {{ (account.firstName?.charAt(0)
+                                                                                        || '') +
+                                                                                        (account.lastName?.charAt(0) ||
+                                                                                        '') }}
                                                                                 </div>
                                                                                 <div>
                                                                                         <p
-                                                                                                class="text-xs font-bold text-slate-800">
-                                                                                                John Doe</p>
+                                                                                                class="text-xs font-bold text-slate-800 leading-tight">
+                                                                                                {{ account.firstName }}
+                                                                                                {{ account.lastName }}
+                                                                                        </p>
                                                                                         <p
-                                                                                                class="text-[10px] text-slate-400">
-                                                                                                Savings Account</p>
+                                                                                                class="text-[10px] text-slate-400 font-medium leading-none mt-1">
+                                                                                                {{ account.accountNumber
+                                                                                                }}
+                                                                                        </p>
                                                                                 </div>
                                                                         </div>
-                                                                        <div class="flex gap-1.5">
-                                                                                <button class="p-1 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-600 cursor-pointer"
-                                                                                        title="Approve">
+                                                                        <div>
+                                                                                <button (click)="selectAccount(account)"
+                                                                                        class="p-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-600 cursor-pointer flex items-center justify-center"
+                                                                                        title="View Details">
                                                                                         <span
-                                                                                                class="material-icons text-base flex items-center justify-center">check</span>
-                                                                                </button>
-                                                                                <button class="p-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 cursor-pointer"
-                                                                                        title="Reject">
-                                                                                        <span
-                                                                                                class="material-icons text-base flex items-center justify-center">close</span>
+                                                                                                class="material-icons text-base">visibility</span>
                                                                                 </button>
                                                                         </div>
                                                                 </div>
-
-                                                                <div
-                                                                        class="flex items-center justify-between gap-3 p-3 rounded-xl border border-slate-100 hover:border-slate-200 transition-colors">
-                                                                        <div class="flex items-center gap-3">
-                                                                                <div
-                                                                                        class="w-9 h-9 rounded-lg bg-emerald-500/10 flex items-center justify-center font-bold text-emerald-700 text-sm">
-                                                                                        AS
-                                                                                </div>
-                                                                                <div>
-                                                                                        <p
-                                                                                                class="text-xs font-bold text-slate-800">
-                                                                                                Alice Smith</p>
-                                                                                        <p
-                                                                                                class="text-[10px] text-slate-400">
-                                                                                                Business Account</p>
-                                                                                </div>
-                                                                        </div>
-                                                                        <div class="flex gap-1.5">
-                                                                                <button class="p-1 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-600 cursor-pointer"
-                                                                                        title="Approve">
-                                                                                        <span
-                                                                                                class="material-icons text-base flex items-center justify-center">check</span>
-                                                                                </button>
-                                                                                <button class="p-1 rounded bg-rose-50 hover:bg-rose-100 text-rose-600 cursor-pointer"
-                                                                                        title="Reject">
-                                                                                        <span
-                                                                                                class="material-icons text-base flex items-center justify-center">close</span>
-                                                                                </button>
-                                                                        </div>
-                                                                </div>
+                                                                }
+                                                                }
                                                         </div>
                                                 </div>
 
-                                                <button
+                                                <button (click)="navigateToAccounts()"
                                                         class="w-full mt-4 text-center text-xs text-indigo-600 hover:text-indigo-700 font-extrabold py-2 bg-indigo-50/50 hover:bg-indigo-50 border border-indigo-100/50 rounded-xl transition-all cursor-pointer">
-                                                        Manage All Activations
+                                                        Manage All Accounts
                                                 </button>
                                         </div>
                                 </div>

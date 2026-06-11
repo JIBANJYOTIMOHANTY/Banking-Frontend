@@ -20,4 +20,8 @@ export class TransactionsService {
     }
     return this.commonService.get<any>(url);
   }
+
+  getAllTransactions(): Observable<any> {
+    return this.commonService.get<any>(`${environment.BASE_API_URL}bank/transactions`);
+  }
 }
