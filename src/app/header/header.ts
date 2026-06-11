@@ -39,6 +39,30 @@ export class Header implements OnInit, OnDestroy {
   quickActionsError = signal<string | null>(null);
   isBannerDismissed = this.headerService.isBannerDismissed;
 
+  // User Center (Profile, Settings, Security)
+  showUserCenterModal = signal(false);
+  activeUserCenterTab = signal<'profile' | 'settings' | 'security'>('profile');
+  
+  // Profile edits
+  editFirstName = signal('');
+  editLastName = signal('');
+  editEmail = signal('sarah.jenkins@trustbank.com');
+  profileSuccessMessage = signal<string | null>(null);
+
+  // Settings
+  selectedTheme = signal('slate');
+  enableAutoRefresh = signal(true);
+  enableDesktopAlerts = signal(true);
+  settingsSuccessMessage = signal<string | null>(null);
+
+  // Security
+  currentPassword = signal('');
+  newPassword = signal('');
+  confirmPassword = signal('');
+  securityErrorMessage = signal<string | null>(null);
+  securitySuccessMessage = signal<string | null>(null);
+  sessionLogs = signal<any[]>([]);
+
 
   private searchSubject = new Subject<string>();
   private searchSubscription: Subscription;
@@ -81,6 +105,15 @@ export class Header implements OnInit, OnDestroy {
   ngOnInit() {
     if (typeof window !== 'undefined') {
       this.fetchActiveBroadcast();
+      
+      // Load and apply visual theme
+      try {
+        const storedTheme = localStorage.getItem('theme') || 'slate';
+        this.applyTheme(storedTheme);
+      } catch (e) {
+        console.error('Failed to load theme', e);
+      }
+
       try {
         const storedFirstName = localStorage.getItem('firstName');
         const storedLastName = localStorage.getItem('lastName');
@@ -326,6 +359,241 @@ export class Header implements OnInit, OnDestroy {
       console.error('Failed to clear storage:', e);
     }
     this.router.navigate(['/login']);
+  }
+
+  // User Center Management Methods
+  openUserCenter(tab: 'profile' | 'settings' | 'security') {
+    this.showProfileMenu.set(false);
+    this.activeUserCenterTab.set(tab);
+    
+    // Initialize fields
+    this.editFirstName.set(this.userFirstName());
+    this.editLastName.set(this.userLastName());
+    this.profileSuccessMessage.set(null);
+    this.settingsSuccessMessage.set(null);
+    this.securitySuccessMessage.set(null);
+    this.securityErrorMessage.set(null);
+    this.currentPassword.set('');
+    this.newPassword.set('');
+    this.confirmPassword.set('');
+    
+    // Initialize session logs and theme selection
+    this.initSessionLogs();
+    if (typeof window !== 'undefined') {
+      try {
+        const storedTheme = localStorage.getItem('theme') || 'slate';
+        this.selectedTheme.set(storedTheme);
+      } catch (e) {}
+    }
+    
+    this.showUserCenterModal.set(true);
+  }
+
+  closeUserCenterModal() {
+    this.showUserCenterModal.set(false);
+  }
+
+  setUserCenterTab(tab: 'profile' | 'settings' | 'security') {
+    this.activeUserCenterTab.set(tab);
+  }
+
+  // Profile Action Handlers
+  onEditFirstNameInput(event: Event) {
+    this.editFirstName.set((event.target as HTMLInputElement).value);
+  }
+
+  onEditLastNameInput(event: Event) {
+    this.editLastName.set((event.target as HTMLInputElement).value);
+  }
+
+  onEditEmailInput(event: Event) {
+    this.editEmail.set((event.target as HTMLInputElement).value);
+  }
+
+  saveProfileChanges() {
+    const fName = this.editFirstName().trim();
+    const lName = this.editLastName().trim();
+    if (!fName || !lName) {
+      return;
+    }
+    
+    this.userFirstName.set(fName);
+    this.userLastName.set(lName);
+    
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('firstName', fName);
+        localStorage.setItem('lastName', lName);
+      } catch (e) {
+        console.error('Failed to save to local storage', e);
+      }
+    }
+    
+    this.profileSuccessMessage.set('Profile details updated successfully!');
+    setTimeout(() => this.profileSuccessMessage.set(null), 3000);
+  }
+
+  // Theme Applying Logic
+  applyTheme(theme: string) {
+    if (typeof window !== 'undefined') {
+      try {
+        const root = document.documentElement;
+        root.classList.remove('theme-slate', 'theme-indigo', 'theme-emerald', 'theme-light');
+        root.classList.add(`theme-${theme}`);
+        localStorage.setItem('theme', theme);
+        this.selectedTheme.set(theme);
+      } catch (e) {
+        console.error('Failed to apply theme', e);
+      }
+    }
+  }
+
+  // Settings Action Handlers
+  selectTheme(theme: string) {
+    this.applyTheme(theme);
+  }
+
+  toggleAutoRefresh() {
+    this.enableAutoRefresh.set(!this.enableAutoRefresh());
+  }
+
+  toggleDesktopAlerts() {
+    this.enableDesktopAlerts.set(!this.enableDesktopAlerts());
+  }
+
+  saveSettings() {
+    this.settingsSuccessMessage.set('System preferences saved successfully!');
+    setTimeout(() => this.settingsSuccessMessage.set(null), 3000);
+  }
+
+  // Security Action Handlers
+  onCurrentPasswordInput(event: Event) {
+    this.currentPassword.set((event.target as HTMLInputElement).value);
+  }
+
+  onNewPasswordInput(event: Event) {
+    this.newPassword.set((event.target as HTMLInputElement).value);
+  }
+
+  onConfirmPasswordInput(event: Event) {
+    this.confirmPassword.set((event.target as HTMLInputElement).value);
+  }
+
+  submitPasswordChange() {
+    this.securityErrorMessage.set(null);
+    this.securitySuccessMessage.set(null);
+    
+    const curr = this.currentPassword();
+    const newPass = this.newPassword();
+    const conf = this.confirmPassword();
+    
+    if (!curr || !newPass || !conf) {
+      this.securityErrorMessage.set('All fields are required.');
+      return;
+    }
+    
+    if (newPass.length < 6) {
+      this.securityErrorMessage.set('New password must be at least 6 characters.');
+      return;
+    }
+    
+    if (newPass !== conf) {
+      this.securityErrorMessage.set('New password and confirmation do not match.');
+      return;
+    }
+    
+    this.securitySuccessMessage.set('Password successfully updated!');
+    this.currentPassword.set('');
+    this.newPassword.set('');
+    this.confirmPassword.set('');
+    setTimeout(() => this.securitySuccessMessage.set(null), 3000);
+  }
+
+  // Device Session Logs Detection Logic
+  detectCurrentDevice(): { deviceName: string; deviceIcon: string } {
+    let deviceName = 'Chrome (Windows 11)';
+    let deviceIcon = 'laptop_windows';
+    
+    if (typeof window === 'undefined' || !navigator) {
+      return { deviceName, deviceIcon };
+    }
+
+    try {
+      const ua = navigator.userAgent;
+      let browser = 'Chrome';
+      let os = 'Windows 11';
+
+      // Detect OS
+      if (ua.indexOf('Win') !== -1) {
+        if (ua.indexOf('Windows NT 10.0') !== -1) os = 'Windows 11';
+        else os = 'Windows';
+        deviceIcon = 'laptop_windows';
+      } else if (ua.indexOf('Mac') !== -1) {
+        if (ua.indexOf('iPhone') !== -1 || ua.indexOf('iPad') !== -1) {
+          os = 'iOS';
+          deviceIcon = 'smartphone';
+        } else {
+          os = 'macOS';
+          deviceIcon = 'desktop_mac';
+        }
+      } else if (ua.indexOf('X11') !== -1 || ua.indexOf('Linux') !== -1) {
+        os = 'Linux';
+        deviceIcon = 'settings_ethernet';
+      } else if (ua.indexOf('Android') !== -1) {
+        os = 'Android';
+        deviceIcon = 'phone_android';
+      }
+
+      // Detect Browser
+      if (ua.indexOf('Chrome') !== -1 && ua.indexOf('Chromium') === -1 && ua.indexOf('Edg') === -1) {
+        browser = 'Chrome';
+      } else if (ua.indexOf('Safari') !== -1 && ua.indexOf('Chrome') === -1 && ua.indexOf('Chromium') === -1) {
+        browser = 'Safari';
+      } else if (ua.indexOf('Firefox') !== -1) {
+        browser = 'Firefox';
+      } else if (ua.indexOf('Edg') !== -1) {
+        browser = 'Microsoft Edge';
+      } else if (ua.indexOf('Chromium') !== -1) {
+        browser = 'Chromium';
+      }
+
+      deviceName = `${browser} (${os})`;
+    } catch (e) {
+      console.error('Failed to parse user agent', e);
+    }
+
+    return { deviceName, deviceIcon };
+  }
+
+  initSessionLogs() {
+    const current = this.detectCurrentDevice();
+    
+    this.sessionLogs.set([
+      {
+        deviceIcon: current.deviceIcon,
+        deviceName: current.deviceName,
+        ipAddress: '192.168.1.108',
+        activity: 'Admin Portal Access',
+        time: 'Just now',
+        status: 'Active'
+      },
+      {
+        deviceIcon: 'laptop_windows',
+        deviceName: 'Edge (Windows 11)',
+        ipAddress: '192.168.1.108',
+        activity: 'Token Refresh',
+        time: '12 mins ago',
+        status: 'Terminated'
+      },
+      {
+        deviceIcon: 'smartphone',
+        deviceName: 'Safari (iPhone 15 Pro)',
+        ipAddress: '10.0.8.212',
+        activity: 'Broadcast Alert published',
+        time: '2 hours ago',
+        status: 'Expired'
+      }
+    ]);
   }
 }
 
