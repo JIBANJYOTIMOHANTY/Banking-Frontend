@@ -34,12 +34,40 @@ export class DashboardAdministrator implements OnInit {
   private totalSystemBalance = 0;
   private recentDepositSum = 0;
 
+  formatAmount(value: number): string {
+    if (value === null || value === undefined || isNaN(value)) {
+      return '0';
+    }
+    const absValue = Math.abs(value);
+    if (absValue >= 1e12) {
+      return value.toExponential(2);
+    }
+    if (absValue >= 1e9) {
+      return (value / 1e9).toFixed(2) + 'B';
+    }
+    if (absValue >= 1e6) {
+      return (value / 1e6).toFixed(2) + 'M';
+    }
+    if (absValue >= 1e3) {
+      return (value / 1e3).toFixed(2) + 'K';
+    }
+    return value.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+  }
+
+  formatPercentTrend(pct: number): string {
+    const sign = pct >= 0 ? '+' : '';
+    if (Math.abs(pct) >= 1e4) {
+      return sign + pct.toExponential(1) + '%';
+    }
+    return sign + pct.toFixed(1) + '%';
+  }
+
   private updateDepositsTrend() {
     let depositPct = 0;
     if (this.totalSystemBalance > 0) {
       depositPct = (this.recentDepositSum / this.totalSystemBalance) * 100;
     }
-    this.depositsTrend.set(`+${depositPct.toFixed(1)}%`);
+    this.depositsTrend.set(this.formatPercentTrend(depositPct));
   }
 
   ngOnInit() {
@@ -82,8 +110,8 @@ export class DashboardAdministrator implements OnInit {
           } else if (createdRecently > 0) {
             pct = 100;
           }
-          this.accountsTrend.set(`+${pct.toFixed(1)}%`);
-          this.customersTrend.set(`+${pct.toFixed(1)}%`);
+          this.accountsTrend.set(this.formatPercentTrend(pct));
+          this.customersTrend.set(this.formatPercentTrend(pct));
 
           // Get the 3 most recently created accounts
           const sorted = [...accounts].sort((a, b) => b.id - a.id);
