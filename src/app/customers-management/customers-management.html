@@ -63,13 +63,8 @@
 
                                 <!-- Main Content Grid / Table -->
                                 <div class="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
-                                        @if (isLoading() && customers().length === 0) {
-                                        <div class="p-12 flex flex-col items-center justify-center space-y-3">
-                                                <div
-                                                        class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin">
-                                                </div>
-                                                <p class="text-slate-500 text-sm">Loading customer directory...</p>
-                                        </div>
+                                        @if (isLoading()) {
+                                        <app-custom-skeleton-loading [columns]="customerColumns"></app-custom-skeleton-loading>
                                         } @else if (errorMessage() && customers().length === 0) {
                                         <div class="p-12 text-center space-y-4">
                                                 <span class="material-icons text-rose-500 text-5xl">error_outline</span>

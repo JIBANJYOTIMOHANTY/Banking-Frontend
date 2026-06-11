@@ -9,6 +9,7 @@ import { Footer } from '../footer/footer';
 import { SidebarService } from '../sidebar/service/sidebar-service';
 import { CustomTable } from '../custom-tables/custom-table';
 import { TableColumn } from '../custom-tables/custom-table-models/custom-table-model';
+import { CustomSkeletonLoading } from '../custom-tables/custom-skeleton-loading/custom-skeleton-loading';
 
 export interface Customer {
   id?: number;
@@ -37,7 +38,7 @@ export interface Customer {
 
 @Component({
   selector: 'app-customers-management',
-  imports: [CommonModule, Sidebar, Header, Footer, CustomTable],
+  imports: [CommonModule, Sidebar, Header, Footer, CustomTable, CustomSkeletonLoading],
   templateUrl: './customers-management.html',
   styleUrl: './customers-management.css',
 })

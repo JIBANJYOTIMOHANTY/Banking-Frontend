@@ -157,8 +157,12 @@
                                                                         All</button>
                                                         </div>
                                                         <div class="p-6">
-                                                                <app-custom-table [columns]="recentTxColumns"
-                                                                        [data]="recentTransactions()"></app-custom-table>
+                                                                @if (isLoadingTransactions()) {
+                                                                        <app-custom-skeleton-loading [columns]="recentTxColumns" [rows]="3"></app-custom-skeleton-loading>
+                                                                } @else {
+                                                                        <app-custom-table [columns]="recentTxColumns"
+                                                                                [data]="recentTransactions()"></app-custom-table>
+                                                                }
                                                         </div>
                                                 </div>
                                         </div>
@@ -178,7 +182,21 @@
 
                                                         <!-- Recent account item list -->
                                                         <div class="space-y-4">
-                                                                @if (recentAccounts().length === 0) {
+                                                                @if (isLoadingAccounts()) {
+                                                                        @for (i of [1, 2, 3]; track i) {
+                                                                                <div
+                                                                                        class="flex items-center justify-between gap-3 p-3 rounded-xl border border-slate-100 animate-pulse">
+                                                                                        <div class="flex items-center gap-3">
+                                                                                                <div class="w-9 h-9 rounded-lg bg-slate-200"></div>
+                                                                                                <div class="space-y-2">
+                                                                                                        <div class="h-3 bg-slate-250 rounded-md w-24"></div>
+                                                                                                        <div class="h-2.5 bg-slate-200 rounded-md w-16"></div>
+                                                                                                </div>
+                                                                                        </div>
+                                                                                        <div class="w-8 h-8 rounded-lg bg-slate-150"></div>
+                                                                                </div>
+                                                                        }
+                                                                } @else if (recentAccounts().length === 0) {
                                                                 <div
                                                                         class="p-8 text-center text-slate-400 text-xs font-semibold">
                                                                         No accounts found

@@ -8,6 +8,7 @@ import { Footer } from '../footer/footer';
 import { SidebarService } from '../sidebar/service/sidebar-service';
 import { CustomTable } from '../custom-tables/custom-table';
 import { TableColumn } from '../custom-tables/custom-table-models/custom-table-model';
+import { CustomSkeletonLoading } from '../custom-tables/custom-skeleton-loading/custom-skeleton-loading';
 
 export interface BankAccount {
   accountNumber: string;
@@ -28,7 +29,7 @@ export interface Transaction {
 @Component({
   selector: 'app-transactions',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, Sidebar, Header, Footer, CustomTable],
+  imports: [CommonModule, ReactiveFormsModule, Sidebar, Header, Footer, CustomTable, CustomSkeletonLoading],
   templateUrl: './transactions.html',
   styleUrl: './transactions.css',
 })

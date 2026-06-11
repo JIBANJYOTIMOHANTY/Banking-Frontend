@@ -1,0 +1,24 @@
+<div class="rounded-2xl border border-slate-150 overflow-hidden shadow-sm bg-white animate-pulse">
+  <table class="w-full text-left border-collapse text-xs">
+    <thead>
+      <tr class="bg-slate-50 border-b border-slate-150">
+        @for (col of getColArray(); track $index) {
+          <th class="p-4" [ngClass]="[$index === 0 ? 'pl-6' : '', $index === getColArray().length - 1 ? 'pr-6' : '']">
+            <div class="h-3.5 bg-slate-200 rounded-md w-16"></div>
+          </th>
+        }
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100">
+      @for (row of getRowArray(); track $index) {
+        <tr>
+          @for (col of getColArray(); track $index) {
+            <td class="p-4" [ngClass]="[$index === 0 ? 'pl-6' : '', $index === getColArray().length - 1 ? 'pr-6' : '']">
+              <div class="h-3.5 bg-slate-100 rounded-md" [ngClass]="getColWidthClass($index)"></div>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

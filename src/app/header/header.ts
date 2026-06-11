@@ -8,10 +8,11 @@ import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/
 
 import { CustomTable } from '../custom-tables/custom-table';
 import { TableColumn } from '../custom-tables/custom-table-models/custom-table-model';
+import { CustomSkeletonLoading } from '../custom-tables/custom-skeleton-loading/custom-skeleton-loading';
 
 @Component({
   selector: 'app-header',
-  imports: [CustomTable],
+  imports: [CustomTable, CustomSkeletonLoading],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
@@ -66,6 +67,7 @@ export class Header implements OnInit, OnDestroy {
   securitySuccessMessage = signal<string | null>(null);
   sessionLogs = signal<any[]>([]);
   sessionLogSearchQuery = signal('');
+  isLoadingSessionLogs = signal(false);
 
   sessionLogColumns: TableColumn[] = [
     { key: 'deviceName', header: 'Device / Browser', type: 'icon-text', iconKey: 'deviceIcon' },
@@ -591,8 +593,10 @@ export class Header implements OnInit, OnDestroy {
   }
 
   initSessionLogs() {
+    this.isLoadingSessionLogs.set(true);
     this.headerService.getSessionLogs().subscribe({
       next: (res: any) => {
+        this.isLoadingSessionLogs.set(false);
         if (res && res.status === 0 && res.data) {
           this.sessionLogs.set(res.data);
         } else {
@@ -600,6 +604,7 @@ export class Header implements OnInit, OnDestroy {
         }
       },
       error: (err) => {
+        this.isLoadingSessionLogs.set(false);
         console.error('Failed to load session logs from database:', err);
         this.fallbackSessionLogs();
       }

@@ -8,10 +8,11 @@ import { AccountsService } from '../accounts/service/accounts-service';
 import { TransactionsService } from '../transactions/service/transactions-service';
 import { CustomTable } from '../custom-tables/custom-table';
 import { TableColumn } from '../custom-tables/custom-table-models/custom-table-model';
+import { CustomSkeletonLoading } from '../custom-tables/custom-skeleton-loading/custom-skeleton-loading';
 
 @Component({
   selector: 'app-dashboard-administrator',
-  imports: [Sidebar, Header, Footer, CustomTable],
+  imports: [Sidebar, Header, Footer, CustomTable, CustomSkeletonLoading],
   templateUrl: './dashboard-administrator.html',
   styleUrl: './dashboard-administrator.css',
 })
@@ -26,6 +27,8 @@ export class DashboardAdministrator implements OnInit {
   totalDeposits = signal(0);
   totalTransactionsCount = signal(0);
   recentTransactions = signal<any[]>([]);
+  isLoadingTransactions = signal(false);
+  isLoadingAccounts = signal(false);
   recentAccounts = signal<any[]>([]);
   recentTxColumns: TableColumn[] = [
     { key: 'id', header: 'Transaction ID', type: 'text', prefix: 'TXN' },
@@ -97,8 +100,10 @@ export class DashboardAdministrator implements OnInit {
   }
 
   loadAccounts() {
+    this.isLoadingAccounts.set(true);
     this.accountsService.getAccounts().subscribe({
       next: (response: any) => {
+        this.isLoadingAccounts.set(false);
         if (response && response.status === 0) {
           const accounts = response.data || [];
           this.totalCustomers.set(accounts.length);
@@ -139,13 +144,18 @@ export class DashboardAdministrator implements OnInit {
           this.recentAccounts.set(sorted.slice(0, 3));
         }
       },
-      error: (err) => console.error('Failed to load accounts for dashboard:', err)
+      error: (err) => {
+        this.isLoadingAccounts.set(false);
+        console.error('Failed to load accounts for dashboard:', err);
+      }
     });
   }
 
   loadTransactions() {
+    this.isLoadingTransactions.set(true);
     this.transactionsService.getAllTransactions().subscribe({
       next: (response: any) => {
+        this.isLoadingTransactions.set(false);
         if (response && response.status === 0) {
           const txs = response.data || [];
           this.totalTransactionsCount.set(txs.length);
@@ -187,7 +197,10 @@ export class DashboardAdministrator implements OnInit {
           this.recentTransactions.set(mappedTxs);
         }
       },
-      error: (err) => console.error('Failed to load transactions for dashboard:', err)
+      error: (err) => {
+        this.isLoadingTransactions.set(false);
+        console.error('Failed to load transactions for dashboard:', err);
+      }
     });
   }
 

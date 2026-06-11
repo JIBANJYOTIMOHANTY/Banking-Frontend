@@ -696,7 +696,11 @@
                 </div>
               </div>
               
-              <app-custom-table [columns]="sessionLogColumns" [data]="sessionLogs()" [searchQuery]="sessionLogSearchQuery()"></app-custom-table>
+              @if (isLoadingSessionLogs()) {
+                <app-custom-skeleton-loading [columns]="sessionLogColumns" [rows]="3"></app-custom-skeleton-loading>
+              } @else {
+                <app-custom-table [columns]="sessionLogColumns" [data]="sessionLogs()" [searchQuery]="sessionLogSearchQuery()"></app-custom-table>
+              }
             </div>
           </div>
         }
