@@ -76,7 +76,9 @@ export class Accounts implements OnInit {
   });
 
   ngOnInit() {
-    this.fetchAccounts();
+    if (typeof window !== 'undefined') {
+      this.fetchAccounts();
+    }
   }
 
   fetchAccounts() {

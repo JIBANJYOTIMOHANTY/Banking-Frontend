@@ -25,6 +25,8 @@ export class DashboardAdministrator implements OnInit {
   totalTransactionsCount = signal(0);
   recentTransactions = signal<any[]>([]);
   recentAccounts = signal<any[]>([]);
+  userFirstName = signal('Sarah');
+  userLastName = signal('Jenkins');
 
   customersTrend = signal('+0.0%');
   accountsTrend = signal('+0.0%');
@@ -71,8 +73,18 @@ export class DashboardAdministrator implements OnInit {
   }
 
   ngOnInit() {
-    this.loadAccounts();
-    this.loadTransactions();
+    if (typeof window !== 'undefined') {
+      try {
+        const storedFirstName = localStorage.getItem('firstName');
+        const storedLastName = localStorage.getItem('lastName');
+        if (storedFirstName) this.userFirstName.set(storedFirstName);
+        if (storedLastName) this.userLastName.set(storedLastName);
+      } catch (e) {
+        console.error('Failed to load user name from storage', e);
+      }
+      this.loadAccounts();
+      this.loadTransactions();
+    }
   }
 
   loadAccounts() {

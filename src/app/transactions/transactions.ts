@@ -51,7 +51,9 @@ export class Transactions implements OnInit {
   });
 
   ngOnInit() {
-    this.fetchAccounts();
+    if (typeof window !== 'undefined') {
+      this.fetchAccounts();
+    }
   }
 
   fetchAccounts() {

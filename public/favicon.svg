@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28" width="100%" height="100%">
+  <!-- Rounded indigo background matching the sidebar TrustBank brand logo -->
+  <rect width="28" height="28" rx="7" fill="#4f46e5" />
+  <!-- White bank icon centered with 2px padding -->
+  <g transform="translate(2, 2)">
+    <path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h20v-3H2v3zm14-12v7h3v-7h-3zm-6-7L2 7v2h20V7L12 3z" fill="#ffffff" />
+  </g>
+</svg>

@@ -191,6 +191,21 @@ export class CommonService {
         const firstDataItem = response.data[0];
         if (firstDataItem && firstDataItem.token && typeof firstDataItem.token === 'string') {
           token = firstDataItem.token;
+          if (typeof firstDataItem.firstName === 'string' && firstDataItem.firstName.trim().length > 0) {
+            localStorage.setItem('firstName', firstDataItem.firstName);
+          } else {
+            localStorage.removeItem('firstName');
+          }
+          if (typeof firstDataItem.lastName === 'string' && firstDataItem.lastName.trim().length > 0) {
+            localStorage.setItem('lastName', firstDataItem.lastName);
+          } else {
+            localStorage.removeItem('lastName');
+          }
+          if (typeof firstDataItem.role === 'string' && firstDataItem.role.trim().length > 0) {
+            localStorage.setItem('role', firstDataItem.role);
+          } else {
+            localStorage.removeItem('role');
+          }
         }
         if (firstDataItem && typeof firstDataItem.expiresInMs === 'number') {
           validityDuration = firstDataItem.expiresInMs;
@@ -280,7 +295,7 @@ export class CommonService {
       userMessage = 'Unable to connect to the server. Please check your network connection.';
     }
 
-    if (error.error instanceof ErrorEvent) {
+    if (typeof ErrorEvent !== 'undefined' && error.error instanceof ErrorEvent) {
       // A client-side or network error occurred.
       console.error('Client-side error:', error.error.message);
     } else {

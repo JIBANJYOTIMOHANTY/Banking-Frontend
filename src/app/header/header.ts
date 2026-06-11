@@ -23,6 +23,9 @@ export class Header implements OnInit, OnDestroy {
   searchQuery = signal('');
   searchResults = signal<any[]>([]);
   isLoading = signal(false);
+  userFirstName = signal('Sarah');
+  userLastName = signal('Jenkins');
+  userRole = signal('Admin Manager');
 
   showQuickActions = signal(false);
   showFreezeModal = signal(false);
@@ -76,7 +79,19 @@ export class Header implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.fetchActiveBroadcast();
+    if (typeof window !== 'undefined') {
+      this.fetchActiveBroadcast();
+      try {
+        const storedFirstName = localStorage.getItem('firstName');
+        const storedLastName = localStorage.getItem('lastName');
+        const storedRole = localStorage.getItem('role');
+        if (storedFirstName) this.userFirstName.set(storedFirstName);
+        if (storedLastName) this.userLastName.set(storedLastName);
+        if (storedRole) this.userRole.set(storedRole);
+      } catch (e) {
+        console.error('Failed to load user name/role from storage', e);
+      }
+    }
   }
 
   fetchActiveBroadcast() {
@@ -302,6 +317,9 @@ export class Header implements OnInit, OnDestroy {
   private clearSessionAndRedirect() {
     try {
       localStorage.removeItem('token');
+      localStorage.removeItem('firstName');
+      localStorage.removeItem('lastName');
+      localStorage.removeItem('role');
       sessionStorage.removeItem('token');
       document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     } catch (e) {

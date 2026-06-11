@@ -60,7 +60,9 @@ export class CustomersManagement implements OnInit {
   private searchTimeout: any;
 
   ngOnInit() {
-    this.fetchCustomers();
+    if (typeof window !== 'undefined') {
+      this.fetchCustomers();
+    }
   }
 
   fetchCustomers() {

@@ -69,7 +69,9 @@ export class CustomerDetails implements OnInit {
         this.accountNumber.set(accNum);
         this.controls['initialBalance']?.clearValidators();
         this.controls['initialBalance']?.updateValueAndValidity();
-        this.loadCustomerDetails(accNum);
+        if (typeof window !== 'undefined') {
+          this.loadCustomerDetails(accNum);
+        }
       } else {
         this.isEditMode.set(false);
         this.accountNumber.set(null);
