@@ -40,4 +40,14 @@ export class HeaderService {
     const broadcastUrl = `${environment.BASE_API_URL}bank/broadcast/active`;
     return this.commonService.delete<any>(broadcastUrl);
   }
+
+  getSessionLogs(): Observable<any> {
+    const logsUrl = `${environment.BASE_API_URL}bank/session-logs`;
+    return this.commonService.get<any>(logsUrl);
+  }
+
+  addSessionLog(log: { deviceName: string; deviceIcon: string; ipAddress: string; activity: string; status: string }): Observable<any> {
+    const logsUrl = `${environment.BASE_API_URL}bank/session-logs`;
+    return this.commonService.post<any>(logsUrl, log);
+  }
 }

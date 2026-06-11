@@ -232,6 +232,7 @@ export class Header implements OnInit, OnDestroy {
         next: (res) => {
           if (res && res.status === 0) {
             this.quickActionsMessage.set(`Account ${accNo} has been successfully frozen.`);
+            this.addSessionLogEntry(`Froze account ${accNo}`);
           } else {
             this.quickActionsError.set(res.message || 'Operation failed.');
           }
@@ -245,6 +246,7 @@ export class Header implements OnInit, OnDestroy {
         next: (res) => {
           if (res && res.status === 0) {
             this.quickActionsMessage.set(`Account ${accNo} has been successfully unfrozen.`);
+            this.addSessionLogEntry(`Unfroze account ${accNo}`);
           } else {
             this.quickActionsError.set(res.message || 'Operation failed.');
           }
@@ -279,6 +281,7 @@ export class Header implements OnInit, OnDestroy {
           this.activeBroadcastAlert.set(res.data[0]);
           this.isBannerDismissed.set(false);
           this.broadcastFormMessage.set('');
+          this.addSessionLogEntry(`Published ${type} broadcast alert`);
         } else {
           this.quickActionsError.set(res.message || 'Failed to publish alert.');
         }
@@ -299,6 +302,7 @@ export class Header implements OnInit, OnDestroy {
         if (res && res.status === 0) {
           this.quickActionsMessage.set('Active system alert cleared successfully.');
           this.activeBroadcastAlert.set(null);
+          this.addSessionLogEntry('Cleared active broadcast alert');
         } else {
           this.quickActionsError.set(res.message || 'Failed to clear alert.');
         }
@@ -430,6 +434,7 @@ export class Header implements OnInit, OnDestroy {
     }
     
     this.profileSuccessMessage.set('Profile details updated successfully!');
+    this.addSessionLogEntry('Profile details updated');
     setTimeout(() => this.profileSuccessMessage.set(null), 3000);
   }
 
@@ -463,6 +468,7 @@ export class Header implements OnInit, OnDestroy {
 
   saveSettings() {
     this.settingsSuccessMessage.set('System preferences saved successfully!');
+    this.addSessionLogEntry('Preferences saved');
     setTimeout(() => this.settingsSuccessMessage.set(null), 3000);
   }
 
@@ -503,6 +509,7 @@ export class Header implements OnInit, OnDestroy {
     }
     
     this.securitySuccessMessage.set('Password successfully updated!');
+    this.addSessionLogEntry('Credentials updated');
     this.currentPassword.set('');
     this.newPassword.set('');
     this.confirmPassword.set('');
@@ -566,34 +573,70 @@ export class Header implements OnInit, OnDestroy {
   }
 
   initSessionLogs() {
+    this.headerService.getSessionLogs().subscribe({
+      next: (res: any) => {
+        if (res && res.status === 0 && res.data) {
+          this.sessionLogs.set(res.data);
+        } else {
+          this.sessionLogs.set([]);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load session logs from database:', err);
+        this.fallbackSessionLogs();
+      }
+    });
+  }
+
+  fallbackSessionLogs() {
     const current = this.detectCurrentDevice();
-    
     this.sessionLogs.set([
       {
         deviceIcon: current.deviceIcon,
         deviceName: current.deviceName,
         ipAddress: '192.168.1.108',
-        activity: 'Admin Portal Access',
-        time: 'Just now',
+        activity: 'Admin Portal Access (Offline)',
+        timestamp: 'Just now',
         status: 'Active'
-      },
-      {
-        deviceIcon: 'laptop_windows',
-        deviceName: 'Edge (Windows 11)',
-        ipAddress: '192.168.1.108',
-        activity: 'Token Refresh',
-        time: '12 mins ago',
-        status: 'Terminated'
-      },
-      {
-        deviceIcon: 'smartphone',
-        deviceName: 'Safari (iPhone 15 Pro)',
-        ipAddress: '10.0.8.212',
-        activity: 'Broadcast Alert published',
-        time: '2 hours ago',
-        status: 'Expired'
       }
     ]);
+  }
+
+  addSessionLogEntry(activity: string) {
+    const current = this.detectCurrentDevice();
+    const currentLogs = this.sessionLogs();
+    const activeIp = currentLogs.length > 0 ? currentLogs[0].ipAddress : '192.168.1.108';
+
+    const payload = {
+      deviceName: current.deviceName,
+      deviceIcon: current.deviceIcon,
+      ipAddress: activeIp,
+      activity: activity,
+      status: 'Active'
+    };
+
+    this.headerService.addSessionLog(payload).subscribe({
+      next: (res: any) => {
+        if (res && res.status === 0 && res.data && res.data.length > 0) {
+          const createdLog = res.data[0];
+          this.sessionLogs.set([createdLog, ...this.sessionLogs()]);
+        } else {
+          this.localPrependLog(payload);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to log session activity to database:', err);
+        this.localPrependLog(payload);
+      }
+    });
+  }
+
+  localPrependLog(payload: any) {
+    const localLog = {
+      ...payload,
+      timestamp: 'Just now'
+    };
+    this.sessionLogs.set([localLog, ...this.sessionLogs()]);
   }
 }
 
