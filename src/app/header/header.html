@@ -73,6 +73,8 @@
     <div class="relative max-w-md w-full hidden md:block search-container">
       <span class="material-icons absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
       <input type="text" [value]="searchQuery()" (input)="onSearch($event)"
+        autocomplete="off"
+        name="global-search"
         placeholder="Search accounts, customers, transactions..."
         class="w-full pl-10 pr-4 py-2 border border-slate-200/80 rounded-xl text-sm placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-slate-50/50" />
 
@@ -628,23 +630,26 @@
             <div class="space-y-4">
               <h5 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Change Password</h5>
               
+              <!-- Hidden username input to satisfy autofill heuristics within the password change section -->
+              <input type="text" name="username" style="display:none;" autocomplete="username" />
+
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="space-y-1.5">
                   <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Current Password</label>
                   <input type="password" [value]="currentPassword()" (input)="onCurrentPasswordInput($event)"
-                    placeholder="••••••••"
+                    placeholder="••••••••" autocomplete="current-password" name="currentPassword"
                     class="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-white text-slate-800 font-semibold" />
                 </div>
                 <div class="space-y-1.5">
                   <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">New Password</label>
                   <input type="password" [value]="newPassword()" (input)="onNewPasswordInput($event)"
-                    placeholder="••••••••"
+                    placeholder="••••••••" autocomplete="new-password" name="newPassword"
                     class="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-white text-slate-800 font-semibold" />
                 </div>
                 <div class="space-y-1.5">
                   <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Confirm Password</label>
                   <input type="password" [value]="confirmPassword()" (input)="onConfirmPasswordInput($event)"
-                    placeholder="••••••••"
+                    placeholder="••••••••" autocomplete="new-password" name="confirmPassword"
                     class="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-white text-slate-800 font-semibold" />
                 </div>
               </div>
