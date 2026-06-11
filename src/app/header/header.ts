@@ -9,10 +9,14 @@ import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/
 import { CustomTable } from '../custom-tables/custom-table';
 import { TableColumn } from '../custom-tables/custom-table-models/custom-table-model';
 import { CustomSkeletonLoading } from '../custom-tables/custom-skeleton-loading/custom-skeleton-loading';
+import { MyProfile } from './my-profile/my-profile';
+import { Settings } from './settings/settings';
+import { Security } from './security/security';
+import { QuickAction } from './quick-action/quick-action';
 
 @Component({
   selector: 'app-header',
-  imports: [CustomTable, CustomSkeletonLoading],
+  imports: [MyProfile, Settings, Security, QuickAction],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
@@ -247,6 +251,10 @@ export class Header implements OnInit, OnDestroy {
           if (res && res.status === 0) {
             this.quickActionsMessage.set(`Account ${accNo} has been successfully frozen.`);
             this.addSessionLogEntry(`Froze account ${accNo}`);
+            setTimeout(() => {
+              this.closeFreezeModal();
+              this.quickActionsMessage.set(null);
+            }, 1500);
           } else {
             this.quickActionsError.set(res.message || 'Operation failed.');
           }
@@ -261,6 +269,10 @@ export class Header implements OnInit, OnDestroy {
           if (res && res.status === 0) {
             this.quickActionsMessage.set(`Account ${accNo} has been successfully unfrozen.`);
             this.addSessionLogEntry(`Unfroze account ${accNo}`);
+            setTimeout(() => {
+              this.closeFreezeModal();
+              this.quickActionsMessage.set(null);
+            }, 1500);
           } else {
             this.quickActionsError.set(res.message || 'Operation failed.');
           }
@@ -296,6 +308,7 @@ export class Header implements OnInit, OnDestroy {
           this.isBannerDismissed.set(false);
           this.broadcastFormMessage.set('');
           this.addSessionLogEntry(`Published ${type} broadcast alert`);
+          this.closeBroadcastModal();
         } else {
           this.quickActionsError.set(res.message || 'Failed to publish alert.');
         }

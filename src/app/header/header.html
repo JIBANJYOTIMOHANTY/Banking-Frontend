@@ -72,9 +72,7 @@
     <!-- Professional Search Input -->
     <div class="relative max-w-md w-full hidden md:block search-container">
       <span class="material-icons absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-      <input type="text" [value]="searchQuery()" (input)="onSearch($event)"
-        autocomplete="off"
-        name="global-search"
+      <input type="text" [value]="searchQuery()" (input)="onSearch($event)" autocomplete="off" name="global-search"
         placeholder="Search accounts, customers, transactions..."
         class="w-full pl-10 pr-4 py-2 border border-slate-200/80 rounded-xl text-sm placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-slate-50/50" />
 
@@ -131,31 +129,9 @@
   <!-- Right Side: Quick Action, Alerts & Profile -->
   <div class="flex items-center gap-4">
     <!-- Quick Add button & Dropdown -->
-    <div class="relative quick-actions-container">
-      <button (click)="toggleQuickActions()"
-        class="hidden sm:flex items-center gap-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold px-4 py-2 rounded-xl text-xs border border-slate-200/60 transition-all cursor-pointer">
-        <span class="material-icons text-xs">add</span>
-        <span>Quick Action</span>
-      </button>
-
-      @if (showQuickActions()) {
-      <div
-        class="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-150 rounded-2xl shadow-xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-        <div class="space-y-0.5">
-          <button (click)="openFreezeModal()"
-            class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-slate-50 transition-colors duration-150 cursor-pointer">
-            <span class="material-icons text-slate-400 text-base">ac_unit</span>
-            <span>Freeze/Unfreeze Account</span>
-          </button>
-          <button (click)="openBroadcastModal()"
-            class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-slate-50 transition-colors duration-150 cursor-pointer">
-            <span class="material-icons text-slate-400 text-base">campaign</span>
-            <span>Broadcast System Alert</span>
-          </button>
-        </div>
-      </div>
-      }
-    </div>
+    <app-quick-action [showQuickActions]="showQuickActions()" (quickActionsToggle)="toggleQuickActions()"
+      (freezeModalOpen)="openFreezeModal()" (broadcastModalOpen)="openBroadcastModal()">
+    </app-quick-action>
 
     <!-- Notification Bell -->
     <button
@@ -234,6 +210,127 @@
     </div>
   </div>
 </header>
+
+
+<!-- User Center Modal -->
+@if (showUserCenterModal()) {
+<div
+  class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity animate-in fade-in duration-200">
+  <div
+    class="bg-white rounded-3xl border border-slate-150 max-w-4xl w-full h-[600px] shadow-2xl overflow-hidden flex flex-col md:flex-row animate-in zoom-in-95 duration-200">
+
+    <!-- Modal Sidebar -->
+    <div
+      class="w-full md:w-64 bg-slate-50 border-b md:border-b-0 md:border-r border-slate-150 p-6 flex flex-col justify-between">
+      <div class="space-y-6">
+        <!-- Title -->
+        <div>
+          <h3 class="text-sm font-extrabold text-slate-800 uppercase tracking-wider">User Center</h3>
+          <p class="text-[10px] text-slate-400 font-medium">Manage profile, preferences, and credentials</p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="space-y-1">
+          <button (click)="setUserCenterTab('profile')" [class.bg-indigo-50]="activeUserCenterTab() === 'profile'"
+            [class.text-indigo-600]="activeUserCenterTab() === 'profile'"
+            [class.bg-transparent]="activeUserCenterTab() !== 'profile'"
+            [class.text-slate-600]="activeUserCenterTab() !== 'profile'"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-xs font-bold transition-all hover:bg-slate-100 cursor-pointer">
+            <span class="material-icons text-base">person</span>
+            <span>My Profile</span>
+          </button>
+
+          <button (click)="setUserCenterTab('settings')" [class.bg-indigo-50]="activeUserCenterTab() === 'settings'"
+            [class.text-indigo-600]="activeUserCenterTab() === 'settings'"
+            [class.bg-transparent]="activeUserCenterTab() !== 'settings'"
+            [class.text-slate-600]="activeUserCenterTab() !== 'settings'"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-xs font-bold transition-all hover:bg-slate-100 cursor-pointer">
+            <span class="material-icons text-base">settings</span>
+            <span>Settings</span>
+          </button>
+
+          <button (click)="setUserCenterTab('security')" [class.bg-indigo-50]="activeUserCenterTab() === 'security'"
+            [class.text-indigo-600]="activeUserCenterTab() === 'security'"
+            [class.bg-transparent]="activeUserCenterTab() !== 'security'"
+            [class.text-slate-600]="activeUserCenterTab() !== 'security'"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-xs font-bold transition-all hover:bg-slate-100 cursor-pointer">
+            <span class="material-icons text-base">security</span>
+            <span>Security</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Quick Session Indicator -->
+      <div class="hidden md:flex items-center gap-2 p-3 bg-indigo-50/50 border border-indigo-100/50 rounded-xl">
+        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+        <div class="text-[9px] text-indigo-700 font-bold uppercase tracking-wider">
+          Active Administrator
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Content Area -->
+    <div class="flex-1 flex flex-col h-full bg-white">
+      <!-- Content Header -->
+      <div class="flex items-center justify-between px-8 py-5 border-b border-slate-100">
+        <h4 class="text-sm font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
+          @if (activeUserCenterTab() === 'profile') {
+          <span class="material-icons text-indigo-600 text-lg">person</span>
+          <span>Administrator Profile</span>
+          } @else if (activeUserCenterTab() === 'settings') {
+          <span class="material-icons text-indigo-600 text-lg">settings</span>
+          <span>System Preferences</span>
+          } @else if (activeUserCenterTab() === 'security') {
+          <span class="material-icons text-indigo-600 text-lg">security</span>
+          <span>Credentials & Session Logs</span>
+          }
+        </h4>
+        <button (click)="closeUserCenterModal()"
+          class="p-1 rounded-lg hover:bg-slate-50 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
+          <span class="material-icons text-base">close</span>
+        </button>
+      </div>
+
+      <!-- Content Scroll Body -->
+      <div class="flex-1 p-8 overflow-y-auto min-h-0 text-slate-800">
+
+        <!-- PROFILE TAB CONTENT -->
+        @if (activeUserCenterTab() === 'profile') {
+        <app-my-profile [userFirstName]="userFirstName()" [userLastName]="userLastName()" [userRole]="userRole()"
+          [editFirstName]="editFirstName()" [editLastName]="editLastName()" [editEmail]="editEmail()"
+          [profileSuccessMessage]="profileSuccessMessage()" (editFirstNameChange)="editFirstName.set($event)"
+          (editLastNameChange)="editLastName.set($event)" (editEmailChange)="editEmail.set($event)"
+          (save)="saveProfileChanges()">
+        </app-my-profile>
+        }
+
+        <!-- SETTINGS TAB CONTENT -->
+        @if (activeUserCenterTab() === 'settings') {
+        <app-settings [selectedTheme]="selectedTheme()" [enableAutoRefresh]="enableAutoRefresh()"
+          [enableDesktopAlerts]="enableDesktopAlerts()" [settingsSuccessMessage]="settingsSuccessMessage()"
+          (themeChange)="selectTheme($event)" (autoRefreshToggle)="toggleAutoRefresh()"
+          (desktopAlertsToggle)="toggleDesktopAlerts()" (save)="saveSettings()">
+        </app-settings>
+        }
+
+        <!-- SECURITY TAB CONTENT -->
+        @if (activeUserCenterTab() === 'security') {
+        <app-security [securitySuccessMessage]="securitySuccessMessage()"
+          [securityErrorMessage]="securityErrorMessage()" [currentPassword]="currentPassword()"
+          [newPassword]="newPassword()" [confirmPassword]="confirmPassword()" [sessionLogs]="sessionLogs()"
+          [sessionLogColumns]="sessionLogColumns" [sessionLogSearchQuery]="sessionLogSearchQuery()"
+          [isLoadingSessionLogs]="isLoadingSessionLogs()" (currentPasswordChange)="currentPassword.set($event)"
+          (newPasswordChange)="newPassword.set($event)" (confirmPasswordChange)="confirmPassword.set($event)"
+          (passwordChangeSubmit)="submitPasswordChange()" (sessionLogSearch)="sessionLogSearchQuery.set($event)">
+        </app-security>
+        }
+
+      </div>
+    </div>
+
+  </div>
+</div>
+}
 
 <!-- Freeze / Unfreeze Account Modal -->
 @if (showFreezeModal()) {
@@ -388,331 +485,6 @@
         </button>
       </div>
     </div>
-  </div>
-</div>
-}
-
-<!-- User Center Modal -->
-@if (showUserCenterModal()) {
-<div
-  class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity animate-in fade-in duration-200">
-  <div
-    class="bg-white rounded-3xl border border-slate-150 max-w-4xl w-full h-[600px] shadow-2xl overflow-hidden flex flex-col md:flex-row animate-in zoom-in-95 duration-200">
-    
-    <!-- Modal Sidebar -->
-    <div class="w-full md:w-64 bg-slate-50 border-b md:border-b-0 md:border-r border-slate-150 p-6 flex flex-col justify-between">
-      <div class="space-y-6">
-        <!-- Title -->
-        <div>
-          <h3 class="text-sm font-extrabold text-slate-800 uppercase tracking-wider">User Center</h3>
-          <p class="text-[10px] text-slate-400 font-medium">Manage profile, preferences, and credentials</p>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <nav class="space-y-1">
-          <button (click)="setUserCenterTab('profile')"
-            [class.bg-indigo-50]="activeUserCenterTab() === 'profile'"
-            [class.text-indigo-600]="activeUserCenterTab() === 'profile'"
-            [class.bg-transparent]="activeUserCenterTab() !== 'profile'"
-            [class.text-slate-600]="activeUserCenterTab() !== 'profile'"
-            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-xs font-bold transition-all hover:bg-slate-100 cursor-pointer">
-            <span class="material-icons text-base">person</span>
-            <span>My Profile</span>
-          </button>
-
-          <button (click)="setUserCenterTab('settings')"
-            [class.bg-indigo-50]="activeUserCenterTab() === 'settings'"
-            [class.text-indigo-600]="activeUserCenterTab() === 'settings'"
-            [class.bg-transparent]="activeUserCenterTab() !== 'settings'"
-            [class.text-slate-600]="activeUserCenterTab() !== 'settings'"
-            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-xs font-bold transition-all hover:bg-slate-100 cursor-pointer">
-            <span class="material-icons text-base">settings</span>
-            <span>Settings</span>
-          </button>
-
-          <button (click)="setUserCenterTab('security')"
-            [class.bg-indigo-50]="activeUserCenterTab() === 'security'"
-            [class.text-indigo-600]="activeUserCenterTab() === 'security'"
-            [class.bg-transparent]="activeUserCenterTab() !== 'security'"
-            [class.text-slate-600]="activeUserCenterTab() !== 'security'"
-            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-xs font-bold transition-all hover:bg-slate-100 cursor-pointer">
-            <span class="material-icons text-base">security</span>
-            <span>Security</span>
-          </button>
-        </nav>
-      </div>
-
-      <!-- Quick Session Indicator -->
-      <div class="hidden md:flex items-center gap-2 p-3 bg-indigo-50/50 border border-indigo-100/50 rounded-xl">
-        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-        <div class="text-[9px] text-indigo-700 font-bold uppercase tracking-wider">
-          Active Administrator
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal Content Area -->
-    <div class="flex-1 flex flex-col h-full bg-white">
-      <!-- Content Header -->
-      <div class="flex items-center justify-between px-8 py-5 border-b border-slate-100">
-        <h4 class="text-sm font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
-          @if (activeUserCenterTab() === 'profile') {
-            <span class="material-icons text-indigo-600 text-lg">person</span>
-            <span>Administrator Profile</span>
-          } @else if (activeUserCenterTab() === 'settings') {
-            <span class="material-icons text-indigo-600 text-lg">settings</span>
-            <span>System Preferences</span>
-          } @else if (activeUserCenterTab() === 'security') {
-            <span class="material-icons text-indigo-600 text-lg">security</span>
-            <span>Credentials & Session Logs</span>
-          }
-        </h4>
-        <button (click)="closeUserCenterModal()"
-          class="p-1 rounded-lg hover:bg-slate-50 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer">
-          <span class="material-icons text-base">close</span>
-        </button>
-      </div>
-
-      <!-- Content Scroll Body -->
-      <div class="flex-1 p-8 overflow-y-auto min-h-0 text-slate-800">
-        
-        <!-- PROFILE TAB CONTENT -->
-        @if (activeUserCenterTab() === 'profile') {
-          <div class="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-200">
-            
-            @if (profileSuccessMessage()) {
-              <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-bold border border-emerald-100">
-                {{ profileSuccessMessage() }}
-              </div>
-            }
-
-            <div class="flex flex-col sm:flex-row items-center gap-5 p-5 bg-slate-50 rounded-2xl border border-slate-100">
-              <img src="/assets/images/Jiban.jpeg" alt="Avatar" class="w-16 h-16 rounded-2xl object-cover border border-slate-200 shadow-sm" />
-              <div class="text-center sm:text-left space-y-1">
-                <h5 class="text-sm font-extrabold text-slate-800">{{ userFirstName() }} {{ userLastName() }}</h5>
-                <p class="text-[10px] text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded w-fit mx-auto sm:mx-0 uppercase tracking-wider">{{ userRole() }}</p>
-                <p class="text-[10px] text-slate-400 font-medium">Department: Treasury & Core Operations • ID: EMP-2026-9812</p>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div class="space-y-1.5">
-                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">First Name</label>
-                <input type="text" [value]="editFirstName()" (input)="onEditFirstNameInput($event)"
-                  class="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-white text-slate-800 font-semibold" />
-              </div>
-              <div class="space-y-1.5">
-                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Last Name</label>
-                <input type="text" [value]="editLastName()" (input)="onEditLastNameInput($event)"
-                  class="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-white text-slate-800 font-semibold" />
-              </div>
-              <div class="space-y-1.5 sm:col-span-2">
-                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Email Address</label>
-                <input type="email" [value]="editEmail()" (input)="onEditEmailInput($event)"
-                  class="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-white text-slate-800 font-semibold" />
-              </div>
-            </div>
-
-            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-              <button (click)="saveProfileChanges()"
-                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-all cursor-pointer shadow-md">
-                Save Profile Details
-              </button>
-            </div>
-          </div>
-        }
-
-        <!-- SETTINGS TAB CONTENT -->
-        @if (activeUserCenterTab() === 'settings') {
-          <div class="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-200">
-            
-            @if (settingsSuccessMessage()) {
-              <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-bold border border-emerald-100">
-                {{ settingsSuccessMessage() }}
-              </div>
-            }
-
-            <div class="space-y-4">
-              <div class="space-y-2">
-                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Visual Theme</label>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <button (click)="selectTheme('slate')" 
-                    [class.border-indigo-600]="selectedTheme() === 'slate'"
-                    [class.bg-slate-50]="selectedTheme() === 'slate'"
-                    class="p-3 border border-slate-200 rounded-xl text-center cursor-pointer transition-all hover:bg-slate-50">
-                    <span class="block text-xs font-bold text-slate-800">Slate Dark</span>
-                    <span class="text-[9px] text-slate-400 font-medium">Default Theme</span>
-                  </button>
-                  <button (click)="selectTheme('indigo')"
-                    [class.border-indigo-600]="selectedTheme() === 'indigo'"
-                    [class.bg-indigo-50/20]="selectedTheme() === 'indigo'"
-                    class="p-3 border border-slate-200 rounded-xl text-center cursor-pointer transition-all hover:bg-slate-50">
-                    <span class="block text-xs font-bold text-indigo-700">Indigo Wave</span>
-                    <span class="text-[9px] text-slate-400 font-medium">Vibrant UI</span>
-                  </button>
-                  <button (click)="selectTheme('emerald')"
-                    [class.border-indigo-600]="selectedTheme() === 'emerald'"
-                    [class.bg-emerald-50/20]="selectedTheme() === 'emerald'"
-                    class="p-3 border border-slate-200 rounded-xl text-center cursor-pointer transition-all hover:bg-slate-50">
-                    <span class="block text-xs font-bold text-emerald-700">Emerald Mint</span>
-                    <span class="text-[9px] text-slate-400 font-medium">Fresh Aesthetics</span>
-                  </button>
-                  <button (click)="selectTheme('light')"
-                    [class.border-indigo-600]="selectedTheme() === 'light'"
-                    [class.bg-slate-50]="selectedTheme() === 'light'"
-                    class="p-3 border border-slate-200 rounded-xl text-center cursor-pointer transition-all hover:bg-slate-50">
-                    <span class="block text-xs font-bold text-slate-700">Standard Light</span>
-                    <span class="text-[9px] text-slate-400 font-medium">Classic Clean</span>
-                  </button>
-                </div>
-              </div>
-
-              <div class="border-t border-slate-100 my-4"></div>
-
-              <div class="space-y-3">
-                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Application Preferences</label>
-                
-                <div class="flex items-center justify-between p-3.5 bg-slate-50/50 rounded-xl border border-slate-100">
-                  <div>
-                    <h6 class="text-xs font-bold text-slate-800">Enable Real-Time Auto-Refresh</h6>
-                    <p class="text-[10px] text-slate-400 font-medium">Periodically fetch accounts & transactions on dashboard.</p>
-                  </div>
-                  <button (click)="toggleAutoRefresh()" 
-                    [class.bg-indigo-600]="enableAutoRefresh()"
-                    [class.bg-slate-200]="!enableAutoRefresh()"
-                    class="w-10 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all duration-300">
-                    <div [class.translate-x-4]="enableAutoRefresh()"
-                      class="bg-white w-4 h-4 rounded-full shadow-md transform duration-300"></div>
-                  </button>
-                </div>
-
-                <div class="flex items-center justify-between p-3.5 bg-slate-50/50 rounded-xl border border-slate-100">
-                  <div>
-                    <h6 class="text-xs font-bold text-slate-800">Critical Desktop Alerts</h6>
-                    <p class="text-[10px] text-slate-400 font-medium">Trigger instant system notifications on critical lockout.</p>
-                  </div>
-                  <button (click)="toggleDesktopAlerts()" 
-                    [class.bg-indigo-600]="enableDesktopAlerts()"
-                    [class.bg-slate-200]="!enableDesktopAlerts()"
-                    class="w-10 h-6 flex items-center rounded-full p-1 cursor-pointer transition-all duration-300">
-                    <div [class.translate-x-4]="enableDesktopAlerts()"
-                      class="bg-white w-4 h-4 rounded-full shadow-md transform duration-300"></div>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
-              <button (click)="saveSettings()"
-                class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition-all cursor-pointer shadow-md">
-                Save Preferences
-              </button>
-            </div>
-          </div>
-        }
-
-        <!-- SECURITY TAB CONTENT -->
-        @if (activeUserCenterTab() === 'security') {
-          <div class="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-200">
-            
-            @if (securitySuccessMessage()) {
-              <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-bold border border-emerald-100">
-                {{ securitySuccessMessage() }}
-              </div>
-            }
-            @if (securityErrorMessage()) {
-              <div class="p-3 bg-rose-50 text-rose-700 rounded-xl text-xs font-bold border border-rose-100">
-                {{ securityErrorMessage() }}
-              </div>
-            }
-
-            <!-- Password Change Section -->
-            <div class="space-y-4">
-              <h5 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Change Password</h5>
-              
-              <!-- Hidden username input to satisfy autofill heuristics within the password change section -->
-              <input type="text" name="username" style="display:none;" autocomplete="username" />
-
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div class="space-y-1.5">
-                  <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Current Password</label>
-                  <input type="password" [value]="currentPassword()" (input)="onCurrentPasswordInput($event)"
-                    placeholder="••••••••" autocomplete="current-password" name="currentPassword"
-                    class="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-white text-slate-800 font-semibold" />
-                </div>
-                <div class="space-y-1.5">
-                  <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">New Password</label>
-                  <input type="password" [value]="newPassword()" (input)="onNewPasswordInput($event)"
-                    placeholder="••••••••" autocomplete="new-password" name="newPassword"
-                    class="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-white text-slate-800 font-semibold" />
-                </div>
-                <div class="space-y-1.5">
-                  <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Confirm Password</label>
-                  <input type="password" [value]="confirmPassword()" (input)="onConfirmPasswordInput($event)"
-                    placeholder="••••••••" autocomplete="new-password" name="confirmPassword"
-                    class="w-full px-3.5 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-white text-slate-800 font-semibold" />
-                </div>
-              </div>
-
-              <!-- Password Strength Bar Indicator -->
-              @if (newPassword().length > 0) {
-                <div class="space-y-1">
-                  <div class="flex justify-between text-[9px] font-bold">
-                    <span class="text-slate-400 uppercase tracking-wider">Password Strength:</span>
-                    <span [class.text-rose-500]="newPassword().length < 6"
-                          [class.text-amber-500]="newPassword().length >= 6 && newPassword().length < 10"
-                          [class.text-emerald-500]="newPassword().length >= 10">
-                      {{ newPassword().length < 6 ? 'Weak' : newPassword().length < 10 ? 'Medium' : 'Strong' }}
-                    </span>
-                  </div>
-                  <div class="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
-                    <div [class.bg-rose-500]="newPassword().length < 6"
-                         [class.bg-amber-500]="newPassword().length >= 6 && newPassword().length < 10"
-                         [class.bg-emerald-500]="newPassword().length >= 10"
-                         [style.width.%]="newPassword().length < 6 ? 33 : newPassword().length < 10 ? 66 : 100"
-                         class="h-full transition-all duration-300"></div>
-                  </div>
-                </div>
-              }
-
-              <div class="flex justify-end pt-2">
-                <button (click)="submitPasswordChange()"
-                  class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition-all cursor-pointer shadow-md">
-                  Update Credentials
-                </button>
-              </div>
-            </div>
-
-            <div class="border-t border-slate-100 my-4"></div>
-
-            <!-- Session Logs Audit -->
-            <div class="space-y-3">
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-1">
-                <h5 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Active Device Session Logs</h5>
-                <div class="flex items-center gap-3">
-                  <!-- Search input for session logs -->
-                  <div class="relative w-44">
-                    <span class="material-icons absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-                    <input type="text" [value]="sessionLogSearchQuery()" (input)="onSessionLogSearch($event)"
-                      placeholder="Search session logs..."
-                      class="w-full pl-8 pr-3 py-1 text-[10px] border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-slate-50/50 text-slate-800 font-semibold" />
-                  </div>
-                  <span class="text-[9px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-bold uppercase whitespace-nowrap">This Device Connected</span>
-                </div>
-              </div>
-              
-              @if (isLoadingSessionLogs()) {
-                <app-custom-skeleton-loading [columns]="sessionLogColumns" [rows]="3"></app-custom-skeleton-loading>
-              } @else {
-                <app-custom-table [columns]="sessionLogColumns" [data]="sessionLogs()" [searchQuery]="sessionLogSearchQuery()"></app-custom-table>
-              }
-            </div>
-          </div>
-        }
-
-      </div>
-    </div>
-
   </div>
 </div>
 }

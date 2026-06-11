@@ -1,0 +1,26 @@
+<!-- Quick Add button & Dropdown -->
+<div class="relative quick-actions-container">
+  <button (click)="toggleQuickActions()"
+    class="hidden sm:flex items-center gap-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold px-4 py-2 rounded-xl text-xs border border-slate-200/60 transition-all cursor-pointer">
+    <span class="material-icons text-xs">add</span>
+    <span>Quick Action</span>
+  </button>
+
+  @if (showQuickActions()) {
+  <div
+    class="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-150 rounded-2xl shadow-xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+    <div class="space-y-0.5">
+      <button (click)="openFreezeModal()"
+        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-slate-50 transition-colors duration-150 cursor-pointer">
+        <span class="material-icons text-slate-400 text-base">ac_unit</span>
+        <span>Freeze/Unfreeze Account</span>
+      </button>
+      <button (click)="openBroadcastModal()"
+        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left text-xs font-semibold text-slate-600 hover:text-indigo-600 hover:bg-slate-50 transition-colors duration-150 cursor-pointer">
+        <span class="material-icons text-slate-400 text-base">campaign</span>
+        <span>Broadcast System Alert</span>
+      </button>
+    </div>
+  </div>
+  }
+</div>
