@@ -9,10 +9,56 @@
     </button>
 
     <!-- Professional Search Input -->
-    <div class="relative max-w-md w-full hidden md:block">
+    <div class="relative max-w-md w-full hidden md:block search-container">
       <span class="material-icons absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-      <input type="text" placeholder="Search accounts, customers, transactions..."
+      <input type="text" [value]="searchQuery()" (input)="onSearch($event)" placeholder="Search accounts, customers, transactions..."
         class="w-full pl-10 pr-4 py-2 border border-slate-200/80 rounded-xl text-sm placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-slate-50/50" />
+
+      <!-- Search Results Dropdown -->
+      @if (searchQuery().trim().length > 0 && searchResults().length >= 0) {
+        <div class="absolute left-0 right-0 top-full mt-2 bg-white border border-slate-150 rounded-2xl shadow-xl p-2 z-50 max-h-96 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-150">
+          @if (isLoading()) {
+            <div class="flex items-center justify-center py-6 text-slate-400 gap-2">
+              <span class="animate-spin material-icons text-xl">sync</span>
+              <span class="text-xs font-medium">Searching...</span>
+            </div>
+          } @else if (searchResults().length === 0) {
+            <div class="flex flex-col items-center justify-center py-6 text-slate-400">
+              <span class="material-icons text-2xl mb-1 text-slate-300">search_off</span>
+              <span class="text-xs font-semibold">No accounts or customers found</span>
+            </div>
+          } @else {
+            <div class="space-y-0.5">
+              @for (account of searchResults(); track account.accountNumber) {
+                <button (click)="selectAccount(account)"
+                  class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-all text-left group border border-transparent hover:border-slate-100 cursor-pointer">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-sm select-none">
+                      {{ (account.firstName?.charAt(0) || '') + (account.lastName?.charAt(0) || '') }}
+                    </div>
+                    <div>
+                      <p class="text-xs font-bold text-slate-800 leading-tight group-hover:text-indigo-600 transition-colors">
+                        {{ account.firstName }} {{ account.lastName }}
+                      </p>
+                      <p class="text-[10px] text-slate-400 font-medium leading-none mt-1">
+                        {{ account.accountNumber }} • {{ account.email }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-xs font-extrabold text-slate-800 leading-tight">
+                      ${{ account.balance }}
+                    </p>
+                    <p class="text-[9px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded mt-1 w-fit ml-auto">
+                      Active
+                    </p>
+                  </div>
+                </button>
+              }
+            </div>
+          }
+        </div>
+      }
     </div>
   </div>
 
@@ -45,14 +91,14 @@
           <div class="flex items-center gap-1">
             <p class="text-xs font-bold text-slate-800 leading-tight">Sarah Jenkins</p>
             <span class="material-icons text-slate-400 text-sm transition-transform duration-200"
-              [class.rotate-180]="showProfileMenu">expand_more</span>
+              [class.rotate-180]="showProfileMenu()">expand_more</span>
           </div>
           <p class="text-[10px] text-slate-400 font-medium leading-none mt-0.5">Admin Manager</p>
         </div>
       </button>
 
       <!-- Dropdown Card -->
-      @if (showProfileMenu) {
+      @if (showProfileMenu()) {
       <div
         class="absolute right-0 top-full mt-2 w-64 bg-white border border-slate-150 rounded-2xl shadow-xl p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
         <!-- Profile Header -->
