@@ -134,14 +134,14 @@
     </app-quick-action>
 
     <!-- Notification Bell -->
-    <button
+    <!-- <button
       class="relative p-2 rounded-xl hover:bg-slate-50 text-slate-500 hover:text-slate-800 transition-colors duration-200 cursor-pointer">
       <span class="material-icons">notifications</span>
       <span
         class="absolute top-1.5 right-1.5 bg-rose-500 text-white text-[10px] rounded-full w-4.5 h-4.5 flex items-center justify-center font-bold ring-2 ring-white">
         5
       </span>
-    </button>
+    </button> -->
 
     <!-- User Profile Dropdown -->
     <div class="relative flex items-center pl-3 border-l border-slate-100 profile-container">
@@ -333,7 +333,8 @@
 }
 
 <!-- Freeze / Unfreeze Account Modal -->
-<app-pop-up-modal [isOpen]="showFreezeModal()" title="Freeze / Unfreeze Account" icon="ac_unit" size="md" (closeModalEvent)="closeFreezeModal()">
+<app-pop-up-modal [isOpen]="showFreezeModal()" title="Freeze / Unfreeze Account" icon="ac_unit" size="md"
+  (closeModalEvent)="closeFreezeModal()">
   <!-- Feedback alerts -->
   @if (quickActionsMessage()) {
   <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-bold mb-4 border border-emerald-100">
@@ -351,8 +352,7 @@
       <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Account Number</label>
       <div class="relative">
         <span class="material-icons absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base">badge</span>
-        <input type="text" [value]="freezeFormAccountNo()" (input)="onFreezeAccountInput($event)"
-          placeholder="ACC0001"
+        <input type="text" [value]="freezeFormAccountNo()" (input)="onFreezeAccountInput($event)" placeholder="ACC0001"
           class="w-full pl-10 pr-4 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all bg-slate-50/50 text-slate-800 font-semibold" />
       </div>
     </div>
@@ -362,9 +362,8 @@
       <div class="grid grid-cols-2 gap-3">
         <!-- Freeze Option Button -->
         <button (click)="setFreezeAction('freeze')" [class.bg-rose-600]="freezeFormAction() === 'freeze'"
-          [class.text-white]="freezeFormAction() === 'freeze'"
-          [class.border-rose-600]="freezeFormAction() === 'freeze'" [class.bg-white]="freezeFormAction() !== 'freeze'"
-          [class.text-slate-600]="freezeFormAction() !== 'freeze'"
+          [class.text-white]="freezeFormAction() === 'freeze'" [class.border-rose-600]="freezeFormAction() === 'freeze'"
+          [class.bg-white]="freezeFormAction() !== 'freeze'" [class.text-slate-600]="freezeFormAction() !== 'freeze'"
           [class.border-slate-200]="freezeFormAction() !== 'freeze'"
           class="flex items-center justify-center gap-2 p-3 border rounded-xl text-xs font-bold transition-all cursor-pointer hover:opacity-90 shadow-sm flex-1">
           <span class="material-icons text-base">ac_unit</span>
@@ -393,7 +392,8 @@
 </app-pop-up-modal>
 
 <!-- Broadcast Alert Modal -->
-<app-pop-up-modal [isOpen]="showBroadcastModal()" title="Broadcast System Alert" icon="campaign" size="md" (closeModalEvent)="closeBroadcastModal()">
+<app-pop-up-modal [isOpen]="showBroadcastModal()" title="Broadcast System Alert" icon="campaign" size="md"
+  (closeModalEvent)="closeBroadcastModal()">
   <!-- Feedback alerts -->
   @if (quickActionsMessage()) {
   <div class="p-3 bg-emerald-50 text-emerald-700 rounded-xl text-xs font-bold mb-4 border border-emerald-100">
@@ -420,8 +420,8 @@
         <!-- Announcement Option Button -->
         <button (click)="setBroadcastType('INFO')" [class.bg-emerald-600]="broadcastFormType() === 'INFO'"
           [class.text-white]="broadcastFormType() === 'INFO'"
-          [class.border-emerald-600]="broadcastFormType() === 'INFO'"
-          [class.bg-white]="broadcastFormType() !== 'INFO'" [class.text-slate-600]="broadcastFormType() !== 'INFO'"
+          [class.border-emerald-600]="broadcastFormType() === 'INFO'" [class.bg-white]="broadcastFormType() !== 'INFO'"
+          [class.text-slate-600]="broadcastFormType() !== 'INFO'"
           [class.border-slate-200]="broadcastFormType() !== 'INFO'"
           class="flex items-center justify-center gap-2 p-3 border rounded-xl text-xs font-bold transition-all cursor-pointer hover:opacity-90 shadow-sm flex-1">
           <span class="material-icons text-base">info</span>
