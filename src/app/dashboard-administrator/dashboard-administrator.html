@@ -27,7 +27,7 @@
                                                 <span
                                                         class="material-icons text-[240px] translate-y-10 translate-x-12">account_balance</span>
                                         </div>
-                                        <div class="max-w-xl space-y-2 relative z-10">
+                                        <div class="w-full space-y-2 relative z-10">
                                                 <span
                                                         class="bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full text-xs font-semibold tracking-wider uppercase border border-indigo-400/20">
                                                         System Overview
@@ -158,10 +158,11 @@
                                                         </div>
                                                         <div class="p-6">
                                                                 @if (isLoadingTransactions()) {
-                                                                        <app-custom-skeleton-loading [columns]="recentTxColumns" [rows]="3"></app-custom-skeleton-loading>
+                                                                <app-custom-skeleton-loading [columns]="recentTxColumns"
+                                                                        [rows]="3"></app-custom-skeleton-loading>
                                                                 } @else {
-                                                                        <app-custom-table [columns]="recentTxColumns"
-                                                                                [data]="recentTransactions()"></app-custom-table>
+                                                                <app-custom-table [columns]="recentTxColumns"
+                                                                        [data]="recentTransactions()"></app-custom-table>
                                                                 }
                                                         </div>
                                                 </div>
@@ -183,19 +184,26 @@
                                                         <!-- Recent account item list -->
                                                         <div class="space-y-4">
                                                                 @if (isLoadingAccounts()) {
-                                                                        @for (i of [1, 2, 3]; track i) {
+                                                                @for (i of [1, 2, 3]; track i) {
+                                                                <div
+                                                                        class="flex items-center justify-between gap-3 p-3 rounded-xl border border-slate-100 animate-pulse">
+                                                                        <div class="flex items-center gap-3">
                                                                                 <div
-                                                                                        class="flex items-center justify-between gap-3 p-3 rounded-xl border border-slate-100 animate-pulse">
-                                                                                        <div class="flex items-center gap-3">
-                                                                                                <div class="w-9 h-9 rounded-lg bg-slate-200"></div>
-                                                                                                <div class="space-y-2">
-                                                                                                        <div class="h-3 bg-slate-250 rounded-md w-24"></div>
-                                                                                                        <div class="h-2.5 bg-slate-200 rounded-md w-16"></div>
-                                                                                                </div>
-                                                                                        </div>
-                                                                                        <div class="w-8 h-8 rounded-lg bg-slate-150"></div>
+                                                                                        class="w-9 h-9 rounded-lg bg-slate-200">
                                                                                 </div>
-                                                                        }
+                                                                                <div class="space-y-2">
+                                                                                        <div
+                                                                                                class="h-3 bg-slate-250 rounded-md w-24">
+                                                                                        </div>
+                                                                                        <div
+                                                                                                class="h-2.5 bg-slate-200 rounded-md w-16">
+                                                                                        </div>
+                                                                                </div>
+                                                                        </div>
+                                                                        <div class="w-8 h-8 rounded-lg bg-slate-150">
+                                                                        </div>
+                                                                </div>
+                                                                }
                                                                 } @else if (recentAccounts().length === 0) {
                                                                 <div
                                                                         class="p-8 text-center text-slate-400 text-xs font-semibold">
