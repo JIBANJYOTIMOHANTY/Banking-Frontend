@@ -19,7 +19,7 @@ export class SidebarService {
     { id: 'Dashboard', label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
     { id: 'Customers', label: 'Customers', icon: 'people', route: '/customers' },
     { id: 'Accounts', label: 'Accounts', icon: 'account_balance_wallet', route: '/accounts' },
-    { id: 'Transactions', label: 'Transactions', icon: 'receipt_long', route: '/transactions' }
+    { id: 'Transactions', label: 'Transactions', icon: 'currency_exchange', route: '/transactions' }
   ];
 
   activeItem = signal<string>('Dashboard');
