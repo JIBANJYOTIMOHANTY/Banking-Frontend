@@ -19,6 +19,15 @@ A modern, responsive, and feature-rich banking client dashboard built with **Ang
 *   **Statement & Transaction History:**
     *   Statement logs showing credit (emerald) and debit (rose) indicators.
     *   Date-based filter (`yyyy-MM-dd`) to fetch targeted transactions.
+*   **System-Wide Broadcast Alerts:**
+    *   Administrator quick action modal to publish live announcements (INFO/CRITICAL).
+    *   Announcements are displayed dynamically at the top of the header viewport with dismiss/clear capabilities.
+*   **Audit Trails & Device Session Logs:**
+    *   Dedicated security section displaying current and historic device access logs (Browser, OS, IP address, timestamp, status, and action).
+    *   Includes search filtering to search through active device sessions.
+*   **Offline Connection Monitoring:**
+    *   Active listeners for browser offline/online state and background backend connection monitoring (`ConnectionService`).
+    *   Gracefully intercepts communication loss and overlays a premium retry screen (`ConnectionLost`).
 *   **Secure Session & Sliding Expiration:**
     *   **Activity Interceptor:** Listens for user interactions (clicks, keypresses) and triggers background token refreshes (`/auth/refresh`) using a throttled window to extend the session dynamically.
     *   **Custom Session Modal:** In case of complete inactivity, triggers a custom glassmorphic warning overlay prompting the user to redirect and authenticate again rather than using basic browser alerts.
@@ -33,8 +42,13 @@ The project components are organized under `src/app/`:
 *   `customers-management/`: Manages customer registration, detail drawers, profile updates, and search query filters.
 *   `transactions/`: Lists credit/debit transaction statement logs with date-filtering filters.
 *   `session-expired/`: High-fidelity overlay warning modal displayed on session inactivity timeouts.
-*   `sidebar/` / `header/` / `footer/`: Layout framing modules coordinating user navigation states.
-*   `common-service/`: Configures core HTTP methods (`get`, `post`, `put`, `patch`, `delete`) and centralizes HTTP error handling.
+*   `connection-lost/`: Custom offline screen with manual retry capabilities to gracefully handle lost backend connectivity.
+*   `custom-pop-up-modal/`: Reusable, customizable overlay popup modal module.
+*   `custom-tables/`: Custom paginated/searchable tables and skeleton loaders for uniform loading states.
+*   `sidebar/` / `header/` / `footer/`: Layout framing modules coordinating user navigation states, system broadcast settings, and quick actions.
+*   `dashboard-administrator/`: Core shell dashboard wrapper organizing the application views.
+*   `login-administrator/`: Authentication login screen interface.
+*   `common-service/`: Configures core API HTTP request wrappers (`get`, `post`, `put`, `patch`, `delete`), error intercepting, and `ConnectionService` connection checking.
 *   `authguard.ts`: Enforces page access restrictions, manages session token lifecycle tracking, and throttle-refreshes JWT validity.
 
 ---
