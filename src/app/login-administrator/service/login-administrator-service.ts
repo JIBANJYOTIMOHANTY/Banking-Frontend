@@ -14,4 +14,9 @@ export class LoginAdministratorService {
     const apiUrl = 'auth/login'
     return this.commonService.post(`${this.loginUrl}${apiUrl}`, payload, { skipSanitization: true });
   }
+
+  register(payload: any) {
+    const apiUrl = 'auth/register';
+    return this.commonService.post(`${this.loginUrl}${apiUrl}`, payload, { skipSanitization: true });
+  }
 }

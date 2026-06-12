@@ -1,7 +1,8 @@
 import { Component, inject, OnInit, HostListener, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { filter } from 'rxjs';
 import { LoginAdministratorService } from './service/login-administrator-service';
 
 /**
@@ -11,6 +12,42 @@ export function noWhitespaceValidator(control: AbstractControl): ValidationError
   const isWhitespace = (control.value || '').trim().length === 0;
   const isValid = !isWhitespace;
   return isValid ? null : { 'whitespace': true };
+}
+
+/**
+ * Custom validator for checking password complexity requirements matching backend UserValidator.
+ */
+export function passwordStrengthValidator(control: AbstractControl): ValidationErrors | null {
+  const value = control.value || '';
+  if (!value) return null;
+
+  const hasUppercase = /[A-Z]/.test(value);
+  const hasLowercase = /[a-z]/.test(value);
+  const hasDigit = /[0-9]/.test(value);
+  const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\|,.<>\/?]/.test(value);
+  const isValidLength = value.length >= 8;
+
+  const errors: any = {};
+  if (!isValidLength) errors.minLength = true;
+  if (!hasUppercase) errors.uppercase = true;
+  if (!hasLowercase) errors.lowercase = true;
+  if (!hasDigit) errors.digit = true;
+  if (!hasSpecialChar) errors.specialChar = true;
+
+  return Object.keys(errors).length > 0 ? errors : null;
+}
+
+/**
+ * Custom validator to verify if password and confirmPassword fields match.
+ */
+export function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+  const password = control.get('password')?.value;
+  const confirmPassword = control.get('confirmPassword')?.value;
+  if (password && confirmPassword && password !== confirmPassword) {
+    control.get('confirmPassword')?.setErrors({ passwordMismatch: true });
+    return { passwordMismatch: true };
+  }
+  return null;
 }
 
 @Component({
@@ -24,10 +61,40 @@ export class LoginAdministrator implements OnInit {
   private loginService = inject(LoginAdministratorService);
   private router = inject(Router);
 
+  isSignUp = signal(false);
+  isPasswordFocused = signal(false);
+  isLoading = signal(false);
+  errorMessage = signal<string | null>(null);
+  successMessage = signal<string | null>(null);
+
+  loginForm: FormGroup = this.fb.group({
+    username: ['', [Validators.required, noWhitespaceValidator]],
+    password: ['', [Validators.required, noWhitespaceValidator]]
+  });
+
+  signUpForm: FormGroup = this.fb.group({
+    username: ['', [Validators.required, noWhitespaceValidator]],
+    firstName: ['', [Validators.required, noWhitespaceValidator]],
+    lastName: ['', [Validators.required, noWhitespaceValidator]],
+    password: ['', [Validators.required, noWhitespaceValidator, passwordStrengthValidator]],
+    confirmPassword: ['', [Validators.required]],
+    role: ['ADMIN', [Validators.required]]
+  }, { validators: passwordMatchValidator });
+
   ngOnInit() {
+    this.isSignUp.set(this.router.url.includes('signup'));
     if (this.hasToken()) {
       this.router.navigate(['/dashboard']);
     }
+
+    // Subscribe to router events to handle direct URL changes (back/forward buttons)
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.isSignUp.set(this.router.url.includes('signup'));
+      this.errorMessage.set(null);
+      this.successMessage.set(null);
+    });
   }
 
   @HostListener('window:storage', ['$event'])
@@ -45,13 +112,34 @@ export class LoginAdministrator implements OnInit {
     }
   }
 
-  loginForm: FormGroup = this.fb.group({
-    username: ['', [Validators.required, noWhitespaceValidator]],
-    password: ['', [Validators.required, noWhitespaceValidator]]
-  });
+  hasUppercase(val: string): boolean {
+    return /[A-Z]/.test(val || '');
+  }
 
-  isLoading = signal(false);
-  errorMessage = signal<string | null>(null);
+  hasLowercase(val: string): boolean {
+    return /[a-z]/.test(val || '');
+  }
+
+  hasDigit(val: string): boolean {
+    return /[0-9]/.test(val || '');
+  }
+
+  hasSpecialChar(val: string): boolean {
+    return /[!@#$%^&*()_+\-=\[\]{};':"\|,.<>\/?]/.test(val || '');
+  }
+
+  toggleAuthMode(signUp: boolean) {
+    this.isSignUp.set(signUp);
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+    this.loginForm.reset();
+    this.signUpForm.reset({ role: 'ADMIN' });
+    if (signUp) {
+      this.router.navigate(['/signup']);
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
 
   onSubmit() {
     if (this.loginForm.invalid) {
@@ -61,13 +149,13 @@ export class LoginAdministrator implements OnInit {
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
+    this.successMessage.set(null);
 
     const payload = this.loginForm.value;
 
     this.loginService.login(payload).subscribe({
       next: (response) => {
         this.isLoading.set(false);
-        // The token is automatically saved inside CommonService
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
@@ -76,4 +164,34 @@ export class LoginAdministrator implements OnInit {
       }
     });
   }
+
+  onSubmitSignUp() {
+    if (this.signUpForm.invalid) {
+      this.signUpForm.markAllAsTouched();
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+
+    const payload = this.signUpForm.value;
+
+    this.loginService.register(payload).subscribe({
+      next: (response) => {
+        this.isLoading.set(false);
+        this.successMessage.set('Registration successful! You can now log in.');
+        this.signUpForm.reset({ role: 'ADMIN' });
+        // Auto-switch to login mode after 2 seconds
+        setTimeout(() => {
+          this.toggleAuthMode(false);
+        }, 2000);
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        this.errorMessage.set(err.message || 'Registration failed. Please try again.');
+      }
+    });
+  }
 }
+
