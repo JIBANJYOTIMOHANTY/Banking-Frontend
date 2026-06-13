@@ -7,7 +7,7 @@
   }
 
   <div class="flex flex-col sm:flex-row items-center gap-5 p-5 bg-slate-50 rounded-2xl border border-slate-100">
-    <img src="/assets/images/Jiban.jpeg" alt="Avatar" class="w-16 h-16 rounded-2xl object-cover border border-slate-200 shadow-sm" />
+    <img [src]="profileImage() || '/assets/images/Jiban.jpeg'" alt="Avatar" class="w-16 h-16 rounded-2xl object-cover border border-slate-200 shadow-sm" />
     <div class="text-center sm:text-left space-y-1">
       <h5 class="text-sm font-extrabold text-slate-800">{{ userFirstName() }} {{ userLastName() }}</h5>
       <p class="text-[10px] text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded w-fit mx-auto sm:mx-0 uppercase tracking-wider">{{ userRole() }}</p>

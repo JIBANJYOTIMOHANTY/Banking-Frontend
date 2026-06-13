@@ -15,6 +15,7 @@ export class MyProfile {
   editLastName = input<string>('');
   editEmail = input<string>('');
   profileSuccessMessage = input<string | null>(null);
+  profileImage = input<string | null>(null);
 
   editFirstNameChange = output<string>();
   editLastNameChange = output<string>();

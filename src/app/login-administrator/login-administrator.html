@@ -132,6 +132,29 @@
                 } @else {
                 <!-- Signup Form -->
                 <form [formGroup]="signUpForm" (ngSubmit)="onSubmitSignUp()" class="space-y-3.5">
+                    <!-- Profile Image Upload Section -->
+                    <div class="flex flex-col items-center justify-center p-3 border-2 border-dashed border-slate-200 hover:border-indigo-500 rounded-xl transition-all cursor-pointer bg-slate-50/50 hover:bg-slate-50 relative group"
+                         (click)="fileInput.click()">
+                        <input type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden" #fileInput />
+                        
+                        @if (signUpForm.get('profileImage')?.value) {
+                            <img [src]="signUpForm.get('profileImage')?.value" alt="Profile Preview" class="w-16 h-16 rounded-full object-cover border-2 border-indigo-500 shadow-md animate-in zoom-in-95 duration-200" />
+                            <span class="text-[9px] text-slate-500 mt-1.5 font-bold group-hover:text-indigo-600 transition-colors">Click to Change Image</span>
+                        } @else {
+                            <div class="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 border border-indigo-100 group-hover:scale-105 transition-transform">
+                                <span class="material-icons text-xl">add_a_photo</span>
+                            </div>
+                            <span class="text-[9px] text-slate-500 mt-1.5 font-bold group-hover:text-indigo-600 transition-colors">Upload Profile Image *</span>
+                            <span class="text-[7px] text-slate-400 font-medium">JPEG, PNG up to 2MB</span>
+                        }
+                        
+                        @if (signUpForm.get('profileImage')?.invalid && signUpForm.get('profileImage')?.touched) {
+                            <div class="text-red-500 text-[9px] mt-1 font-semibold">
+                                Profile image is required.
+                            </div>
+                        }
+                    </div>
+
                     <!-- First Name and Last Name side-by-side -->
                     <div class="grid grid-cols-2 gap-4">
                         <div>

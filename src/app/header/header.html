@@ -147,7 +147,7 @@
     <div class="relative flex items-center pl-3 border-l border-slate-100 profile-container">
       <button (click)="toggleProfileMenu()"
         class="flex items-center gap-3 hover:bg-slate-50 p-1.5 rounded-xl transition-all duration-200 cursor-pointer text-left focus:outline-none border border-transparent hover:border-slate-100">
-        <img src="/assets/images/Jiban.jpeg" alt="User Profile"
+        <img [src]="userProfileImage() || '/assets/images/Jiban.jpeg'" alt="User Profile"
           class="w-10 h-10 rounded-xl object-cover border border-slate-200 shadow-sm" />
         <div class="hidden xl:block text-left select-none pr-1">
           <div class="flex items-center gap-1">
@@ -166,7 +166,7 @@
         <!-- Profile Header -->
         <div class="px-3 py-2 border-b border-slate-100 mb-2">
           <div class="flex items-center gap-3">
-            <img src="/assets/images/Jiban.jpeg" alt="User Profile"
+            <img [src]="userProfileImage() || '/assets/images/Jiban.jpeg'" alt="User Profile"
               class="w-10 h-10 rounded-xl object-cover border border-slate-200" />
             <div>
               <p class="text-xs font-bold text-slate-800 leading-tight">{{ userFirstName() }} {{ userLastName() }}</p>
@@ -298,7 +298,7 @@
         @if (activeUserCenterTab() === 'profile') {
         <app-my-profile [userFirstName]="userFirstName()" [userLastName]="userLastName()" [userRole]="userRole()"
           [editFirstName]="editFirstName()" [editLastName]="editLastName()" [editEmail]="editEmail()"
-          [profileSuccessMessage]="profileSuccessMessage()" (editFirstNameChange)="editFirstName.set($event)"
+          [profileSuccessMessage]="profileSuccessMessage()" [profileImage]="userProfileImage()" (editFirstNameChange)="editFirstName.set($event)"
           (editLastNameChange)="editLastName.set($event)" (editEmailChange)="editEmail.set($event)"
           (save)="saveProfileChanges()">
         </app-my-profile>

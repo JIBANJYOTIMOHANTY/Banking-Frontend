@@ -206,6 +206,11 @@ export class CommonService {
           } else {
             localStorage.removeItem('role');
           }
+          if (typeof firstDataItem.profileImage === 'string' && firstDataItem.profileImage.trim().length > 0) {
+            localStorage.setItem('profileImage', firstDataItem.profileImage);
+          } else {
+            localStorage.removeItem('profileImage');
+          }
         }
         if (firstDataItem && typeof firstDataItem.expiresInMs === 'number') {
           validityDuration = firstDataItem.expiresInMs;

@@ -78,7 +78,8 @@ export class LoginAdministrator implements OnInit {
     lastName: ['', [Validators.required, noWhitespaceValidator]],
     password: ['', [Validators.required, noWhitespaceValidator, passwordStrengthValidator]],
     confirmPassword: ['', [Validators.required]],
-    role: ['ADMIN', [Validators.required]]
+    role: ['ADMIN', [Validators.required]],
+    profileImage: ['', [Validators.required]]
   }, { validators: passwordMatchValidator });
 
   ngOnInit() {
@@ -126,6 +127,27 @@ export class LoginAdministrator implements OnInit {
 
   hasSpecialChar(val: string): boolean {
     return /[!@#$%^&*()_+\-=\[\]{};':"\|,.<>\/?]/.test(val || '');
+  }
+
+  onFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        this.errorMessage.set('Image size must be less than 2MB');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.signUpForm.patchValue({
+          profileImage: reader.result as string
+        });
+        this.signUpForm.get('profileImage')?.markAsTouched();
+      };
+      reader.onerror = () => {
+        this.errorMessage.set('Failed to read image file');
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   toggleAuthMode(signUp: boolean) {

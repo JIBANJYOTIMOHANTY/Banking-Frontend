@@ -35,6 +35,7 @@ export class Header implements OnInit, OnDestroy {
   userFirstName = signal('Sarah');
   userLastName = signal('Jenkins');
   userRole = signal('Admin Manager');
+  userProfileImage = signal<string | null>(null);
 
   showQuickActions = signal(false);
   showFreezeModal = signal(false);
@@ -137,11 +138,13 @@ export class Header implements OnInit, OnDestroy {
         const storedFirstName = localStorage.getItem('firstName');
         const storedLastName = localStorage.getItem('lastName');
         const storedRole = localStorage.getItem('role');
+        const storedProfileImage = localStorage.getItem('profileImage');
         if (storedFirstName) this.userFirstName.set(storedFirstName);
         if (storedLastName) this.userLastName.set(storedLastName);
         if (storedRole) this.userRole.set(storedRole);
+        if (storedProfileImage) this.userProfileImage.set(storedProfileImage);
       } catch (e) {
-        console.error('Failed to load user name/role from storage', e);
+        console.error('Failed to load user name/role/image from storage', e);
       }
     }
   }
@@ -390,6 +393,7 @@ export class Header implements OnInit, OnDestroy {
       localStorage.removeItem('firstName');
       localStorage.removeItem('lastName');
       localStorage.removeItem('role');
+      localStorage.removeItem('profileImage');
       sessionStorage.removeItem('token');
       document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     } catch (e) {
