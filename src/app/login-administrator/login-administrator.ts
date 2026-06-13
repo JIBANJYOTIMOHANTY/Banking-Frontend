@@ -78,7 +78,7 @@ export class LoginAdministrator implements OnInit {
     lastName: ['', [Validators.required, noWhitespaceValidator]],
     password: ['', [Validators.required, noWhitespaceValidator, passwordStrengthValidator]],
     confirmPassword: ['', [Validators.required]],
-    role: ['ADMIN', [Validators.required]],
+    // role: ['ADMIN', [Validators.required]],
     profileImage: ['', [Validators.required]]
   }, { validators: passwordMatchValidator });
 
