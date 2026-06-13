@@ -8,6 +8,13 @@ A modern, responsive, and feature-rich banking client dashboard built with **Ang
 
 *   **Premium Interactive Dashboard:**
     *   Responsive layouts featuring polished glassmorphic styling, harmonious color palettes, custom animations, and sidebar navigation.
+*   **Mandatory Profile Image Upload (New):**
+    *   Drag-and-drop or click-to-select upload interface integrated into the Signup form.
+    *   Strict size validation (maximum 2MB) and dynamic conversion to Base64 representation.
+    *   Renders a premium circular preview of the custom avatar upon selection.
+*   **Password Visibility Toggle (New):**
+    *   Allows toggling of password visibility dynamically across both Login and Signup forms.
+    *   Built using clean Angular signal bindings (`[type]="isPasswordVisible() ? 'text' : 'password'"`) instead of unsafe DOM manipulation.
 *   **Comprehensive Customer Management:**
     *   Form-guided customer registration and profiling.
     *   Dedicated **Country Prefix Selector** (e.g. `+91`, `+1`) and strict **10-Digit Mobile Number Validation**.
@@ -47,7 +54,7 @@ The project components are organized under `src/app/`:
 *   `custom-tables/`: Custom paginated/searchable tables and skeleton loaders for uniform loading states.
 *   `sidebar/` / `header/` / `footer/`: Layout framing modules coordinating user navigation states, system broadcast settings, and quick actions.
 *   `dashboard-administrator/`: Core shell dashboard wrapper organizing the application views.
-*   `login-administrator/`: Authentication login screen interface.
+*   `login-administrator/`: Authentication login screen interface containing login, signup tabs, mandatory image upload, and password toggle controls.
 *   `common-service/`: Configures core API HTTP request wrappers (`get`, `post`, `put`, `patch`, `delete`), error intercepting, and `ConnectionService` connection checking.
 *   `authguard.ts`: Enforces page access restrictions, manages session token lifecycle tracking, and throttle-refreshes JWT validity.
 
