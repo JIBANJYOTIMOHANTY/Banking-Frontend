@@ -215,5 +215,11 @@ export class LoginAdministrator implements OnInit {
       }
     });
   }
+
+  isPasswordVisible = signal(false);
+
+  togglePasswordVisibility() {
+    this.isPasswordVisible.set(!this.isPasswordVisible());
+  }
 }
 
