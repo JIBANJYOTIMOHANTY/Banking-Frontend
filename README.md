@@ -86,6 +86,30 @@ The project components are organized under `src/app/`:
     ```
 4.  Open your browser and browse to **`http://localhost:4200`**.
 
+### 🐳 Running with Docker
+
+You can build and run the frontend as a standalone container:
+
+1. **Build the Docker Image:**
+   ```bash
+   docker build -t banking-frontend .
+   ```
+
+2. **Run the Container:**
+   ```bash
+   docker run -d -p 4000:4000 --name banking-frontend-container banking-frontend
+   ```
+   The application will be served at **`http://localhost:4000`**.
+
+### 🚀 Running the Full Stack (Docker Compose)
+To spin up the entire application stack including the backend API database, Redis cache, and frontend client:
+1. Navigate to the parent directory.
+2. Run the compose command:
+   ```bash
+   docker-compose up --build
+   ```
+3. Open **`http://localhost:4000`** in your browser.
+
 ### 🧪 Running Tests
 
 Verify component logic and routing parameters by running:
